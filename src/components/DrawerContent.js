@@ -111,7 +111,7 @@ export default (props) => {
                   title="Coleta Avulsa"
                   titleStyle={{ fontSize: 14 }}
                   onPress={() => {
-                    props.navigation.navigate('InventoryList');
+                    props.navigation.navigate('JourneyList');
                   }}
                 />
               {/*  <List.Item

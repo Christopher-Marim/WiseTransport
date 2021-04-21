@@ -12,10 +12,11 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import commonStyles from "../../commonStyles";
-
+import StepModal from "./StepModal";
 import getRealm from "../../services/realm";
+import TextInputMask from 'react-native-text-input-mask';
 
-export default function AddList() {
+export default function AddJourney() {
   const [InventoryName, setInventoryName] = useState("");
   const statusModal = useSelector(
     (state) => state.showModal.showModalADDINVENTORY
@@ -49,54 +50,37 @@ export default function AddList() {
   function closeModal() {
     dispatch({ type: "SHOW_MODAL_ADDINVENTORY_OFF" });
   }
-
+  let Component2 =  <Text> component 2</Text>;
   return (
-    <Modal
-      transparent={true}
-      visible={statusModal}
-      onRequestClose={closeModal}
-      animationType="fade"
-    >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "rgba(0,0,0,0.6)",
-          alignItems: "center",
-        }}
-      >
-        <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={styles.overlay} />
-        </TouchableWithoutFeedback>
-        <View style={styles.container}>
-          <Text style={styles.headerModal}>Novo Inventario</Text>
-          <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Informe a Descrição"
-            placeholderTextColor='grey'
-            onChangeText={(text) => setInventoryName(text)}
-            value={InventoryName}
-          />
-          <View style={{position:"absolute",right:20,top:50 }}>
-          </View>
+    <>
+    {
+statusModal&&
+        <View >
+         <StepModal 
+          statusModal={statusModal}
+          callback={closeModal}
+          stepComponents={[
+            <View>
 
-          </View>
-
-
-          <View style={styles.buttons}>
-            <TouchableOpacity onPress={closeModal}>
-              <Text style={styles.button}>Cancelar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={addInventory}>
-              <Text style={styles.button}>Salvar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={styles.overlay} />
-        </TouchableWithoutFeedback>
+            
+            <Text style={{marginLeft:15}}>Informe o Cep: </Text>
+          <TextInputMask 
+          
+          style={styles.input}  
+          placeholder="CEP"
+          placeholderTextColor='grey'
+          onChangeText={(text, notFormated) => setInventoryName(text)}
+          value={InventoryName}
+          mask={"[000000]-[000]"}
+        />
+        </View>, 
+        
+        Component2
+        
+        ]} />
       </View>
-    </Modal>
+    }
+</>
   );
 }
 
@@ -138,11 +122,10 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 10,
     margin: 15,
-    backgroundColor: "white",
     borderBottomWidth: 2,
     borderColor: "grey",
     borderRadius: 6,
     backgroundColor: "#f1f2f4",
-    
+    color:'black'
   },
 });

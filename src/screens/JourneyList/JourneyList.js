@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
-import Modal from '../../components/Modal/AddInventory';
-import Filter from '../Modais Inventory/FilterInventory';
+import Modal from '../../components/Modal/AddJourney';
+import Filter from '../../components/Modal/FilterInventory';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
 import commonStyles from '../../commonStyles';
 import Inventory from '../../components/Inventory';
@@ -20,7 +20,7 @@ import getRealm from '../../services/realm';
 import styles from './styles'
 import Loader from '../../components/Loader';
 
-export function InventoryList({navigation}) {
+export function JourneyList({navigation}) {
   const [LoaderVisiBle, setLoaderVisible]= useState(false)
   const refresh = useSelector((state) => state.inventorys.refresh);
   const statusModal = useSelector(
@@ -56,7 +56,7 @@ export function InventoryList({navigation}) {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        if (route.name === 'InventoryList') {
+        if (route.name === 'JourneyList') {
           return true;
         } else {
           return false;

@@ -4,7 +4,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import InventoryItemList from "../screens/ItemList/InventoryItemList";
 import GetProducts from "../screens/GetProducts/GetProducts";
 import Login from "../screens/LoginScreen/Login";
-import Scanner from "../screens/ScannerScreen/Scanner";
 import Configs from "../screens/SettingsScreen/index";
 import Profile from "../screens/ProfileScreen/Profile";
 import Drawer from './Drawer'
@@ -22,7 +21,7 @@ export default (props) => {
       >
         <Stack.Screen name="Company" component={Company}/>
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="InventoryList" component={Drawer} />
+        <Stack.Screen name="JourneyList" component={Drawer} />
         <Stack.Screen name="Configs" component={Configs} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="InventoryItemList" component={InventoryItemList} />

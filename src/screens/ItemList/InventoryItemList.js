@@ -21,7 +21,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import getRealm from '../../services/realm';
 import styles from'./styles'
-import Filter from '../Modais Inventory/FilterInventory';
+import Filter from '../../components/Modal/FilterInventory';
 
 export default function ItemList(props) {
   const refresh = useSelector((state) => state.inventorys.refresh);
