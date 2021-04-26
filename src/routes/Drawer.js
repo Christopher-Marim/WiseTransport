@@ -12,7 +12,7 @@ export default (props) => {
   return (
     <View style={{ flex: 1 }}>
       <Drawer.Navigator
-        initialRouteName="JourneyList"
+        initialRouteName="NotificationScreen"
         screenOptions={{ headerShown: false }}
         drawerContent={props => <DrawerContent {...props}/>}
 

@@ -98,7 +98,7 @@ export function JourneyList({navigation}) {
             <FontAwesome name="bars" size={25} color={colorButton}></FontAwesome>
           </View>
         </TouchableOpacity>
-        <Text style={styles.Text}>Minhas Viagens</Text>
+        <Text style={styles.Text}>Minha jornada</Text>
 
         <TouchableOpacity
           style={styles.buttonFilter}
@@ -158,7 +158,7 @@ export function JourneyList({navigation}) {
             style={styles.addButtonCenter}
             onPress={() => dispatch({type: 'SHOW_MODAL_ADDINVENTORY_ON'})}
             activeOpacity={0.7}>
-            <Text style={styles.TextButtonCenter}>Novo Inventário</Text>
+            <Text style={styles.TextButtonCenter}>Nova Jornada</Text>
           </TouchableOpacity>
         </View>
       )}

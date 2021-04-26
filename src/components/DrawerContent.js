@@ -98,14 +98,14 @@ export default (props) => {
                   <List.Icon
                     icon={({ color, size }) => (
                       <MaterialCommunityIcons
-                        name="newspaper-variant-outline"
+                        name="truck-outline"
                         color={color}
                         size={size}
                       />
                     )}
                   />
                 )}
-                title="Notificações"
+                title="Jornada"
                 titleStyle={{ fontSize: 15 }}
                 onPress={() => {
                   props.navigation.navigate('JourneyList');

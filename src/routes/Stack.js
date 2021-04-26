@@ -9,6 +9,7 @@ import Profile from "../screens/ProfileScreen/Profile";
 import Drawer from './Drawer'
 import Company from "../screens/CompanyScreen/Company";
 import NotificationScreen from "../screens/NotificationScreen/NotificationScreen";
+import { JourneyList } from "../screens/JourneyList/JourneyList";
 
 const Stack = createStackNavigator();
 
@@ -26,7 +27,7 @@ export default (props) => {
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="InventoryItemList" component={InventoryItemList} />
         <Stack.Screen name="GetProducts" component={GetProducts} />
-        <Stack.Screen name="NotificationScreen" component={NotificationScreen}/>
+        <Stack.Screen name="NotificationScreen" component={Drawer}/>
       </Stack.Navigator>
     </View>
   );

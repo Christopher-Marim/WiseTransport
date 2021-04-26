@@ -25,8 +25,8 @@ export function Map({latitude, longitude}) {
     setRegion({
       latitude: latitude,
       longitude: longitude,
-      latitudeDelta: 0,
-      longitudeDelta: 0,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
     });
   }, []);
   return (
@@ -34,12 +34,7 @@ export function Map({latitude, longitude}) {
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        region={{
-          latitude: latitude,
-          longitude: longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        }}>
+        region={region}>
         <Marker
           calloutAnchor={{
             x: 2.9,

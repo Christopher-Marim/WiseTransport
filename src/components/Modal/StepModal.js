@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  ScrollView
 } from "react-native";
 import React, { Component } from "react";
 import Modal from "react-native-modal";
@@ -11,8 +12,10 @@ import Carousel from "react-native-snap-carousel";
 
 import PageControl from "react-native-page-control";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import styles from "../../screens/LoginScreen/styles";
+import commonStyles from "../../commonStyles";
 
-const { width } = Dimensions.get("window")
+const { width, height } = Dimensions.get("window")
 
 export default class StepModal extends Component {
   constructor(props) {
@@ -125,12 +128,11 @@ export default class StepModal extends Component {
     return (
       <View>
         <Modal isVisible={this.state.isVisible}>
-          <View
+        
+            
+          <ScrollView
             style={customStyles.modal}
           >
-            <TouchableOpacity style={customStyles.buttonClose} onPress={() => { this.props.closemodal() }}>
-              <MaterialCommunityIcons name='close-box-outline' size={30} />
-            </TouchableOpacity>
             <View
               style={{
                 flex:1,
@@ -139,9 +141,14 @@ export default class StepModal extends Component {
                 marginLeft: 10,
                 marginRight: 10,
                 alignItems: "center",
-                justifyContent: 'center'
+                justifyContent: 'center',
+                height:height/1.22
               }}
             >
+              <TouchableOpacity style={customStyles.buttonClose} onPress={() => { this.props.closemodal() }}>
+              <MaterialCommunityIcons name='close-box-outline' size={30} />
+            </TouchableOpacity>
+              <Text style={customStyles.title}>Nova Jornada</Text>
               <Carousel
                 data={stepComponents}
 
@@ -179,7 +186,7 @@ export default class StepModal extends Component {
                   : this._renderNextButton()
               }
             </View>
-          </View>
+          </ScrollView>
         </Modal>
       </View>
     );
@@ -313,8 +320,7 @@ const customStyles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 8,
     paddingBottom: 10,
-    paddingTop: 25,
-    flex: 0,
+    paddingTop: 10,
     height:'100%',
     width:'100%',
   },
@@ -324,8 +330,13 @@ const customStyles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 10,
     position: 'absolute',
-    right: 0
+    top:-10,
+    right:0
+  },
+  title:{
+    fontSize:20,
+    fontWeight:'bold',
+    color:commonStyles.color.headers
   }
 });
