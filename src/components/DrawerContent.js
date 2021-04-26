@@ -93,42 +93,26 @@ export default (props) => {
 
                 }}
               />
-              <List.Accordion
-                title="Inventário"
-                id="1"
+              <List.Item
                 left={() => (
                   <List.Icon
                     icon={({ color, size }) => (
                       <MaterialCommunityIcons
-                        name="download-box-outline"
+                        name="newspaper-variant-outline"
                         color={color}
                         size={size}
                       />
                     )}
                   />
-                )}>
-                <List.Item
-                  title="Coleta Avulsa"
-                  titleStyle={{ fontSize: 14 }}
-                  onPress={() => {
-                    props.navigation.navigate('JourneyList');
-                  }}
-                />
-              {/*  <List.Item
-                  title="Auditoria"
-                  titleStyle={{ fontSize: 14 }}
-                  onPress={() => {
+                )}
+                title="Notificações"
+                titleStyle={{ fontSize: 15 }}
+                onPress={() => {
+                  props.navigation.navigate('JourneyList');
 
-                  }}
-                />
-                <List.Item
-                  title="QR Code"
-                  titleStyle={{ fontSize: 14 }}
-                  onPress={() => {
-
-                  }}
-                /> */}
-              </List.Accordion>
+                }}
+              />
+              
               {UnitIdEmpresa != 3 && (
                 <View>
                   {/*

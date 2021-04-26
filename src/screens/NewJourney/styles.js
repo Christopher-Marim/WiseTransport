@@ -28,7 +28,7 @@ export default StyleSheet.create({
     fontFamily: commonStyles.fontFamily,
     fontWeight: commonStyles.fontWeight,
     fontSize: 25,
-    color: commonStyles.color.headers,
+    color: commonStyles.color.secondary,
     paddingLeft:10
   },
   addButton: {
@@ -58,9 +58,7 @@ export default StyleSheet.create({
     borderRadius: 3,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: commonStyles.color.page,
-    borderWidth:2,
-    borderColor:commonStyles.color.headers,
+    backgroundColor: commonStyles.color.headers,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
