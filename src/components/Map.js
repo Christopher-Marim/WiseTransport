@@ -52,13 +52,13 @@ export function Map({latitude, longitude}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent:'flex-end',
-    padding:10
+    justifyContent:'center',
+    alignItems:'center',
+    padding:10,
   },
 
   map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height/3,
+    width: '100%',
+    height: '100%',
   },
 });

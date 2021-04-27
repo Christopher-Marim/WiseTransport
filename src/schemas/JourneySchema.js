@@ -1,13 +1,14 @@
-export default InventorysSchema = {
-  name: "Inventorys",
+export default JourneySchema = {
+  name: "Journey",
   primaryKey: "id",
   properties: {
     id: { type: "int", indexed: true },
-    nome: "string",
+    operator: "string",
     dateAt: "date",
+    hours:"string",
+    veicule:"string",
     check:{ type: "bool",optional:true},
     idGet:{type:"int" ,indexed:true, optional: true},
-    itens: "ItensInventory[]",
-    qtdItens:{type:"int" ,indexed:true, optional: true},
+    occurrences: "Occurrence[]",
   },
 };

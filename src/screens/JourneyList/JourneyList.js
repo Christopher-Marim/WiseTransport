@@ -14,7 +14,6 @@ import Modal from '../../components/Modal/AddJourney';
 import Filter from '../../components/Modal/FilterInventory';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
 import commonStyles from '../../commonStyles';
-import Inventory from '../../components/Inventory';
 import EditInventory from '../../components/Modal/EditInventory';
 import getRealm from '../../services/realm';
 import styles from './styles'
@@ -32,23 +31,20 @@ export function JourneyList({navigation}) {
   const [Inventorys, setInventorys] = useState([]);
 
   function callBackFilter(textFilter) {
-    loadInventorys(textFilter);
+    loadJourney();
     onRefresh();
   }
 
-  async function loadInventorys(textFilter = '') {
+  async function loadJourney() {
     const realm = await getRealm();
 
     const data = realm
-      .objects('Inventorys')
-      .sorted('dateAt')
-      .filtered(`nome CONTAINS[c] "${textFilter}" `);
-
+      .objects('Journey')
     setInventorys(data);
   }
 
   useEffect(() => {
-    loadInventorys();
+    loadJourney();
   }, []);
 
   
@@ -114,44 +110,6 @@ export function JourneyList({navigation}) {
           </View>
         </TouchableOpacity>
       </View>
-      {Inventorys.length > 0 && (
-        <View style={{flex: 8}}>
-          <View style={styles.collectList}>
-            <FlatList
-              data={Inventorys}
-              keyExtractor={(item) => `${item.id}`}
-              renderItem={({item}) => (
-                <View style={{padding: 5, }}>
-                  <Inventory
-                    id={item.id}
-                    dateAt={item.dateAt}
-                    nome={item.nome}
-                    itens={item.itens}
-                    check={item.check ? item.check : false}
-                    idGet={item.idGet ? item.idGet : 0}
-                    qtdItens={item.qtdItens ? item.qtdItens : 0}
-                    navigation={navigation}
-                    callbackInventoryItem={callbackInventory}
-                    ></Inventory>
-                </View>
-              )}
-              refreshControl={
-                <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
-              }
-            />
-          </View>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => dispatch({type: 'SHOW_MODAL_ADDINVENTORY_ON'})}
-            activeOpacity={0.7}>
-            <FontAwesome
-              name="plus"
-              size={20}
-              color={commonStyles.color.secondary}
-            />
-          </TouchableOpacity>
-        </View>
-      )}
       {Inventorys.length == 0 && (
         <View style={{flex: 8, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity

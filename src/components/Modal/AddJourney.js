@@ -18,9 +18,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Geolocation from '@react-native-community/geolocation';
 import {Map} from '../Map';
 import {InfosJourney} from '../InfosJourney';
+import {InfosVeicules} from '../InfosVeicule';
 
 export default function AddJourney() {
-  const [VeiculeName, setVeiculeName] = useState('');
+  const [plaque, setplaque] = useState('');
   const [KmInicial, setKmInicial] = useState('');
   const [veiculoSelecionado, setVeiculoSelecionado] = useState([]);
   const [latitude, setLatitude] = useState();
@@ -38,7 +39,7 @@ export default function AddJourney() {
   }, []);
 
   async function addInventory() {
-    if (!VeiculeName || !VeiculeName.trim()) {
+    if (!plaque || !plaque.trim()) {
       Alert.alert('Dados Inválidos', 'Descrição não Informada!');
       return;
     } else {
@@ -47,11 +48,11 @@ export default function AddJourney() {
       realm.write(() => {
         realm.create('Inventorys', {
           id: Math.random() * 1000,
-          nome: VeiculeName,
+          nome: plaque,
           dateAt: new Date(),
           itens: [],
         });
-        setVeiculeName();
+        setplaque();
         dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
         setInterval(() => {
           dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
@@ -140,8 +141,22 @@ export default function AddJourney() {
     );
   };
 
-  let Component2 = latitude && (
-    <Map latitude={latitude} longitude={longitude} />
+  let Component2 = latitude ? (
+    <View style={{flex: 1}}>
+      <Text style={styles.infosText}>Informações vigentes</Text>
+      <View style={{paddingHorizontal: 10}}>
+        <InfosJourney></InfosJourney>
+      </View>
+      <Text style={styles.infosText}>Informações veiculo</Text>
+      <View style={{paddingHorizontal: 10}}>
+        <InfosVeicules veiculeType={veiculoSelecionado[0]?.nome} plaque={plaque}></InfosVeicules>
+      </View>
+      <View style={{flex:1}}>
+        <Map latitude={latitude} longitude={longitude} />
+      </View>
+    </View>
+  ) : (
+    <></>
   );
 
   return (
@@ -152,6 +167,7 @@ export default function AddJourney() {
             statusModal={statusModal}
             closemodal={closeModal}
             callback={callLocation}
+            next={KmComplete&&true}
             stepComponents={[
               <View style={{flex: 1}}>
                 <Text style={styles.infosText}>Informações vigentes</Text>
@@ -168,8 +184,8 @@ export default function AddJourney() {
                     placeholder="Placa"
                     placeholderTextColor="grey"
                     onChangeText={text => {
-                      setVeiculeName(text);
-                      if (VeiculeName.length == 6) {
+                      setplaque(text);
+                      if (plaque.length == 6) {
                         console.warn(true);
                         getVeicule(text);
                       } else {
@@ -177,9 +193,10 @@ export default function AddJourney() {
                         setColor('black');
                       }
                     }}
-                    value={VeiculeName}
+                    value={plaque}
                     maxLength={7}
                   />
+                  
                   {Color == '#00bd2f' && (
                     <MaterialCommunityIcons
                       name="check"
@@ -187,6 +204,7 @@ export default function AddJourney() {
                       color={'#00bd2f'}
                     />
                   )}
+                  {Color=='black' && (<View style={{width:35}}></View>)}
                   {Color == '#b80003' && (
                     <MaterialCommunityIcons
                       name="close"
@@ -215,6 +233,7 @@ export default function AddJourney() {
                 </Text>
                 <View style={styles.containerTextInputIcon}>
                   <TextInput
+                    editable={veiculoSelecionado.length>0? true:false}
                     autoCapitalize={'characters'}
                     style={[
                       styles.input,
@@ -226,17 +245,29 @@ export default function AddJourney() {
                     onChangeText={text => {
                       setKmInicial(text);
                     }}
-                    onEndEditing={() => setKmComplete(true)}
+                    onBlur={()=>{
+                      if (KmInicial.length>0) {
+                        setKmComplete(true)
+                      } else {
+                        setKmComplete(false)
+                      }
+                    }}
+                    onEndEditing={() => {if (KmInicial.length>0) {
+                      setKmComplete(true)
+                    } else {
+                      setKmComplete(false)
+                    }
+                      }}
+
                     value={KmInicial}
-                    maxLength={7}
                   />
-                  {KmComplete && (
+                  {KmComplete ? (
                     <MaterialCommunityIcons
                       name="check"
                       size={35}
                       color={'#00bd2f'}
                     />
-                  )}
+                  ):<View style={{width:35}}></View>}
                 </View>
               </View>,
 

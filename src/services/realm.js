@@ -1,13 +1,13 @@
 import Realm from 'realm'
-import InventorysSchema from '../schemas/InventorysSchema';
-import ItensInventorySchema from '../schemas/ItensInventorySchema';
-import StorageProducts from '../schemas/StorageProducts';
+import JourneySchema from '../schemas/JourneySchema';
 import UserSchema from '../schemas/UserSchema';
+import VeiculesSchema from '../schemas/VeiculesSchema';
+import OccurrenceSchema from '../schemas/OccurrenceSchema';
 
 export default function getRealm(){
     return (
         Realm.open({
-        schema:[ UserSchema,InventorysSchema,ItensInventorySchema, StorageProducts],
+        schema:[ UserSchema,JourneySchema, VeiculesSchema, OccurrenceSchema ],
         schemaVersion: 7,
     })
     )
