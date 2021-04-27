@@ -26,7 +26,7 @@ export default function AddJourney() {
   const [veiculoSelecionado, setVeiculoSelecionado] = useState([]);
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
-  const [Color, setColor] = useState();
+  const [Color, setColor] = useState('black');
   const [KmComplete, setKmComplete] = useState(false);
   const statusModal = useSelector(
     state => state.showModal.showModalADDINVENTORY,
@@ -34,9 +34,12 @@ export default function AddJourney() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    callLocation();
-  }, []);
+  
+    useEffect(() => {
+      callLocation();
+    }, [statusModal]);
+
+  
 
   async function addInventory() {
     if (!plaque || !plaque.trim()) {
@@ -122,26 +125,30 @@ export default function AddJourney() {
     }
   };
 
-  const getLocation = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        const currentLatitude = parseFloat(
+  async function getLocation  () {
+   await Geolocation.getCurrentPosition(
+       position => {
+        const currentLatitude =  parseFloat(
           JSON.stringify(position.coords.latitude),
         );
-        const currentLongitude = parseFloat(
+        const currentLongitude =  parseFloat(
           JSON.stringify(position.coords.longitude),
         );
-        setLatitude(currentLatitude);
-        setLongitude(currentLongitude);
+        if(currentLatitude!=undefined){
+          console.warn("aaaaaaaaaaaaaaaa")
+          setLatitude(currentLatitude);
+          setLongitude(currentLongitude);
 
-        console.warn(latitude, longitude);
+          console.warn(latitude, longitude)
+
+        }
       },
       error => Alert.alert(error.message),
       {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
     );
   };
 
-  let Component2 = latitude ? (
+  let Component2 = longitude ? (
     <View style={{flex: 1}}>
       <Text style={styles.infosText}>Informações vigentes</Text>
       <View style={{paddingHorizontal: 10}}>

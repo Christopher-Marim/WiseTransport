@@ -9,16 +9,20 @@ import {
   Image,
 } from 'react-native';
 import MapView, {
-  Callout,
   Marker,
   PROVIDER_GOOGLE,
-  Region,
 } from 'react-native-maps';
 
-import image from '../../assets/iconETM.png';
+import Loader from './Loader';
 
 export function Map({latitude, longitude}) {
   const [region, setRegion] = useState();
+  const inicialRegion= {
+      latitude: 0,
+      longitude: 0,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
+  }
 
   console.log(latitude, longitude);
   useEffect(() => {
@@ -31,9 +35,18 @@ export function Map({latitude, longitude}) {
   }, []);
   return (
     <View style={styles.container}>
-      <MapView
+      {
+        (longitude!=null)&&
+      (<MapView
+
         provider={PROVIDER_GOOGLE}
         style={styles.map}
+        moveOnMarkerPress={true}
+        initialRegion={inicialRegion}
+        loadingEnabled={true}
+        toolbarEnabled={true}
+        showsMyLocationButton={true} 
+        showsCompass={true}
         region={region}>
         <Marker
           calloutAnchor={{
@@ -45,7 +58,14 @@ export function Map({latitude, longitude}) {
             longitude: longitude,
           }}>
           </Marker>
-      </MapView>
+      </MapView>)
+
+      }
+      {
+        (longitude==null)&&(
+          <Loader></Loader>
+        )
+      }
     </View>
   );
 }
