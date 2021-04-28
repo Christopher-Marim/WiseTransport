@@ -2,23 +2,53 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import getRealm from '../services/realm';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
-import { set } from 'react-native-reanimated';
-import commonStyles from '../commonStyles';
 
-export function InfosVeicules({veiculeType, plaque}) {  
+export function InfosVeicules({veiculeType, plaque, backgroundColor}) {
+  const [veicule, setVeicule] = useState(veiculeType);
+  const [placa, setPlaca] = useState(plaque);
+  const [kmInicial, setKmInicial] = useState();
+
+  async function loadJourney() {
+    try {
+      const realm = await getRealm();
+      const dataJourney = realm.objects('Journey');
+      const Journey = dataJourney[0];
+      const result = realm.objects('Veicules').filter(veicule => {
+        if (veicule.id == dataJourney[0].veicule_id) {
+          setVeicule(veicule.tipoVeiculo);
+          setPlaca(veicule.placa);
+        }
+      });
+      setKmInicial(Journey.kmInicial);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    loadJourney();
+  }, []);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        backgroundColor && {backgroundColor: backgroundColor},
+      ]}>
       <View style={styles.wrapper}>
         <Text style={styles.subtitule}>Veiculo:</Text>
-        <Text style={styles.text}>{veiculeType}</Text>
+        <Text style={styles.text}>{veicule}</Text>
       </View>
       <View style={styles.wrapper}>
         <Text style={styles.subtitule}>Placa:</Text>
-        <Text style={styles.text}>{plaque}</Text>
+        <Text style={styles.text}>{placa}</Text>
       </View>
+      {kmInicial && (
+        <View style={styles.wrapper}>
+          <Text style={styles.subtitule}>Km Inicial:</Text>
+          <Text style={styles.text}>{kmInicial}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -26,9 +56,8 @@ export function InfosVeicules({veiculeType, plaque}) {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
- 
-    borderRadius:10,
-    backgroundColor:'#e8e8e8'
+    borderRadius: 10,
+    backgroundColor: '#e8e8e8',
   },
   wrapper: {
     padding: 5,
@@ -42,6 +71,6 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 16,
     fontWeight: 'bold',
-    paddingHorizontal:5
+    paddingHorizontal: 5,
   },
 });

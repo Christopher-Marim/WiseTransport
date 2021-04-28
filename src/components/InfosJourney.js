@@ -4,10 +4,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import getRealm from '../services/realm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-import { set } from 'react-native-reanimated';
+import {set} from 'react-native-reanimated';
 import commonStyles from '../commonStyles';
 
-export function InfosJourney() {
+export function InfosJourney({backgroundColor}) {
   const [nome, setnome] = useState('Usuário');
   const [data, setData] = useState();
   const [horas, setHoras] = useState();
@@ -29,8 +29,26 @@ export function InfosJourney() {
     }
 
     getUsuarioRealm();
-    setHoras(formattedHours(new Date()))
+    setHoras(formattedHours(new Date()));
     setData(formatteddate(new Date()));
+  }, []);
+
+  async function loadJourney() {
+    try {
+      const realm = await getRealm();
+      const data = realm.objects('Journey');
+      const Journey = data[0] 
+      setnome(Journey.operator)
+      setData(formatteddate(Journey.dateStart));
+      setHoras(formattedHours(Journey.dateStart));
+    } catch (error) {
+      console.error(error)
+    }
+    
+  }
+
+  useEffect(() => {
+    loadJourney();
   }, []);
 
   const getNomeEmpresa = async () => {
@@ -43,13 +61,18 @@ export function InfosJourney() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, backgroundColor&&{backgroundColor:backgroundColor}]}>
       <View style={styles.wrapper}>
         <Text style={styles.subtitule}>Operador:</Text>
-        <Text 
-        style={styles.text}
-        numberOfLines={1}
-        >{nome}</Text>
+        <Text style={styles.text} numberOfLines={1}>
+          {nome}
+        </Text>
+      </View>
+      <View style={styles.wrapper}>
+        <Text style={styles.subtitule}>Empresa:</Text>
+        <Text style={styles.text} numberOfLines={1}>
+          {nomeEmpresa}
+        </Text>
       </View>
       <View style={styles.wrapper}>
         <Text style={styles.subtitule}>Data Inicio:</Text>
@@ -66,9 +89,8 @@ export function InfosJourney() {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
- 
-    borderRadius:10,
-    backgroundColor:'#e8e8e8'
+    borderRadius: 10,
+    backgroundColor: '#e8e8e8',
   },
   wrapper: {
     padding: 5,
@@ -77,13 +99,12 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'black',
-    width:'70%'
+    width: '70%',
   },
   subtitule: {
     marginLeft: 15,
     fontSize: 16,
     fontWeight: 'bold',
-    paddingHorizontal:5,
-    
+    paddingHorizontal: 5,
   },
 });

@@ -7,6 +7,11 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: commonStyles.color.page,
   },
+  container2: {
+    flex: 1,
+    backgroundColor: '#ebebed',
+    padding:20
+  },
   headerView: {
     flexDirection: 'row',
     paddingHorizontal: 10,
@@ -85,4 +90,25 @@ export default StyleSheet.create({
     position:'absolute',
     right:10,
   },
+  subTitle:{
+    fontSize:20,
+    fontWeight:'bold'
+  },
+  group:{
+    padding:10,
+    borderRadius:10,
+    backgroundColor:'#FFF'
+  },
+  wrapper:{
+    marginTop:10,
+    padding:10,
+    borderRadius:10,
+    borderWidth:3,
+    borderColor:commonStyles.color.headers
+  },
+  buttonInfos:{
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center'
+  }
 });

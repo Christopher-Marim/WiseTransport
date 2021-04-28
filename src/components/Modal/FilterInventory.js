@@ -46,7 +46,7 @@ export default function FilterInventory({callback}) {
         width: Visible,
       }}>
       <View style={{flexDirection: 'row'}}>
-        <View style={styles.container}>
+        <View style={[styles.container, statusModal && {borderWidth:2}]}>
           <TextInput
             placeholder={'Buscar...'}
             ref={inputRef}
@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
     flex: 9,
   },
   container: {
-    borderWidth: 0,
     borderRadius: 5,
     backgroundColor: '#FFF',
     width:'80%',

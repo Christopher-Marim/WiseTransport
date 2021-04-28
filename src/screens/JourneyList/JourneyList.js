@@ -6,48 +6,45 @@ import {
   TouchableOpacity,
   SafeAreaView,
   RefreshControl,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
+import {useRoute, useFocusEffect} from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import Modal from '../../components/Modal/AddJourney';
 import Filter from '../../components/Modal/FilterInventory';
-import {useRoute, useFocusEffect} from '@react-navigation/native';
 import commonStyles from '../../commonStyles';
 import EditInventory from '../../components/Modal/EditInventory';
 import getRealm from '../../services/realm';
-import styles from './styles'
+import styles from './styles';
 import Loader from '../../components/Loader';
+import {InfosJourney} from '../../components/InfosJourney';
+import {InfosVeicules} from '../../components/InfosVeicule';
 
 export function JourneyList({navigation}) {
-  const [LoaderVisiBle, setLoaderVisible]= useState(false)
-  const refresh = useSelector((state) => state.inventorys.refresh);
+  const [LoaderVisiBle, setLoaderVisible] = useState(false);
+  const [infosVisible, setInfosVisible] = useState(false);
   const statusModal = useSelector(
-    (state) => state.showModal.showModalFILTERINVENTORY,
+    state => state.showModal.showModalFILTERINVENTORY,
   );
-    const colorButton= commonStyles.color.headers
+  const colorButton = commonStyles.color.headers;
   const dispatch = useDispatch();
 
-  const [Inventorys, setInventorys] = useState([]);
-
-  function callBackFilter(textFilter) {
-    loadJourney();
-    onRefresh();
-  }
+  const [Journey, setJourney] = useState([]);
 
   async function loadJourney() {
     const realm = await getRealm();
 
-    const data = realm
-      .objects('Journey')
-    setInventorys(data);
+    const data = realm.objects('Journey');
+    setJourney(data);
   }
 
   useEffect(() => {
     loadJourney();
   }, []);
 
-  
   const route = useRoute();
   useFocusEffect(
     useCallback(() => {
@@ -62,36 +59,29 @@ export function JourneyList({navigation}) {
 
       return () =>
         BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, [route])      
-  )
+    }, [route]),
+  );
 
-  const onRefresh = () => {
-    dispatch({type: 'REFRESH', payload: [true]});
-    setInterval(() => {
-      dispatch({type: 'REFRESH', payload: [false]});
-    }, 1000);
-  };
-
-  function callbackInventory  (status) {
-    setLoaderVisible(status)
+  function handleClickInfos() {
+    setInfosVisible(!infosVisible);
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Loader visible={LoaderVisiBle}></Loader>
       <Modal />
 
       <EditInventory />
       <View style={styles.headerView}>
-        <Filter callback={callBackFilter} />
-
         <TouchableOpacity
           style={styles.buttonOpenDrawer}
           onPress={() => {
             navigation.openDrawer();
           }}>
           <View>
-            <FontAwesome name="bars" size={25} color={colorButton}></FontAwesome>
+            <FontAwesome
+              name="bars"
+              size={25}
+              color={colorButton}></FontAwesome>
           </View>
         </TouchableOpacity>
         <Text style={styles.Text}>Minha jornada</Text>
@@ -106,11 +96,14 @@ export function JourneyList({navigation}) {
             }
           }}>
           <View>
-            <FontAwesome name={statusModal?"close":'search'} size={25} color={colorButton}></FontAwesome>
+            <FontAwesome
+              name={statusModal ? 'close' : 'search'}
+              size={25}
+              color={colorButton}></FontAwesome>
           </View>
         </TouchableOpacity>
       </View>
-      {Inventorys.length == 0 && (
+      {Journey.length == 0 && (
         <View style={{flex: 8, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             style={styles.addButtonCenter}
@@ -120,7 +113,29 @@ export function JourneyList({navigation}) {
           </TouchableOpacity>
         </View>
       )}
+      {Journey.length > 0 && (
+        <View style={[styles.container2, Journey.length == 0&& {backgroundColor:commonStyles.color.page}]}>
+          <View style={styles.group}>
+          <TouchableOpacity
+            style={styles.buttonInfos}
+            onPress={handleClickInfos}>
+            <Text style={styles.subTitle}>Informações</Text>
+            {infosVisible && (
+              <MaterialCommunityIcons name={'chevron-up'} size={30} />
+            )}
+            {!infosVisible && (
+              <MaterialCommunityIcons name={'chevron-down'} size={30} />
+            )}
+          </TouchableOpacity>
+          {infosVisible && (
+            <View style={styles.wrapper}>
+              <InfosJourney backgroundColor={'white'} />
+              <InfosVeicules backgroundColor={'white'} />
+            </View>
+          )}
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
-
