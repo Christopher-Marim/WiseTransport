@@ -48,4 +48,12 @@ export default StyleSheet.create({
     borderBottomWidth:1,
     borderColor:'white'
   },
+  textInputSenha:{
+    flexDirection:'row'
+  },
+  buttonEye:{
+    position:'absolute',
+    right:10,
+    top:10
+  }
 });

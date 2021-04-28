@@ -18,6 +18,8 @@ import getRealm from '../../services/realm';
 import NetInfo from '@react-native-community/netinfo';
 import styles from './styles';
 
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import {api} from '../../services/api';
 
 export default function Login({navigation}) {
@@ -28,6 +30,7 @@ export default function Login({navigation}) {
   const [offset] = useState(new Animated.ValueXY({x: 0, y: 80}));
   const [opacity] = useState(new Animated.Value(0));
   const [LoaderVisible, setVisible] = useState(false);
+  const [PasswordVisible, setPasswordVisible] = useState(true);
 
   const [imageHeight] = useState(new Animated.Value(1))
   const [activated, setActivated] = useState(false)
@@ -113,7 +116,7 @@ export default function Login({navigation}) {
     console.log('LoginScreen Internet: ' + internet);
     try {
       if (internet == true) {
-        const response = await api.get('/Acessoappcoleta');
+        const response = await api.get('/acessoappcoleta');
         const data = response.data.data;
 
         const realm = await getRealm();
@@ -192,14 +195,14 @@ export default function Login({navigation}) {
   }
 
   async function setUser(usuario) {
-    console.log('USUARIO' + usuario.nomeusuario);
+    console.log('USUARIO' + usuario.nome);
     if (usuario.length != 0) {
       const realm = await getRealm();
 
       realm.write(() => {
         realm.create('User', {
           id: parseInt(usuario.id),
-          nome: usuario.nomeusuario,
+          nome: usuario.nome,
           email: usuario.email,
           senha: usuario.senha,
           token: usuario.chave,
@@ -211,7 +214,7 @@ export default function Login({navigation}) {
       dispatch({
         type: 'USER_LOGGED_IN',
         payload: [
-          usuario.nomeusuario,
+          usuario.nome,
           usuario.email,
           usuario.senha,
           usuario.chave,
@@ -257,6 +260,7 @@ export default function Login({navigation}) {
           onChangeText={(text) => setEmail(text)}
           keyboardType={'email-address'}
         />
+        <View style={styles.textInputSenha}>
         <TextInput
           style={styles.input}
           placeholder="Senha"
@@ -264,8 +268,21 @@ export default function Login({navigation}) {
           autoCorrect={false}
           value={senha}
           onChangeText={(text) => setSenha(text)}
-          secureTextEntry={true}
+          secureTextEntry={PasswordVisible}
         />
+        <TouchableOpacity style={styles.buttonEye} onPress={()=>{setPasswordVisible(!PasswordVisible)}}>
+          {
+            !PasswordVisible&&
+            <MaterialCommunityIcons name='eye-outline' size={25}/>
+
+          }
+          {
+            PasswordVisible&&
+            <MaterialCommunityIcons name='eye-off-outline' size={25}/>
+
+          }
+        </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           style={styles.btnSubmit}
