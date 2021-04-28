@@ -259,6 +259,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
+    width:'60%',
     fontWeight: commonStyles.fontWeight,
     marginTop: 3,
     fontWeight: 'bold',

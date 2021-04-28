@@ -78,7 +78,7 @@ export default class StepModal extends Component {
           style={{backgroundColor: '#001e42', borderRadius: 6, padding: 5}}
           s
           onPress={() => {
-            this.props.closemodal();
+            this.props.callbackFinish()
           }}>
           <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
             {' '}

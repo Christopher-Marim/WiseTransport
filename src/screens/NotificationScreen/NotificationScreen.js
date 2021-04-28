@@ -35,10 +35,10 @@ export default function NotificationScreen({navigation}) {
   const [isVisibleCheck, setIsVisibleCheck] = useState(false);
   const [visibleLoader, setVisibleLoader] = useState(false);
   const [idCallback, setIdCallback] = useState();
-  const [BaseURL, setBaseURL] = useState('https://proton.etm.ltda');
+  const [BaseURL, setBaseURL] = useState('http://transportadora.etm.ltda');
   const [SystemUserId, setSystemUserId] = useState('');
   const BASIC_AUTHORIZATION =
-    'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a';
+    'Basic ac0fb7c1dedf6eb4cb16e4dab5fac37a63bf447f74a8c47366f9e7f5d72d';
 
     const corBotão = commonStyles.color.headers
   const dispatch = useDispatch();

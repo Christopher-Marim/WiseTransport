@@ -48,7 +48,7 @@ export default function Profile(props) {
       })
   
       const res = await api.put(`/Acessoappcoleta/${store[0].id}`,{
-          nomeusuario:nome,
+          nome:nome,
           email:email,
           senha:senha
       })

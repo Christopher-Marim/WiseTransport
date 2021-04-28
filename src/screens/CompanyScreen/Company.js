@@ -1,13 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, View, Text, Alert, Animated, Dimensions} from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Alert,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import getRealm from '../../services/realm';
 import commonStyles from '../../commonStyles';
 
 import PickerCompany from '../../components/Modal/ModalEmpresas/ModalEmpresas';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 import styles from './styles';
+import commonsVariables from '../../../commonsVariables';
 
 export default function Company(props) {
   const [UserName, setUserName] = useState();
@@ -19,7 +28,16 @@ export default function Company(props) {
   const [EmpresaId, setEmpresaId] = useState('');
   const [EmpresaURL, setEmpresaUrl] = useState('');
   const [LeftPositionAnimation] = useState(new Animated.Value(-200));
-  const [RightPositionAnimation] = useState(new Animated.Value(Dimensions.get('window').width));
+  const [RightPositionAnimation] = useState(
+    new Animated.Value(Dimensions.get('window').width),
+  );
+
+  const api = axios.create({
+    baseURL: commonsVariables.api.baseUrl,
+    headers: {
+      Authorization: commonsVariables.api.Authorization,
+    },
+  });
 
   function callbackPicker(statusPicker, empresa, IdEmpresa, UrlEmpresa) {
     setPickerVisible(statusPicker);
@@ -42,23 +60,45 @@ export default function Company(props) {
         'modified',
       );
     });
+    loadVeicules();
+  }
+
+  async function loadVeicules() {
+    const {data} = await api.get('/veiculo');
+    const veicules = data.data;
+    const realm = await getRealm();
+    veicules.forEach(veiculo => {
+      realm.write(() => {
+        realm.create(
+          'Veicules',
+          {
+            id: parseInt(veiculo.id),
+            tipoVeiculo: veiculo.tipoveiculo,
+            placa: veiculo.placa,
+          },
+          'modified',
+        );
+      });
+    });
+
+    const store = realm.objects('Veicules');
+
+    console.log(store);
   }
 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(LeftPositionAnimation, {
-        toValue:-50,
+        toValue: -50,
         duration: 800,
         useNativeDriver: true,
       }),
       Animated.timing(RightPositionAnimation, {
-        toValue:Dimensions.get('window').width/1.5,
+        toValue: Dimensions.get('window').width / 1.5,
         duration: 500,
         useNativeDriver: true,
       }),
-
-    ]).start()
-    
+    ]).start();
 
     getUser();
   }, []);
@@ -102,7 +142,11 @@ export default function Company(props) {
         userId={UserSystemUserId}
       />
       <View style={styles.container1}>
-        <Animated.View style={[styles.decorationTop, {transform:[{translateX: LeftPositionAnimation}]}]}></Animated.View>
+        <Animated.View
+          style={[
+            styles.decorationTop,
+            {transform: [{translateX: LeftPositionAnimation}]},
+          ]}></Animated.View>
 
         <View style={styles.container1Texts}>
           <Text style={styles.textETM}>{UserName}</Text>
@@ -110,7 +154,11 @@ export default function Company(props) {
             Informe a baixo a empresa ou departamento para dar prosseguimento
           </Text>
         </View>
-        <Animated.View style={[styles.decorationBotton,{transform:[{translateX: RightPositionAnimation}]} ]}></Animated.View>
+        <Animated.View
+          style={[
+            styles.decorationBotton,
+            {transform: [{translateX: RightPositionAnimation}]},
+          ]}></Animated.View>
       </View>
       <View style={styles.container2}>
         <View style={{paddingHorizontal: 40, alignItems: 'center'}}>

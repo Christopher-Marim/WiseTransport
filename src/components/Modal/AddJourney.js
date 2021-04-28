@@ -21,6 +21,8 @@ import {InfosJourney} from '../InfosJourney';
 import {InfosVeicules} from '../InfosVeicule';
 
 export default function AddJourney() {
+  const [arrayVeicules, setArrayVeicules] = useState();
+  const [user, setUser] = useState();
   const [plaque, setplaque] = useState('');
   const [KmInicial, setKmInicial] = useState('');
   const [veiculoSelecionado, setVeiculoSelecionado] = useState([]);
@@ -34,49 +36,52 @@ export default function AddJourney() {
 
   const dispatch = useDispatch();
 
-  
-    useEffect(() => {
-      callLocation();
-    }, [statusModal]);
+  useEffect(() => {
+    callLocation();
+    loadVeicules();
+    loadUser();
+  }, [statusModal]);
 
-  
-
-  async function addInventory() {
-    if (!plaque || !plaque.trim()) {
-      Alert.alert('Dados Inválidos', 'Descrição não Informada!');
-      return;
-    } else {
-      const realm = await getRealm();
-
-      realm.write(() => {
-        realm.create('Inventorys', {
-          id: Math.random() * 1000,
-          nome: plaque,
-          dateAt: new Date(),
-          itens: [],
-        });
-        setplaque();
-        dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
-        setInterval(() => {
-          dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
-        }, 1000);
-        closeModal();
-      });
-    }
+  async function loadVeicules() {
+    const realm = await getRealm();
+    const store = realm.objects('Veicules');
+    setArrayVeicules(store);
   }
 
-  const arrayVeicules = [
-    {
-      id: 1,
-      nome: 'R3 Yamaha',
-      placa: 'ABC1D23',
-    },
-    {
-      id: 2,
-      nome: 'XJ6 Yamaha',
-      placa: 'EFG4H56',
-    },
-  ];
+  async function loadUser() {
+    const realm = await getRealm();
+    const store = realm.objects('User');
+    setUser(store[0]);
+    console.log(user)
+  }
+
+  async function addJourney() {
+    const realm = await getRealm();
+    realm.write(() => {
+      realm.create('Journey', {
+        id: Math.random() * 1000,
+        operator: user.nome,
+        dateStart: new Date(),
+        veicule_id: veiculoSelecionado[0].id,
+        kmInicial: KmInicial,
+        latitudeInicial: latitude,
+        longitudeInicial: longitude,
+        systemUnitId: user.system_unit_id,
+        systemUserId: user.system_user_id,
+        occurrences: [],
+      });
+      setplaque();
+      dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
+      setInterval(() => {
+        dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
+      }, 1000);
+    });
+
+    const journey = realm.objects('Journey')
+    console.log(journey)
+    closeModal();
+
+  }
 
   function getVeicule(placa) {
     const veiculoSelecionadoAux = arrayVeicules.filter(veiculoElement => {
@@ -125,28 +130,27 @@ export default function AddJourney() {
     }
   };
 
-  async function getLocation  () {
-   await Geolocation.getCurrentPosition(
-       position => {
-        const currentLatitude =  parseFloat(
+  async function getLocation() {
+    await Geolocation.getCurrentPosition(
+      position => {
+        const currentLatitude = parseFloat(
           JSON.stringify(position.coords.latitude),
         );
-        const currentLongitude =  parseFloat(
+        const currentLongitude = parseFloat(
           JSON.stringify(position.coords.longitude),
         );
-        if(currentLatitude!=undefined){
-          console.warn("aaaaaaaaaaaaaaaa")
+        if (currentLatitude != undefined) {
+          console.warn('aaaaaaaaaaaaaaaa');
           setLatitude(currentLatitude);
           setLongitude(currentLongitude);
 
-          console.warn(latitude, longitude)
-
+          console.warn(latitude, longitude);
         }
       },
       error => Alert.alert(error.message),
       {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
     );
-  };
+  }
 
   let Component2 = longitude ? (
     <View style={{flex: 1}}>
@@ -156,9 +160,11 @@ export default function AddJourney() {
       </View>
       <Text style={styles.infosText}>Informações veiculo</Text>
       <View style={{paddingHorizontal: 10}}>
-        <InfosVeicules veiculeType={veiculoSelecionado[0]?.nome} plaque={plaque}></InfosVeicules>
+        <InfosVeicules
+          veiculeType={veiculoSelecionado[0]?.tipoVeiculo}
+          plaque={plaque}></InfosVeicules>
       </View>
-      <View style={{flex:1}}>
+      <View style={{flex: 1}}>
         <Map latitude={latitude} longitude={longitude} />
       </View>
     </View>
@@ -174,7 +180,8 @@ export default function AddJourney() {
             statusModal={statusModal}
             closemodal={closeModal}
             callback={callLocation}
-            next={KmComplete&&true}
+            callbackFinish={addJourney}
+            next={KmComplete && true}
             stepComponents={[
               <View style={{flex: 1}}>
                 <Text style={styles.infosText}>Informações vigentes</Text>
@@ -188,11 +195,11 @@ export default function AddJourney() {
                   <TextInput
                     autoCapitalize={'characters'}
                     style={[styles.input, {borderColor: Color}]}
-                    placeholder="Placa"
+                    placeholder="Placa ABC-123"
                     placeholderTextColor="grey"
                     onChangeText={text => {
                       setplaque(text);
-                      if (plaque.length == 6) {
+                      if (plaque.length == 7) {
                         console.warn(true);
                         getVeicule(text);
                       } else {
@@ -201,24 +208,8 @@ export default function AddJourney() {
                       }
                     }}
                     value={plaque}
-                    maxLength={7}
+                    maxLength={8}
                   />
-                  
-                  {Color == '#00bd2f' && (
-                    <MaterialCommunityIcons
-                      name="check"
-                      size={30}
-                      color={'#00bd2f'}
-                    />
-                  )}
-                  {Color=='black' && (<View style={{width:35}}></View>)}
-                  {Color == '#b80003' && (
-                    <MaterialCommunityIcons
-                      name="close"
-                      size={30}
-                      color={'#b80003'}
-                    />
-                  )}
                 </View>
                 {veiculoSelecionado.length > 0 && (
                   <Text
@@ -227,7 +218,7 @@ export default function AddJourney() {
                       paddingBottom: 10,
                       fontWeight: 'bold',
                     }}>
-                    {veiculoSelecionado[0].nome}
+                    {veiculoSelecionado[0].tipoVeiculo}
                   </Text>
                 )}
 
@@ -240,7 +231,7 @@ export default function AddJourney() {
                 </Text>
                 <View style={styles.containerTextInputIcon}>
                   <TextInput
-                    editable={veiculoSelecionado.length>0? true:false}
+                    editable={veiculoSelecionado.length > 0 ? true : false}
                     autoCapitalize={'characters'}
                     style={[
                       styles.input,
@@ -252,29 +243,22 @@ export default function AddJourney() {
                     onChangeText={text => {
                       setKmInicial(text);
                     }}
-                    onBlur={()=>{
-                      if (KmInicial.length>0) {
-                        setKmComplete(true)
+                    onBlur={() => {
+                      if (KmInicial.length > 0) {
+                        setKmComplete(true);
                       } else {
-                        setKmComplete(false)
+                        setKmComplete(false);
                       }
                     }}
-                    onEndEditing={() => {if (KmInicial.length>0) {
-                      setKmComplete(true)
-                    } else {
-                      setKmComplete(false)
-                    }
-                      }}
-
+                    onEndEditing={() => {
+                      if (KmInicial.length > 0) {
+                        setKmComplete(true);
+                      } else {
+                        setKmComplete(false);
+                      }
+                    }}
                     value={KmInicial}
                   />
-                  {KmComplete ? (
-                    <MaterialCommunityIcons
-                      name="check"
-                      size={35}
-                      color={'#00bd2f'}
-                    />
-                  ):<View style={{width:35}}></View>}
                 </View>
               </View>,
 
@@ -329,9 +313,10 @@ const styles = StyleSheet.create({
     borderColor: '#00bd2f',
     borderRadius: 2,
     color: 'black',
-    width: '80%',
+    width: '90%',
   },
   subtitule: {
+    marginTop: 10,
     marginLeft: 15,
     fontSize: 16,
     fontWeight: 'bold',

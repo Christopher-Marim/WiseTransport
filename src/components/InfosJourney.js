@@ -46,7 +46,10 @@ export function InfosJourney() {
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <Text style={styles.subtitule}>Operador:</Text>
-        <Text style={styles.text}>{nome}</Text>
+        <Text 
+        style={styles.text}
+        numberOfLines={1}
+        >{nome}</Text>
       </View>
       <View style={styles.wrapper}>
         <Text style={styles.subtitule}>Data Inicio:</Text>
@@ -74,11 +77,13 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'black',
+    width:'70%'
   },
   subtitule: {
     marginLeft: 15,
     fontSize: 16,
     fontWeight: 'bold',
-    paddingHorizontal:5
+    paddingHorizontal:5,
+    
   },
 });
