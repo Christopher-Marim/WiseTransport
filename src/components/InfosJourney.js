@@ -4,8 +4,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import getRealm from '../services/realm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-import {set} from 'react-native-reanimated';
-import commonStyles from '../commonStyles';
 
 export function InfosJourney({backgroundColor}) {
   const [nome, setnome] = useState('Usuário');

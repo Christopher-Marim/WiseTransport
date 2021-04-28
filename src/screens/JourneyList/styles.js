@@ -96,6 +96,7 @@ export default StyleSheet.create({
   },
   group:{
     padding:10,
+    paddingHorizontal:15,
     borderRadius:10,
     backgroundColor:'#FFF'
   },

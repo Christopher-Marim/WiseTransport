@@ -22,10 +22,12 @@ import styles from './styles';
 import Loader from '../../components/Loader';
 import {InfosJourney} from '../../components/InfosJourney';
 import {InfosVeicules} from '../../components/InfosVeicule';
+import { CreateOccurrence } from '../../components/CreateOccurrence';
 
 export function JourneyList({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
   const [infosVisible, setInfosVisible] = useState(false);
+  const [createBegin, setcreateBegin] = useState(false);
   const statusModal = useSelector(
     state => state.showModal.showModalFILTERINVENTORY,
   );
@@ -64,6 +66,10 @@ export function JourneyList({navigation}) {
 
   function handleClickInfos() {
     setInfosVisible(!infosVisible);
+  }
+  function handleCreateBegin(status){
+    console.warn('AAA')
+    setcreateBegin(status)
   }
 
   return (
@@ -121,10 +127,10 @@ export function JourneyList({navigation}) {
             onPress={handleClickInfos}>
             <Text style={styles.subTitle}>Informações</Text>
             {infosVisible && (
-              <MaterialCommunityIcons name={'chevron-up'} size={30} />
+              <MaterialCommunityIcons name={'chevron-up'} size={32} />
             )}
             {!infosVisible && (
-              <MaterialCommunityIcons name={'chevron-down'} size={30} />
+              <MaterialCommunityIcons name={'chevron-down'} size={32} />
             )}
           </TouchableOpacity>
           {infosVisible && (
@@ -134,7 +140,12 @@ export function JourneyList({navigation}) {
             </View>
           )}
           </View>
-        </View>
+          <View style={[styles.group, {marginVertical:10}, createBegin&&{ borderWidth:2, borderColor:commonStyles.color.contrastante}]}>
+              <CreateOccurrence 
+                responseCallback={handleCreateBegin}
+              />
+          </View>
+          </View>
       )}
     </SafeAreaView>
   );

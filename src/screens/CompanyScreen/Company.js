@@ -61,6 +61,7 @@ export default function Company(props) {
       );
     });
     loadVeicules();
+    loadOccurences();
   }
 
   async function loadVeicules() {
@@ -82,6 +83,28 @@ export default function Company(props) {
     });
 
     const store = realm.objects('Veicules');
+
+    console.log(store);
+  }
+  async function loadOccurences() {
+    const {data} = await api.get('/ocorrencia');
+    const ocorrencia = data.data;
+    const realm = await getRealm();
+    ocorrencia.forEach(ocorrencia => {
+      realm.write(() => {
+        realm.create(
+          'Occurrence',
+          {
+            id: parseInt(ocorrencia.id),
+            occurrence: ocorrencia.ocorrencia,
+            peso: parseInt(ocorrencia.peso)
+          },
+          'modified',
+        );
+      });
+    });
+
+    const store = realm.objects('Occurrence');
 
     console.log(store);
   }
