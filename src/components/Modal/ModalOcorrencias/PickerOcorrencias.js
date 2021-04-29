@@ -14,8 +14,8 @@ export default function PickerOcorrencias(props) {
     props.callback(false);
   }
 
-  function callbackItem(nomeEmpresa,) {
-    props.callback(false, nomeEmpresa);
+  function callbackItem(nomeOccurrence, pesoOccurence, idOccurrence) {
+    props.callback(false, nomeOccurrence, pesoOccurence, idOccurrence);
   }
 
   useEffect(() => {

@@ -20,7 +20,7 @@ import {Map} from '../Map';
 import {InfosJourney} from '../InfosJourney';
 import {InfosVeicules} from '../InfosVeicule';
 
-export default function AddJourney() {
+export default function AddJourney({callback}) {
   const [arrayVeicules, setArrayVeicules] = useState();
   const [user, setUser] = useState();
   const [plaque, setplaque] = useState('');
@@ -79,6 +79,7 @@ export default function AddJourney() {
 
     const journey = realm.objects('Journey')
     console.log(journey)
+    callback()
     closeModal();
 
   }
@@ -117,7 +118,6 @@ export default function AddJourney() {
           },
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.warn('opa');
           getLocation();
         } else {
           Alert.alert(
@@ -140,7 +140,6 @@ export default function AddJourney() {
           JSON.stringify(position.coords.longitude),
         );
         if (currentLatitude != undefined) {
-          console.warn('aaaaaaaaaaaaaaaa');
           setLatitude(currentLatitude);
           setLongitude(currentLongitude);
 
@@ -152,7 +151,7 @@ export default function AddJourney() {
     );
   }
 
-  let Component2 = longitude ? (
+  let Component2 = (longitude&&veiculoSelecionado[0]) ? (
     <View style={{flex: 1}}>
       <Text style={styles.infosText}>Informações vigentes</Text>
       <View style={{paddingHorizontal: 10}}>

@@ -9,6 +9,7 @@ import {
   BackHandler,
   Animated,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
@@ -24,11 +25,13 @@ import Loader from '../../components/Loader';
 import {InfosJourney} from '../../components/InfosJourney';
 import {InfosVeicules} from '../../components/InfosVeicule';
 import {CreateOccurrence} from '../../components/CreateOccurrence';
+import {CurrentOccurrence} from '../../components/SwipeableOccurence';
 
 export function JourneyList({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
   const [infosVisible, setInfosVisible] = useState(false);
   const [createBegin, setcreateBegin] = useState(false);
+  const [createFinish, setCreateFinish] = useState(null);
   const [Journey, setJourney] = useState([]);
   const statusModal = useSelector(
     state => state.showModal.showModalFILTERINVENTORY,
@@ -44,7 +47,24 @@ export function JourneyList({navigation}) {
     setJourney(data);
   }
 
+  const getData = async () => {
+    try {
+      const occurrenceAux = await AsyncStorage.getItem('@CurrentOccurrence')
+     
+      console.log("AA"+occurrenceAux)
+      if(occurrenceAux.length>2) {
+        setCreateFinish(true)
+      }
+      else{
+        setCreateFinish(false)
+      }
+
+    } catch(e) {
+      // error reading value
+    }
+  }
   useEffect(() => {
+    getData()
     loadJourney();
   }, []);
 
@@ -68,30 +88,30 @@ export function JourneyList({navigation}) {
   function handleClickInfos() {
     setInfosVisible(!infosVisible);
   }
-  function handleCreateBegin(status) {
+  function handleCreateBegin(status,create) {
+    getData()
     setcreateBegin(status);
+    console.log("ZZZZZZZZZZZZ")
     HeartbeatAnimation();
   }
 
+
   function HeartbeatAnimation() {
-    
     Animated.loop(
       Animated.sequence([
         Animated.delay(1000),
         Animated.timing(Heartbeat, {
           toValue: 1,
           duration: 1000,
-          useNativeDriver:false 
+          useNativeDriver: false,
         }),
         Animated.timing(Heartbeat, {
           toValue: 0,
           duration: 1000,
-          useNativeDriver:false 
-
-        })
+          useNativeDriver: false,
+        }),
       ]),
-    ).start()
-     
+    ).start();
   }
 
   const boxInterpolation = Heartbeat.interpolate({
@@ -109,7 +129,7 @@ export function JourneyList({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Modal />
+      <Modal callback={loadJourney} />
 
       <EditInventory />
       <View style={styles.headerView}>
@@ -179,14 +199,26 @@ export function JourneyList({navigation}) {
               </View>
             )}
           </View>
-          <Animated.View
-            style={[
-              styles.group,
-              {marginVertical: 10},
-              createBegin && {...animatedStyle},
-            ]}>
-            <CreateOccurrence responseCallback={handleCreateBegin} />
-          </Animated.View>
+          {!createFinish && (
+            <Animated.View
+              style={[
+                styles.group,
+                {marginVertical: 10},
+                createBegin && {...animatedStyle},
+              ]}>
+              <CreateOccurrence
+                responseCallback={handleCreateBegin}
+                getData={getData}
+              />
+            </Animated.View>
+          )}
+
+          {createFinish && (
+            <View style={{marginTop:10}}>
+              <CurrentOccurrence  callback={getData}/>
+            </View>
+          
+          )}
         </View>
       )}
     </SafeAreaView>

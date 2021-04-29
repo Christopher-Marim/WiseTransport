@@ -16,6 +16,6 @@ export default JourneySchema = {
     check:{ type: "bool",optional:true},
     systemUnitId:'int',
     systemUserId:'int',
-    occurrences: "Occurrence[]",
+    occurrences: "OccurrenceList[]",
   },
 };
