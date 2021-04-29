@@ -110,6 +110,7 @@ export default StyleSheet.create({
   buttonInfos:{
     flexDirection:'row',
     justifyContent:'space-between',
-    alignItems:'center'
+    alignItems:'center',
+    
   }
 });

@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   RefreshControl,
   BackHandler,
+  Animated,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
@@ -22,19 +23,19 @@ import styles from './styles';
 import Loader from '../../components/Loader';
 import {InfosJourney} from '../../components/InfosJourney';
 import {InfosVeicules} from '../../components/InfosVeicule';
-import { CreateOccurrence } from '../../components/CreateOccurrence';
+import {CreateOccurrence} from '../../components/CreateOccurrence';
 
 export function JourneyList({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
   const [infosVisible, setInfosVisible] = useState(false);
   const [createBegin, setcreateBegin] = useState(false);
+  const [Journey, setJourney] = useState([]);
   const statusModal = useSelector(
     state => state.showModal.showModalFILTERINVENTORY,
   );
+  const [Heartbeat] = useState(new Animated.Value(0));
   const colorButton = commonStyles.color.headers;
   const dispatch = useDispatch();
-
-  const [Journey, setJourney] = useState([]);
 
   async function loadJourney() {
     const realm = await getRealm();
@@ -67,10 +68,44 @@ export function JourneyList({navigation}) {
   function handleClickInfos() {
     setInfosVisible(!infosVisible);
   }
-  function handleCreateBegin(status){
-    console.warn('AAA')
-    setcreateBegin(status)
+  function handleCreateBegin(status) {
+    setcreateBegin(status);
+    HeartbeatAnimation();
   }
+
+  function HeartbeatAnimation() {
+    
+    Animated.loop(
+      Animated.sequence([
+        Animated.delay(1000),
+        Animated.timing(Heartbeat, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver:false 
+        }),
+        Animated.timing(Heartbeat, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver:false 
+
+        })
+      ]),
+    ).start()
+     
+  }
+
+  const boxInterpolation = Heartbeat.interpolate({
+    inputRange: [0, 1],
+    outputRange: [commonStyles.color.contrastante, '#0896d4'],
+  });
+  const boxInterpolation2 = Heartbeat.interpolate({
+    inputRange: [0, 1],
+    outputRange: [2, 2.5],
+  });
+  const animatedStyle = {
+    borderColor: boxInterpolation,
+    borderWidth: boxInterpolation2,
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,32 +155,39 @@ export function JourneyList({navigation}) {
         </View>
       )}
       {Journey.length > 0 && (
-        <View style={[styles.container2, Journey.length == 0&& {backgroundColor:commonStyles.color.page}]}>
+        <View
+          style={[
+            styles.container2,
+            Journey.length == 0 && {backgroundColor: commonStyles.color.page},
+          ]}>
           <View style={styles.group}>
-          <TouchableOpacity
-            style={styles.buttonInfos}
-            onPress={handleClickInfos}>
-            <Text style={styles.subTitle}>Informações</Text>
+            <TouchableOpacity
+              style={styles.buttonInfos}
+              onPress={handleClickInfos}>
+              <Text style={styles.subTitle}>Informações</Text>
+              {infosVisible && (
+                <MaterialCommunityIcons name={'chevron-up'} size={32} />
+              )}
+              {!infosVisible && (
+                <MaterialCommunityIcons name={'chevron-down'} size={32} />
+              )}
+            </TouchableOpacity>
             {infosVisible && (
-              <MaterialCommunityIcons name={'chevron-up'} size={32} />
+              <View style={styles.wrapper}>
+                <InfosJourney backgroundColor={'white'} />
+                <InfosVeicules backgroundColor={'white'} />
+              </View>
             )}
-            {!infosVisible && (
-              <MaterialCommunityIcons name={'chevron-down'} size={32} />
-            )}
-          </TouchableOpacity>
-          {infosVisible && (
-            <View style={styles.wrapper}>
-              <InfosJourney backgroundColor={'white'} />
-              <InfosVeicules backgroundColor={'white'} />
-            </View>
-          )}
           </View>
-          <View style={[styles.group, {marginVertical:10}, createBegin&&{ borderWidth:2, borderColor:commonStyles.color.contrastante}]}>
-              <CreateOccurrence 
-                responseCallback={handleCreateBegin}
-              />
-          </View>
-          </View>
+          <Animated.View
+            style={[
+              styles.group,
+              {marginVertical: 10},
+              createBegin && {...animatedStyle},
+            ]}>
+            <CreateOccurrence responseCallback={handleCreateBegin} />
+          </Animated.View>
+        </View>
       )}
     </SafeAreaView>
   );
