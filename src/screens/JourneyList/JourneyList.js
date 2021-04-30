@@ -8,15 +8,17 @@ import {
   RefreshControl,
   BackHandler,
   Animated,
+  Alert,
+  Dimensions,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Modal from '../../components/Modal/AddJourney';
-import Filter from '../../components/Modal/FilterInventory';
+import moment from 'moment';
 import commonStyles from '../../commonStyles';
 import EditInventory from '../../components/Modal/EditInventory';
 import getRealm from '../../services/realm';
@@ -30,9 +32,11 @@ import {CurrentOccurrence} from '../../components/SwipeableOccurence';
 export function JourneyList({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
   const [infosVisible, setInfosVisible] = useState(false);
+  const [listVisible, setListVisible] = useState(false);
   const [createBegin, setcreateBegin] = useState(false);
   const [createFinish, setCreateFinish] = useState(null);
   const [Journey, setJourney] = useState([]);
+  const [Occurrences, setOccurrences] = useState([]);
   const statusModal = useSelector(
     state => state.showModal.showModalFILTERINVENTORY,
   );
@@ -46,26 +50,34 @@ export function JourneyList({navigation}) {
     const data = realm.objects('Journey');
     setJourney(data);
   }
+  async function loadOccurrences() {
+    const realm = await getRealm();
+
+    const data = realm.objects('OccurrenceList').sorted('dataInicio', true);
+    console.log('bbbbbbbbb ' + data[1]?.occurrence);
+    setOccurrences(data);
+  }
 
   const getData = async () => {
     try {
-      const occurrenceAux = await AsyncStorage.getItem('@CurrentOccurrence')
-     
-      console.log("AA"+occurrenceAux)
-      if(occurrenceAux.length>2) {
-        setCreateFinish(true)
-      }
-      else{
-        setCreateFinish(false)
-      }
+      const occurrenceAux = await AsyncStorage.getItem('@CurrentOccurrence');
 
-    } catch(e) {
-      // error reading value
+      console.log('AA' + occurrenceAux);
+      if (occurrenceAux?.length > 2) {
+        setCreateFinish(true);
+      } else {
+        setCreateFinish(false);
+      }
+      loadOccurrences();
+    } catch (e) {
+      console.error(e);
+      loadOccurrences();
     }
-  }
+  };
   useEffect(() => {
-    getData()
+    getData();
     loadJourney();
+    loadOccurrences();
   }, []);
 
   const route = useRoute();
@@ -88,13 +100,15 @@ export function JourneyList({navigation}) {
   function handleClickInfos() {
     setInfosVisible(!infosVisible);
   }
-  function handleCreateBegin(status,create) {
-    getData()
+  function handleClickList() {
+    setListVisible(!listVisible);
+  }
+  function handleCreateBegin(status, create) {
+    getData();
     setcreateBegin(status);
-    console.log("ZZZZZZZZZZZZ")
+    console.log('ZZZZZZZZZZZZ');
     HeartbeatAnimation();
   }
-
 
   function HeartbeatAnimation() {
     Animated.loop(
@@ -127,10 +141,17 @@ export function JourneyList({navigation}) {
     borderWidth: boxInterpolation2,
   };
 
+  const formatteddate = data =>
+    moment(data).locale('pt-br').format('DD/MM/YYYY');
+  const callbackLoaderVisible = status => setLoaderVisible(status);
+
+  const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
+
   return (
     <SafeAreaView style={styles.container}>
       <Modal callback={loadJourney} />
 
+      <Loader visible={LoaderVisiBle}></Loader>
       <EditInventory />
       <View style={styles.headerView}>
         <TouchableOpacity
@@ -150,17 +171,29 @@ export function JourneyList({navigation}) {
         <TouchableOpacity
           style={styles.buttonFilter}
           onPress={() => {
-            if (statusModal == true) {
-              dispatch({type: 'SHOW_MODAL_FILTER_INVENTORY_OFF'});
-            } else {
-              dispatch({type: 'SHOW_MODAL_FILTER_INVENTORY_ON'});
-            }
+            Alert.alert(
+              'Finalizar Jornada',
+              'Deseja mesmo finalizar a jornada?',
+              [
+                {
+                  text: "Cancelar",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel"
+                },
+                { text: "Prosseguir", onPress: () => console.log("OK Pressed") }
+              ]
+            );
           }}>
-          <View>
-            <FontAwesome
-              name={statusModal ? 'close' : 'search'}
-              size={25}
-              color={colorButton}></FontAwesome>
+          <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: commonStyles.color.headers,
+                marginHorizontal: 5,
+                fontSize: 16,
+              }}>
+              Finalizar
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -214,11 +247,81 @@ export function JourneyList({navigation}) {
           )}
 
           {createFinish && (
-            <View style={{marginTop:10}}>
-              <CurrentOccurrence  callback={getData}/>
+            <View style={{marginTop: 10}}>
+              <CurrentOccurrence
+                callback={getData}
+                loaderVisible={callbackLoaderVisible}
+              />
             </View>
-          
           )}
+
+          <View style={[styles.group, {marginTop: 10}, listVisible&&{flex:1}]}>
+            <TouchableOpacity
+              style={styles.buttonInfos}
+              onPress={handleClickList}>
+              <Text style={[styles.subTitle, listVisible&&{marginBottom: 10}]}>
+                Lista de ocorrências
+              </Text>
+              {listVisible && (
+                <MaterialCommunityIcons
+                  name={'chevron-up'}
+                  size={32}
+                  style={{marginBottom: 10}}
+                />
+              )}
+              {!listVisible && (
+                <MaterialCommunityIcons
+                  name={'chevron-down'}
+                  size={32}
+                  style={listVisible&&{marginBottom: 10}}
+                />
+              )}
+            </TouchableOpacity>
+            {(listVisible&&Occurrences.length>0) && ( 
+              <FlatList
+                data={Occurrences}
+                contentContainerStyle={{paddingHorizontal: 10}}
+                keyExtractor={item => item.id}
+                renderItem={({item}) => (
+                  <View style={{flex: 1}}>
+                    <View
+                      style={{
+                        padding: 10,
+                        marginVertical: 5,
+                        borderRadius: 5,
+                        borderWidth: 2,
+                        alignItems: 'center',
+                      }}>
+                      <Text style={styles.TextOccurrence}>
+                        {item.occurrence}
+                      </Text>
+                      <View style={{justifyContent: 'center'}}>
+                        <View style={{flexDirection: 'row'}}>
+                          <Text>Inicio: {formatteddate(item.dataInicio)}</Text>
+                          <Text> {formattedHours(item.dataInicio)}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                          <Text>Fim: {formatteddate(item.dataFim)}</Text>
+                          <Text> {formattedHours(item.dataFim)}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                )}
+              />
+            )}
+
+            {(listVisible&&Occurrences.length==0) &&
+            (
+              <View style={{justifyContent:'center', alignItems:'center'}}>
+                <Text style={{fontSize:20, fontWeight:'bold', color:'grey'}}>
+                  Nenhuma ocorrência registrada!
+                </Text>
+              </View>
+            )
+
+            }
+          </View>
         </View>
       )}
     </SafeAreaView>

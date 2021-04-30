@@ -86,7 +86,8 @@ export default StyleSheet.create({
     flexDirection: 'row',
   },
   buttonFilter: {
-    padding: 10,
+    padding: 5,
+    borderRadius:5,
     position:'absolute',
     right:10,
   },
@@ -110,7 +111,15 @@ export default StyleSheet.create({
   buttonInfos:{
     flexDirection:'row',
     justifyContent:'space-between',
-    alignItems:'center',
-    
+    alignItems:'center', 
+  },
+  TextOccurrence:{
+    fontSize:15,
+    fontWeight:'bold',
+    color:commonStyles.color.principal,
+    fontFamily:commonStyles.fontFamily
+  },
+  TextButtonFinish:{
+    fontSize:15
   }
 });

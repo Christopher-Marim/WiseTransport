@@ -7,6 +7,8 @@ export default OccurrenceListSchema = {
       occurrence: "string",
       dataInicio:'date',
       dataFim:'date',
+      latitude:'string',
+      longitude:'string',
       peso: "int?"
     },
   };

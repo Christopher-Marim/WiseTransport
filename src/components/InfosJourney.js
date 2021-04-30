@@ -35,7 +35,7 @@ export function InfosJourney({backgroundColor}) {
     try {
       const realm = await getRealm();
       const data = realm.objects('Journey');
-      const Journey = data[0] 
+      const Journey = data[0]
       setnome(Journey.operator)
       setData(formatteddate(Journey.dateStart));
       setHoras(formattedHours(Journey.dateStart));

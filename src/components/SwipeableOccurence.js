@@ -9,24 +9,23 @@ import {
   Animated,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from '@react-native-community/geolocation';
 import moment from 'moment';
 import 'moment/locale/pt-br';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import commonStyles from '../commonStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import getRealm from '../services/realm';
 
-export function CurrentOccurrence({callback}) {
+export function CurrentOccurrence({callback, loaderVisible}) {
   const [borderRadiusCONST, setborderRadius] = useState(10);
-  const [Inventorys, setInventorys] = useState([]);
   const [ocurrence, setOccurrence] = useState([]);
-  const [Check, setCheck] = useState(false);
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
   const [Heartbeat] = useState(new Animated.Value(0));
-  const [ColorCheck, setColorCheck] = useState('green');
 
   const dispatch = useDispatch();
 
@@ -75,32 +74,59 @@ export function CurrentOccurrence({callback}) {
     inputRange: [0, 1],
     outputRange: [2, 2.5],
   });
-  const animatedStyle = {
-    borderColor: boxInterpolation,
-    borderWidth: boxInterpolation2,
-  };
 
   const formatteddate = data =>
-    moment(data).locale('pt-br').format('D/MM/YYYY');
+    moment(data).locale('pt-br').format('DD/MM/YYYY');
+
+    async function getLocation() {
+      loaderVisible(true)
+      await Geolocation.getCurrentPosition(
+        position => {
+          const currentLatitude = parseFloat(
+            JSON.stringify(position.coords.latitude),
+          );
+          const currentLongitude = parseFloat(
+            JSON.stringify(position.coords.longitude),
+          );
+          if (currentLatitude != undefined) {
+            setLatitude(currentLatitude);
+            setLongitude(currentLongitude);
+  
+            setChangesStorage()
+          }
+        },
+        error => Alert.alert(error.message),
+        {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
+      );
+    }
 
   async function setChangesStorage() {
     const realm = await getRealm();
 
     realm.write(() => {
-      realm.create(
-        'OccurrenceList',
-        {
-          id: idInventory,
-          check: true,
-          qtdItens: Inventorys.itens.length,
-        },
-        'modified',
-      );
+      realm.create('OccurrenceList', {
+        id: Math.random() * 1000,
+        occurrence_id: ocurrence.idOccurrence,
+        occurrence: ocurrence.nameOccurrence,
+        dataInicio: ocurrence.dateOccurence,
+        dataFim: new Date(),
+        peso: ocurrence.pesoOccurrence,
+        latitude: String(latitude),
+        longitude:String(longitude)
+      });
     });
-    setCheck(props.check ? props.check : true);
-    setColorCheck('green');
+    const result = realm.objects('OccurrenceList');
+    console.log(result[0].latitude)
+    loaderVisible(false)
+    cleanCurrentoccurence();
+  }
 
-    refresh();
+  async function cleanCurrentoccurence() {
+    const result = await AsyncStorage.setItem(
+      '@CurrentOccurrence',
+      JSON.stringify({}),
+    );
+    callback();
   }
 
   const getLeftContent = () => {
@@ -109,18 +135,11 @@ export function CurrentOccurrence({callback}) {
         <TouchableOpacity
           style={styles.left1}
           activeOpacity={0.5}
-          onPress={() => {
-            PostInventory();
-            setChangesStorage();
-          }}>
+          onPress={getLocation}>
           <MaterialCommunityIcons name="check-bold" size={25} color="white" />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={async() => { 
-              const result = await AsyncStorage.setItem('@CurrentOccurrence',JSON.stringify({}))
-              callback()
-
-            }}
+          onPress={cleanCurrentoccurence}
           style={styles.left2}
           activeOpacity={0.5}>
           <Icon name="trash" size={20} color="white" />
@@ -128,13 +147,6 @@ export function CurrentOccurrence({callback}) {
       </View>
     );
   };
-
-  function refresh() {
-    dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
-    setInterval(() => {
-      dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
-    }, 1000);
-  }
 
   return (
     <View
@@ -150,19 +162,13 @@ export function CurrentOccurrence({callback}) {
           style={[
             styles.container,
             {
-                
               borderColor: boxInterpolation,
               borderWidth: boxInterpolation2,
               borderBottomLeftRadius: borderRadiusCONST,
               borderTopLeftRadius: borderRadiusCONST,
             },
           ]}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              props.navigation.navigate('InventoryItemList');
-              dispatch({type: 'CURRENT_ID_INVENTORY', payload: 1});
-            }}>
+          <View style={styles.button}>
             <View
               style={{
                 alignItems: 'center',
@@ -182,10 +188,12 @@ export function CurrentOccurrence({callback}) {
                 </Text>
               </View>
               <View style={{padding: 8}}>
-                <MaterialCommunityIcons name={'chevron-right'} size={35} />
+                <TouchableOpacity style={styles.buttonChevron} onPress={()=>{}}>
+                  <MaterialCommunityIcons name={'chevron-right'} size={35} />
+                </TouchableOpacity>
               </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </Animated.View>
       </Swipeable>
     </View>
@@ -199,7 +207,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingVertical: 10,
     width: '100%',
-    borderRadius: 5,
+    borderRadius: 10,
     borderLeftColor: commonStyles.color.InventoryPrincipal,
     backgroundColor: 'white',
   },
@@ -237,4 +245,11 @@ const styles = StyleSheet.create({
   containerSwipeable: {
     flexDirection: 'row',
   },
+  buttonChevron:{
+    width:50, 
+    height:50, 
+    borderRadius:25,
+    justifyContent:'center',
+    alignItems:'center'
+  }
 });
