@@ -114,6 +114,8 @@ export default StyleSheet.create({
     alignItems:'center', 
   },
   TextOccurrence:{
+    borderBottomWidth:1,
+    borderBottomColor:'grey',
     fontSize:15,
     fontWeight:'bold',
     color:commonStyles.color.principal,

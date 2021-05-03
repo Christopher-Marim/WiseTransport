@@ -60,12 +60,13 @@ export default function AddJourney({callback}) {
     realm.write(() => {
       realm.create('Journey', {
         id: Math.random() * 1000,
+        operator_id:user.id,
         operator: user.nome,
         dateStart: new Date(),
         veicule_id: veiculoSelecionado[0].id,
         kmInicial: KmInicial,
-        latitudeInicial: latitude,
-        longitudeInicial: longitude,
+        latitudeInicial: String(latitude),
+        longitudeInicial: String(longitude),
         systemUnitId: user.system_unit_id,
         systemUserId: user.system_user_id,
         occurrences: [],

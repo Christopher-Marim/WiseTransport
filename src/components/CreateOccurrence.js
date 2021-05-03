@@ -77,7 +77,7 @@ export function CreateOccurrence({responseCallback, getData}) {
             style={styles.buttonOccurrence}
             onPress={handlePressBeginning}>
             <Text style={styles.subTitle}>Ocorrência</Text>
-            <MaterialCommunityIcons name={'plus'} size={32} />
+            <MaterialCommunityIcons name={'plus'} size={30} color='white' />
           </TouchableOpacity>
         </View>
       )}
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    color:'white'
   },
   textHours: {
     color: 'grey',

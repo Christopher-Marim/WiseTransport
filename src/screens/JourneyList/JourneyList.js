@@ -5,20 +5,18 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
-  RefreshControl,
   BackHandler,
   Animated,
-  Alert,
-  Dimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import axios from 'axios';
+import moment from 'moment';
 
 import Modal from '../../components/Modal/AddJourney';
-import moment from 'moment';
 import commonStyles from '../../commonStyles';
 import EditInventory from '../../components/Modal/EditInventory';
 import getRealm from '../../services/realm';
@@ -28,20 +26,23 @@ import {InfosJourney} from '../../components/InfosJourney';
 import {InfosVeicules} from '../../components/InfosVeicule';
 import {CreateOccurrence} from '../../components/CreateOccurrence';
 import {CurrentOccurrence} from '../../components/SwipeableOccurence';
+import {getParmsAPI} from '../../services/api';
+import commonsVariables from '../../../commonsVariables';
+import {KmFinalModal} from '../../components/Modal/KmFinalModal';
 
 export function JourneyList({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
+  const [modalKmFinalVisible, setModalKmFinalVisible] = useState(false);
   const [infosVisible, setInfosVisible] = useState(false);
   const [listVisible, setListVisible] = useState(false);
   const [createBegin, setcreateBegin] = useState(false);
   const [createFinish, setCreateFinish] = useState(null);
   const [Journey, setJourney] = useState([]);
   const [Occurrences, setOccurrences] = useState([]);
-  const statusModal = useSelector(
-    state => state.showModal.showModalFILTERINVENTORY,
-  );
   const [Heartbeat] = useState(new Animated.Value(0));
   const colorButton = commonStyles.color.headers;
+  const [BaseURL, setBaseURL] = useState('');
+
   const dispatch = useDispatch();
 
   async function loadJourney() {
@@ -78,6 +79,9 @@ export function JourneyList({navigation}) {
     getData();
     loadJourney();
     loadOccurrences();
+    getParmsAPI().then(res => {
+      setBaseURL(res);
+    });
   }, []);
 
   const route = useRoute();
@@ -128,6 +132,31 @@ export function JourneyList({navigation}) {
     ).start();
   }
 
+  async function PostJourney() {
+    const result = await api.post('/jornada', {
+      funcionario_id: Journey.operator_id,
+      carro_id: Journey.veicule_id,
+      datainiciojornada: Journey.dateStart,
+      datafimjornada: Journey.dateFinal,
+      kminicial: Journey.kmInicial,
+      kmfinal: Journey.kmFinal,
+      kmrodado: parseInt(Journey.kmFinal) - parseInt(Journey.kmInicial),
+      latitudeinicial: Journey.latitudeInicial,
+      latitudefinal: Journey.latitudeFinal,
+      longitudeinicial: Journey.longitudeInicial,
+      longitudefinal: Journey.longitudeFinal,
+      system_unit_id: Journey.systemUnitId,
+      system_user_id: Journey.systemUserId,
+    });
+  }
+
+  const api = axios.create({
+    baseURL: `${BaseURL}`,
+    headers: {
+      Authorization: commonsVariables.api.Authorization,
+    },
+  });
+
   const boxInterpolation = Heartbeat.interpolate({
     inputRange: [0, 1],
     outputRange: [commonStyles.color.contrastante, '#0896d4'],
@@ -137,6 +166,7 @@ export function JourneyList({navigation}) {
     outputRange: [2, 2.5],
   });
   const animatedStyle = {
+    backgroundColor:'white',
     borderColor: boxInterpolation,
     borderWidth: boxInterpolation2,
   };
@@ -144,15 +174,23 @@ export function JourneyList({navigation}) {
   const formatteddate = data =>
     moment(data).locale('pt-br').format('DD/MM/YYYY');
   const callbackLoaderVisible = status => setLoaderVisible(status);
+  const callbackCloseModalKMFinal = () => (
+     setModalKmFinalVisible(false)
+  );
 
   const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
 
   return (
     <SafeAreaView style={styles.container}>
       <Modal callback={loadJourney} />
-
+      <KmFinalModal
+        JourneyId={Journey[0]?.id}
+        loaderVisible={callbackLoaderVisible}
+        visible={modalKmFinalVisible}
+        callbackClose={callbackCloseModalKMFinal}
+      />
       <Loader visible={LoaderVisiBle}></Loader>
-      <EditInventory />
+
       <View style={styles.headerView}>
         <TouchableOpacity
           style={styles.buttonOpenDrawer}
@@ -171,18 +209,7 @@ export function JourneyList({navigation}) {
         <TouchableOpacity
           style={styles.buttonFilter}
           onPress={() => {
-            Alert.alert(
-              'Finalizar Jornada',
-              'Deseja mesmo finalizar a jornada?',
-              [
-                {
-                  text: "Cancelar",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel"
-                },
-                { text: "Prosseguir", onPress: () => console.log("OK Pressed") }
-              ]
-            );
+            setModalKmFinalVisible(true);
           }}>
           <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
             <Text
@@ -236,7 +263,7 @@ export function JourneyList({navigation}) {
             <Animated.View
               style={[
                 styles.group,
-                {marginVertical: 10},
+                {marginVertical: 10, backgroundColor: commonStyles.color.InventoryPrincipal},
                 createBegin && {...animatedStyle},
               ]}>
               <CreateOccurrence
@@ -247,7 +274,7 @@ export function JourneyList({navigation}) {
           )}
 
           {createFinish && (
-            <View style={{marginTop: 10}}>
+            <View style={{marginVertical: 10}}>
               <CurrentOccurrence
                 callback={getData}
                 loaderVisible={callbackLoaderVisible}
@@ -255,11 +282,12 @@ export function JourneyList({navigation}) {
             </View>
           )}
 
-          <View style={[styles.group, {marginTop: 10}, listVisible&&{flex:1}]}>
+          <View style={[styles.group, listVisible && {flex: 1}]}>
             <TouchableOpacity
               style={styles.buttonInfos}
               onPress={handleClickList}>
-              <Text style={[styles.subTitle, listVisible&&{marginBottom: 10}]}>
+              <Text
+                style={[styles.subTitle, listVisible && {marginBottom: 10}]}>
                 Lista de ocorrências
               </Text>
               {listVisible && (
@@ -273,11 +301,11 @@ export function JourneyList({navigation}) {
                 <MaterialCommunityIcons
                   name={'chevron-down'}
                   size={32}
-                  style={listVisible&&{marginBottom: 10}}
+                  style={listVisible && {marginBottom: 10}}
                 />
               )}
             </TouchableOpacity>
-            {(listVisible&&Occurrences.length>0) && ( 
+            {listVisible && Occurrences.length > 0 && (
               <FlatList
                 data={Occurrences}
                 contentContainerStyle={{paddingHorizontal: 10}}
@@ -290,7 +318,6 @@ export function JourneyList({navigation}) {
                         marginVertical: 5,
                         borderRadius: 5,
                         borderWidth: 2,
-                        alignItems: 'center',
                       }}>
                       <Text style={styles.TextOccurrence}>
                         {item.occurrence}
@@ -302,7 +329,10 @@ export function JourneyList({navigation}) {
                         </View>
                         <View style={{flexDirection: 'row'}}>
                           <Text>Fim: {formatteddate(item.dataFim)}</Text>
-                          <Text> {formattedHours(item.dataFim)}</Text>
+                          <Text>
+                            {'    '}
+                            {formattedHours(item.dataFim)}
+                          </Text>
                         </View>
                       </View>
                     </View>
@@ -311,16 +341,24 @@ export function JourneyList({navigation}) {
               />
             )}
 
-            {(listVisible&&Occurrences.length==0) &&
-            (
-              <View style={{justifyContent:'center', alignItems:'center'}}>
-                <Text style={{fontSize:20, fontWeight:'bold', color:'grey'}}>
+            {listVisible && Occurrences.length == 0 && (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 1,
+                }}>
+                <MaterialCommunityIcons
+                  name={'alert-outline'}
+                  size={60}
+                  color="grey"
+                  style={{marginTop: -20}}
+                />
+                <Text style={{fontSize: 20, fontWeight: 'bold', color: 'grey'}}>
                   Nenhuma ocorrência registrada!
                 </Text>
               </View>
-            )
-
-            }
+            )}
           </View>
         </View>
       )}
