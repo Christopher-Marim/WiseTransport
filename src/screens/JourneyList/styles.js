@@ -9,7 +9,7 @@ export default StyleSheet.create({
   },
   container2: {
     flex: 1,
-    backgroundColor: '#ebebed',
+    backgroundColor: '#dbdbdb',
     padding:20
   },
   headerView: {
@@ -99,13 +99,12 @@ export default StyleSheet.create({
     padding:10,
     paddingHorizontal:15,
     borderRadius:10,
-    backgroundColor:'#FFF'
+    backgroundColor:'#FFF',
+    borderWidth:2
   },
   wrapper:{
-    marginTop:10,
-    padding:10,
+    marginTop:5,
     borderRadius:10,
-    borderWidth:3,
     borderColor:commonStyles.color.headers
   },
   buttonInfos:{

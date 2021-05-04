@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8e8e8',
   },
   wrapper: {
-    padding: 5,
     flexDirection: 'row',
     alignItems: 'center',
   },

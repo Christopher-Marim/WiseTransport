@@ -16,7 +16,7 @@ import commonStyles from '../../commonStyles';
 
 import getRealm from '../../services/realm';
 
-export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, post}) {
+export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, post, kmInicial}) {
   const [kmfinal, setKmfinal] = useState();
   const [statusModal, setStatusModal] = useState(visible);
 
@@ -117,7 +117,13 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, 
                     },
                     {
                       text: 'Prosseguir',
-                      onPress: () => getLocation(),
+                      onPress: () => {
+                        if(kmfinal>= kmInicial){
+                          getLocation()
+                        }else{
+                          Alert.alert('Erro!','Km final menor que km Inicial, por favor verificar')
+                        }
+                      },
                     },
                   ],
                 );

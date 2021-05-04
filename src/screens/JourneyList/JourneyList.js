@@ -221,6 +221,7 @@ export function JourneyList({navigation}) {
     <SafeAreaView style={styles.container}>
       <Modal callback={loadJourney} />
       <KmFinalModal
+        kmInicial={Journey[0].kmInicial}
         JourneyId={Journey[0]?.id}
         loaderVisible={callbackLoaderVisible}
         visible={modalKmFinalVisible}

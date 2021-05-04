@@ -74,12 +74,9 @@ export function InfosJourney({backgroundColor}) {
       </View>
       <View style={styles.wrapper}>
         <Text style={styles.subtitule}>Data Inicio:</Text>
-        <Text style={styles.text}>{data}</Text>
+        <Text style={styles.text}>{data} - {horas}</Text>
       </View>
-      <View style={styles.wrapper}>
-        <Text style={styles.subtitule}>Hora Inicio:</Text>
-        <Text style={styles.text}>{horas}</Text>
-      </View>
+      
     </View>
   );
 }
@@ -91,7 +88,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8e8e8',
   },
   wrapper: {
-    padding: 5,
     flexDirection: 'row',
     alignItems: 'center',
   },

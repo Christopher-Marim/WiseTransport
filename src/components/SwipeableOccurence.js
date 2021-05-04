@@ -54,12 +54,12 @@ export function CurrentOccurrence({callback, loaderVisible}) {
         Animated.delay(1000),
         Animated.timing(Heartbeat, {
           toValue: 1,
-          duration: 1000,
+          duration: 500,
           useNativeDriver: false,
         }),
         Animated.timing(Heartbeat, {
           toValue: 0,
-          duration: 1000,
+          duration: 500,
           useNativeDriver: false,
         }),
       ]),
@@ -68,12 +68,9 @@ export function CurrentOccurrence({callback, loaderVisible}) {
 
   const boxInterpolation = Heartbeat.interpolate({
     inputRange: [0, 1],
-    outputRange: [commonStyles.color.contrastante, '#0896d4'],
+    outputRange: [commonStyles.color.contrastante, '#00e1ff'],
   });
-  const boxInterpolation2 = Heartbeat.interpolate({
-    inputRange: [0, 1],
-    outputRange: [2, 2.5],
-  });
+ 
 
   const formatteddate = data =>
     moment(data).locale('pt-br').format('DD/MM/YYYY');
@@ -165,7 +162,6 @@ export function CurrentOccurrence({callback, loaderVisible}) {
             styles.container,
             {
               borderColor: boxInterpolation,
-              borderWidth: boxInterpolation2,
               borderBottomLeftRadius: borderRadiusCONST,
               borderTopLeftRadius: borderRadiusCONST,
             },
@@ -208,6 +204,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     paddingVertical: 10,
+    borderWidth:2,
     width: '100%',
     borderRadius: 10,
     borderLeftColor: commonStyles.color.InventoryPrincipal,
