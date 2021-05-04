@@ -102,9 +102,10 @@ export function CurrentOccurrence({callback, loaderVisible}) {
 
   async function setChangesStorage() {
     const realm = await getRealm();
-
+    const journey = realm.objects('Journey')
     realm.write(() => {
-      realm.create('OccurrenceList', {
+      journey[0].occurrences.push({
+
         id: Math.random() * 1000,
         occurrence_id: ocurrence.idOccurrence,
         occurrence: ocurrence.nameOccurrence,
@@ -113,10 +114,11 @@ export function CurrentOccurrence({callback, loaderVisible}) {
         peso: ocurrence.pesoOccurrence,
         latitude: String(latitude),
         longitude:String(longitude)
-      });
+      })
+     
+     
     });
-    const result = realm.objects('OccurrenceList');
-    console.log(result[0].latitude)
+    
     loaderVisible(false)
     cleanCurrentoccurence();
   }

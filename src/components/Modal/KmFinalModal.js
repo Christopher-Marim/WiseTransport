@@ -16,8 +16,8 @@ import commonStyles from '../../commonStyles';
 
 import getRealm from '../../services/realm';
 
-export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible}) {
-  const [kmfinal, setKmfinal] = useState('');
+export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, post}) {
+  const [kmfinal, setKmfinal] = useState();
   const [statusModal, setStatusModal] = useState(visible);
 
   useEffect(() => {
@@ -61,15 +61,17 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible})
         'Journey',
         {
           id: JourneyId,
-          kmfinal: kmfinal,
-          latitudeFinal: latitude,
-          longitudeFinal: longitude,
+          kmFinal: kmfinal,
+          latitudeFinal: String(latitude),
+          longitudeFinal: String(longitude),
           dateFinish:new Date()
         },
         'modified',
       );
     });
+
     loaderVisible(false)
+    post()
   }
 
   function close() {
@@ -91,9 +93,10 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible})
           <Text style={styles.headerModal}> Digite o KM final</Text>
           <TextInput
             style={styles.input}
+            keyboardType={'decimal-pad'}
             placeholder="Informe o KM"
             placeholderTextColor={'grey'}
-            onChangeText={text => setKmFinal(text)}
+            onChangeText={text => setKmfinal(text)}
             value={kmfinal}
           />
 
@@ -176,6 +179,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: 'grey',
     borderRadius: 6,
+    color:'black',
     backgroundColor: '#f1f2f4',
   },
 });

@@ -50,7 +50,9 @@ export function JourneyList({navigation}) {
 
     const data = realm.objects('Journey');
     setJourney(data);
+    
   }
+
   async function loadOccurrences() {
     const realm = await getRealm();
 
@@ -110,7 +112,6 @@ export function JourneyList({navigation}) {
   function handleCreateBegin(status, create) {
     getData();
     setcreateBegin(status);
-    console.log('ZZZZZZZZZZZZ');
     HeartbeatAnimation();
   }
 
@@ -133,21 +134,57 @@ export function JourneyList({navigation}) {
   }
 
   async function PostJourney() {
-    const result = await api.post('/jornada', {
-      funcionario_id: Journey.operator_id,
-      carro_id: Journey.veicule_id,
-      datainiciojornada: Journey.dateStart,
-      datafimjornada: Journey.dateFinal,
-      kminicial: Journey.kmInicial,
-      kmfinal: Journey.kmFinal,
-      kmrodado: parseInt(Journey.kmFinal) - parseInt(Journey.kmInicial),
-      latitudeinicial: Journey.latitudeInicial,
-      latitudefinal: Journey.latitudeFinal,
-      longitudeinicial: Journey.longitudeInicial,
-      longitudefinal: Journey.longitudeFinal,
-      system_unit_id: Journey.systemUnitId,
-      system_user_id: Journey.systemUserId,
-    });
+    try {
+     console.log(Journey[0].operator_id)
+
+      const {data} = await api.post('/jornada', {
+        funcionario_id: Journey[0].operator_id,
+        carro_id: Journey[0].veicule_id,
+        datainiciojornada:moment(Journey[0].dateStart).format("YYYY-MM-DD hh:mm:ss"),
+        datafimjornada:moment(Journey[0].dateFinal).format("YYYY-MM-DD hh:mm:ss"),
+        kminicial: Journey[0].kmInicial,
+        kmfinal: Journey[0].kmFinal,
+        kmrodado: parseInt(Journey[0].kmFinal) - parseInt(Journey[0].kmInicial),
+        latitudeinicial: Journey[0].latitudeInicial,
+        latitudefinal: Journey[0].latitudeFinal,
+        longitudeinicial: Journey[0].longitudeInicial,
+        longitudefinal: Journey[0].longitudeFinal,
+        system_unit_id: Journey[0].systemUnitId,
+        system_user_id: Journey[0].systemUserId,
+      });
+  
+     const idJornada = data.data.id
+     console.log(data)
+     PostOccurrences(idJornada)
+  
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  
+  const forEachCustom = async (idJornada, element) => {
+    try {
+      const response = await api.post('/jornadaocorrencia', { 
+        jornada_id: idJornada,
+        ocorrencia_id: element.occurrence_id,
+        system_unit_id: Journey[0].systemUnitId,
+        system_user_id: Journey[0].systemUserId,
+        datahorainicio: moment(element.dataInicio).format("YYYY-MM-DD hh:mm:ss"),
+        datahorafim: moment(element.dataFim).format("YYYY-MM-DD hh:mm:ss"),
+        latitude: element.latitade,
+        longitude: element.longitude
+      });
+      console.log(response.data.data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  async function PostOccurrences(idJornada) {
+    for (let i = 0; i < Journey[0].occurrences.length; i++) {
+      const element = Journey[0].occurrences[i];
+      await forEachCustom(idJornada, element)
+    }
   }
 
   const api = axios.create({
@@ -188,6 +225,7 @@ export function JourneyList({navigation}) {
         loaderVisible={callbackLoaderVisible}
         visible={modalKmFinalVisible}
         callbackClose={callbackCloseModalKMFinal}
+        post={PostJourney}
       />
       <Loader visible={LoaderVisiBle}></Loader>
 
