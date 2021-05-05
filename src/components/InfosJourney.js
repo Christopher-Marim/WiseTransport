@@ -17,14 +17,15 @@ export function InfosJourney({backgroundColor}) {
 
   const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
 
+  async function getUsuarioRealm() {
+    const realm = await getRealm();
+    const store = realm.objects('User');
+    const user = store[0]
+    setnome(user.nome);
+    setUnitIdEmpresa(user.system_unit_id);
+    getNomeEmpresa();
+  }
   useEffect(() => {
-    async function getUsuarioRealm() {
-      const realm = await getRealm();
-      const store = realm.objects('User');
-      setnome(store[0].nome);
-      setUnitIdEmpresa(store[0].system_unit_id);
-      getNomeEmpresa();
-    }
 
     getUsuarioRealm();
     setHoras(formattedHours(new Date()));
@@ -36,9 +37,12 @@ export function InfosJourney({backgroundColor}) {
       const realm = await getRealm();
       const data = realm.objects('Journey');
       const Journey = data[0]
-      setnome(Journey.operator)
-      setData(formatteddate(Journey.dateStart));
-      setHoras(formattedHours(Journey.dateStart));
+      if(Journey){
+
+        setnome(Journey.operator)
+        setData(formatteddate(Journey.dateStart));
+        setHoras(formattedHours(Journey.dateStart));
+      }
     } catch (error) {
       console.error(error)
     }
@@ -46,6 +50,8 @@ export function InfosJourney({backgroundColor}) {
   }
 
   useEffect(() => {
+    getUsuarioRealm();
+
     loadJourney();
   }, []);
 

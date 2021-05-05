@@ -14,12 +14,12 @@ export function InfosVeicules({veiculeType, plaque, backgroundColor}) {
       const dataJourney = realm.objects('Journey');
       const Journey = dataJourney[0];
       const result = realm.objects('Veicules').filter(veicule => {
-        if (veicule.id == dataJourney[0].veicule_id) {
+        if (veicule.id == dataJourney[0]?.veicule_id) {
           setVeicule(veicule.tipoVeiculo);
           setPlaca(veicule.placa);
         }
       });
-      setKmInicial(Journey.kmInicial);
+      setKmInicial(Journey?.kmInicial);
     } catch (error) {
       console.error(error);
     }

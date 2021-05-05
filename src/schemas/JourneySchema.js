@@ -8,6 +8,7 @@ export default JourneySchema = {
     dateStart: "date",
     dateFinish: "date?",
     veicule_id:"int",
+    veicule_name:'string',
     kmInicial:'string',
     kmFinal:'string?',
     latitudeInicial:'string',

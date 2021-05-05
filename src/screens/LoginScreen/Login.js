@@ -181,7 +181,7 @@ export default function Login({navigation}) {
         const realm = await getRealm();
         const store = realm.objects('User');
         if (store[0].logado == true) {
-          navigation.replace('JourneyList');
+          navigation.replace('JourneyCurrent');
         } else {
           Alert.alert(
             'Sem Internet',

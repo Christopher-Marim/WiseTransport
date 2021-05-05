@@ -63,6 +63,7 @@ export default function AddJourney({callback}) {
         operator_id:user.id,
         operator: user.nome,
         dateStart: new Date(),
+        veicule_name:veiculoSelecionado[0].tipoVeiculo,
         veicule_id: veiculoSelecionado[0].id,
         kmInicial: KmInicial,
         latitudeInicial: String(latitude),

@@ -113,14 +113,12 @@ export default StyleSheet.create({
     alignItems:'center', 
   },
   TextOccurrence:{
-    paddingBottom:3,
     borderBottomWidth:1,
     borderBottomColor:'grey',
     fontSize:15,
     fontWeight:'bold',
     color:commonStyles.color.principal,
-    fontFamily:commonStyles.fontFamily,
-    
+    fontFamily:commonStyles.fontFamily
   },
   TextButtonFinish:{
     fontSize:15

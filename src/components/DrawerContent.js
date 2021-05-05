@@ -108,6 +108,25 @@ export default (props) => {
                 title="Jornada"
                 titleStyle={{ fontSize: 15 }}
                 onPress={() => {
+                  props.navigation.navigate('JourneyCurrent');
+
+                }}
+              />
+              <List.Item
+                left={() => (
+                  <List.Icon
+                    icon={({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="format-list-text"
+                        color={color}
+                        size={size}
+                      />
+                    )}
+                  />
+                )}
+                title="Lista de Jornadas"
+                titleStyle={{ fontSize: 15 }}
+                onPress={() => {
                   props.navigation.navigate('JourneyList');
 
                 }}
