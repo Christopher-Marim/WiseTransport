@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   BackHandler,
   Animated,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -36,7 +37,7 @@ export function JourneyCurrent({navigation}) {
   const [listVisible, setListVisible] = useState(false);
   const [createBegin, setcreateBegin] = useState(false);
   const [createFinish, setCreateFinish] = useState(null);
-  const [Journey, setJourney] = useState([]);
+  const [Journey, setJourney] = useState();
   const [Occurrences, setOccurrences] = useState([]);
   const [Heartbeat] = useState(new Animated.Value(0));
   const colorButton = commonStyles.color.headers;
@@ -47,16 +48,8 @@ export function JourneyCurrent({navigation}) {
   async function loadJourney() {
     const realm = await getRealm();
 
-    const data = realm.objects('Journey');
-    setJourney(data);
-    
-  }
-
-  async function loadOccurrences() {
-    const realm = await getRealm();
-
-    const data = realm.objects('OccurrenceList').sorted('dataInicio', true);
-    setOccurrences(data);
+    const data = realm.objects('Journey').filter(x=>{if(!x.dateFinish){setJourney(x), setOccurrences(x.occurrences);}});
+    console.log(Journey)
   }
 
   const getData = async () => {
@@ -69,16 +62,15 @@ export function JourneyCurrent({navigation}) {
       } else {
         setCreateFinish(false);
       }
-      loadOccurrences();
+      loadJourney();
     } catch (e) {
       console.error(e);
-      loadOccurrences();
+      loadJourney();
     }
   };
   useEffect(() => {
     getData();
     loadJourney();
-    loadOccurrences();
     getParmsAPI().then(res => {
       setBaseURL(res);
     });
@@ -133,22 +125,22 @@ export function JourneyCurrent({navigation}) {
 
   async function PostJourney() {
     try {
-     console.log(Journey[0].operator_id)
+     console.log(Journey.operator_id)
 
       const {data} = await api.post('/jornada', {
-        funcionario_id: Journey[0].operator_id,
-        carro_id: Journey[0].veicule_id,
-        datainiciojornada:moment(Journey[0].dateStart).format("YYYY-MM-DD hh:mm:ss"),
-        datafimjornada:moment(Journey[0].dateFinal).format("YYYY-MM-DD hh:mm:ss"),
-        kminicial: Journey[0].kmInicial,
-        kmfinal: Journey[0].kmFinal,
-        kmrodado: parseInt(Journey[0].kmFinal) - parseInt(Journey[0].kmInicial),
-        latitudeinicial: Journey[0].latitudeInicial,
-        latitudefinal: Journey[0].latitudeFinal,
-        longitudeinicial: Journey[0].longitudeInicial,
-        longitudefinal: Journey[0].longitudeFinal,
-        system_unit_id: Journey[0].systemUnitId,
-        system_user_id: Journey[0].systemUserId,
+        funcionario_id: Journey.operator_id,
+        carro_id: Journey.veicule_id,
+        datainiciojornada:moment(Journey.dateStart).format("YYYY-MM-DD hh:mm:ss"),
+        datafimjornada:moment(Journey.dateFinal).format("YYYY-MM-DD hh:mm:ss"),
+        kminicial: Journey.kmInicial,
+        kmfinal: Journey.kmFinal,
+        kmrodado: parseInt(Journey.kmFinal) - parseInt(Journey.kmInicial),
+        latitudeinicial: Journey.latitudeInicial,
+        latitudefinal: Journey.latitudeFinal,
+        longitudeinicial: Journey.longitudeInicial,
+        longitudefinal: Journey.longitudeFinal,
+        system_unit_id: Journey.systemUnitId,
+        system_user_id: Journey.systemUserId,
       });
   
      const idJornada = data.data.id
@@ -156,7 +148,10 @@ export function JourneyCurrent({navigation}) {
      PostOccurrences(idJornada)
   
     } catch (error) {
-      console.error(error)
+
+     Alert.alert('Erro', 'Erro ao finalizar a jornada, quando tiver conexão a internet procure reenviar essa jornada na lista de jornadas.')
+     loadJourney();
+     callbackCloseModalKMFinal()
     }
   }
 
@@ -166,8 +161,8 @@ export function JourneyCurrent({navigation}) {
       const response = await api.post('/jornadaocorrencia', { 
         jornada_id: idJornada,
         ocorrencia_id: element.occurrence_id,
-        system_unit_id: Journey[0].systemUnitId,
-        system_user_id: Journey[0].systemUserId,
+        system_unit_id: Journey.systemUnitId,
+        system_user_id: Journey.systemUserId,
         datahorainicio: moment(element.dataInicio).format("YYYY-MM-DD hh:mm:ss"),
         datahorafim: moment(element.dataFim).format("YYYY-MM-DD hh:mm:ss"),
         latitude: element.latitade,
@@ -179,10 +174,26 @@ export function JourneyCurrent({navigation}) {
     }
   }
   async function PostOccurrences(idJornada) {
-    for (let i = 0; i < Journey[0].occurrences.length; i++) {
-      const element = Journey[0].occurrences[i];
+    for (let i = 0; i < Journey.occurrences.length; i++) {
+      const element = Journey.occurrences[i];
       await forEachCustom(idJornada, element)
     }
+
+    const realm = await getRealm();
+
+    realm.write(() => {
+      realm.create(
+        'Journey',
+        {
+          id: Journey.id,
+          check:true
+        },
+        'modified',
+      );
+    });
+
+    loadJourney();
+     callbackCloseModalKMFinal()
   }
 
   const api = axios.create({
@@ -219,8 +230,8 @@ export function JourneyCurrent({navigation}) {
     <SafeAreaView style={styles.container}>
       <Modal callback={loadJourney} />
       <KmFinalModal
-        kmInicial={Journey[0]?.kmInicial}
-        JourneyId={Journey[0]?.id}
+        kmInicial={Journey?.kmInicial}
+        JourneyId={Journey?.id}
         loaderVisible={callbackLoaderVisible}
         visible={modalKmFinalVisible}
         callbackClose={callbackCloseModalKMFinal}
@@ -261,7 +272,7 @@ export function JourneyCurrent({navigation}) {
           </View>
         </TouchableOpacity>
       </View>
-      {Journey.length == 0 && (
+      {(!Journey) && (
         <View style={{flex: 8, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             style={styles.addButtonCenter}
@@ -271,11 +282,11 @@ export function JourneyCurrent({navigation}) {
           </TouchableOpacity>
         </View>
       )}
-      {Journey.length > 0 && (
+      {(!Journey?.dateFinish&&Journey) && (
         <View
           style={[
             styles.container2,
-            Journey.length == 0 && {backgroundColor: commonStyles.color.page},
+            !Journey && {backgroundColor: commonStyles.color.page},
           ]}>
           <View style={styles.group}>
             <TouchableOpacity

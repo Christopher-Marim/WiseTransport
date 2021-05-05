@@ -22,6 +22,7 @@ import getRealm from '../services/realm';
 
 export function CurrentOccurrence({callback, loaderVisible}) {
   const [borderRadiusCONST, setborderRadius] = useState(10);
+  const [Journey, setJourney] = useState();
   const [ocurrence, setOccurrence] = useState([]);
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
@@ -70,53 +71,58 @@ export function CurrentOccurrence({callback, loaderVisible}) {
     inputRange: [0, 1],
     outputRange: [commonStyles.color.contrastante, '#00e1ff'],
   });
- 
 
   const formatteddate = data =>
     moment(data).locale('pt-br').format('DD/MM/YYYY');
 
-    async function getLocation() {
-      loaderVisible(true)
-      await Geolocation.getCurrentPosition(
-        position => {
-          const currentLatitude = parseFloat(
-            JSON.stringify(position.coords.latitude),
-          );
-          const currentLongitude = parseFloat(
-            JSON.stringify(position.coords.longitude),
-          );
-          if (currentLatitude != undefined) {
-            setLatitude(currentLatitude);
-            setLongitude(currentLongitude);
-  
-            setChangesStorage()
-          }
-        },
-        error => Alert.alert(error.message),
-        {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
-      );
-    }
+  async function getLocation() {
+    loaderVisible(true);
+    await Geolocation.getCurrentPosition(
+      position => {
+        const currentLatitude = parseFloat(
+          JSON.stringify(position.coords.latitude),
+        );
+        const currentLongitude = parseFloat(
+          JSON.stringify(position.coords.longitude),
+        );
+        if (currentLatitude != undefined) {
+          setLatitude(currentLatitude);
+          setLongitude(currentLongitude);
+
+          setChangesStorage();
+        }
+      },
+      error => Alert.alert(error.message),
+      {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
+    );
+  }
 
   async function setChangesStorage() {
     const realm = await getRealm();
-    const journey = realm.objects('Journey')
-    realm.write(() => {
-      journey[0].occurrences.push({
+    const data = realm.objects('Journey').filter(x => {
+      if (!x.dateFinish) {
+        setJourney(x);
+        const journey = realm.objectForPrimaryKey('Journey', x.id);
 
-        id: Math.random() * 1000,
-        occurrence_id: ocurrence.idOccurrence,
-        occurrence: ocurrence.nameOccurrence,
-        dataInicio: ocurrence.dateOccurence,
-        dataFim: new Date(),
-        peso: ocurrence.pesoOccurrence,
-        latitude: String(latitude),
-        longitude:String(longitude)
-      })
-     
-     
+        realm.write(() => {
+          journey.occurrences.push({
+            id: Math.random() * 1000,
+            occurrence_id: ocurrence.idOccurrence,
+            occurrence: ocurrence.nameOccurrence,
+            dataInicio: ocurrence.dateOccurence,
+            dataFim: new Date(),
+            peso: ocurrence.pesoOccurrence,
+            latitude: String(latitude),
+            longitude: String(longitude),
+          });
+        });
+
+      }
     });
     
-    loaderVisible(false)
+
+
+    loaderVisible(false);
     cleanCurrentoccurence();
   }
 
@@ -186,7 +192,9 @@ export function CurrentOccurrence({callback, loaderVisible}) {
                 </Text>
               </View>
               <View style={{padding: 8}}>
-                <TouchableOpacity style={styles.buttonChevron} onPress={()=>{}}>
+                <TouchableOpacity
+                  style={styles.buttonChevron}
+                  onPress={() => {}}>
                   <MaterialCommunityIcons name={'chevron-right'} size={35} />
                 </TouchableOpacity>
               </View>
@@ -204,7 +212,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     paddingVertical: 10,
-    borderWidth:2,
+    borderWidth: 2,
     width: '100%',
     borderRadius: 10,
     borderLeftColor: commonStyles.color.InventoryPrincipal,
@@ -244,11 +252,11 @@ const styles = StyleSheet.create({
   containerSwipeable: {
     flexDirection: 'row',
   },
-  buttonChevron:{
-    width:50, 
-    height:50, 
-    borderRadius:25,
-    justifyContent:'center',
-    alignItems:'center'
-  }
+  buttonChevron: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

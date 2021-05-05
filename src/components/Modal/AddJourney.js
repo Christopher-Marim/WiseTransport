@@ -57,9 +57,10 @@ export default function AddJourney({callback}) {
 
   async function addJourney() {
     const realm = await getRealm();
+    
     realm.write(() => {
       realm.create('Journey', {
-        id: Math.random() * 1000,
+        id: Math.random() * 10000,
         operator_id:user.id,
         operator: user.nome,
         dateStart: new Date(),

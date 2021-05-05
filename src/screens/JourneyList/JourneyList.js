@@ -33,7 +33,7 @@ export function JourneyList({navigation}) {
   async function loadJourney() {
     const realm = await getRealm();
 
-    const data = realm.objects('Journey');
+    const data = realm.objects('Journey').sorted('dateStart', true);
     setJourney(data);
   }
 
@@ -110,7 +110,7 @@ export function JourneyList({navigation}) {
                       onPress={()=>{Alert.alert('Jornada em andamento','Jornada ainda não finalizada')}}
                     />
                   )}
-                  {(item.dateFinish&&(item.check==false)) && (
+                  {item.dateFinish&&(item.check==null) && (
                     <MaterialCommunityIcons
                       name={'alert-circle-outline'}
                       size={35}
@@ -118,7 +118,7 @@ export function JourneyList({navigation}) {
                       onPress={()=>{Alert.alert('Erro ao Finalizar','Tente novamente finalizar a jornada arrastando esse componente para a direta')}}
                     />
                   )}
-                  {(item.dateFinish&&(item.check==false)) && (
+                  {(item.dateFinish&&(item.check==true)) && (
                     <MaterialCommunityIcons
                       name={'checkbox-marked-circle-outline'}
                       size={35}

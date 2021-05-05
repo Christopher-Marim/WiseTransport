@@ -10,6 +10,7 @@ export function InfosJourney({backgroundColor}) {
   const [data, setData] = useState();
   const [horas, setHoras] = useState();
   const [nomeEmpresa, setnomeEmpresa] = useState();
+  const [Journey, setJourney] = useState();
   const [UnitIdEmpresa, setUnitIdEmpresa] = useState();
 
   const formatteddate = data =>
@@ -35,8 +36,8 @@ export function InfosJourney({backgroundColor}) {
   async function loadJourney() {
     try {
       const realm = await getRealm();
-      const data = realm.objects('Journey');
-      const Journey = data[0]
+       const data = realm.objects('Journey').filter(x=>{if(!x.dateFinish){setJourney(x);}});
+
       if(Journey){
 
         setnome(Journey.operator)

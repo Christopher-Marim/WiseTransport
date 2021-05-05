@@ -5,20 +5,24 @@ import getRealm from '../services/realm';
 
 export function InfosVeicules({veiculeType, plaque, backgroundColor}) {
   const [veicule, setVeicule] = useState(veiculeType);
+  const [Journey, setJourney] = useState();
   const [placa, setPlaca] = useState(plaque);
   const [kmInicial, setKmInicial] = useState();
 
   async function loadJourney() {
     try {
       const realm = await getRealm();
-      const dataJourney = realm.objects('Journey');
-      const Journey = dataJourney[0];
-      const result = realm.objects('Veicules').filter(veicule => {
-        if (veicule.id == dataJourney[0]?.veicule_id) {
-          setVeicule(veicule.tipoVeiculo);
-          setPlaca(veicule.placa);
+      realm.objects('Journey').filter(x => {
+        if (!x.dateFinish) {
+          realm.objects('Veicules').filter(veicule => {
+            if (veicule.id == x.veicule_id) {
+              setVeicule(veicule.tipoVeiculo);
+              setPlaca(veicule.placa);
+            }
+          });
+          setJourney(x);
         }
-      });
+      });     
       setKmInicial(Journey?.kmInicial);
     } catch (error) {
       console.error(error);
