@@ -1,0 +1,107 @@
+Date : 2021-05-04 20:40:39
+Directory : c:\Users\chris\Apps\WiseTransport1\src
+Total : 63 files,  6781 codes, 97 comments, 693 blanks, all 7571 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         63 |      6,781 |         97 |        693 |      7,571 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                 | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                    |         63 |      6,781 |         97 |        693 |      7,571 |
+| components                                                                                           |         30 |      3,853 |         85 |        381 |      4,319 |
+| components\ComponentNoticia                                                                          |          2 |        146 |          0 |         14 |        160 |
+| components\Modal                                                                                     |         14 |      1,748 |          6 |        149 |      1,903 |
+| components\Modal\ModalEmpresas                                                                       |          2 |         85 |          1 |         17 |        103 |
+| components\Modal\ModalNoticiaCompleta                                                                |          2 |        133 |          1 |         13 |        147 |
+| components\Modal\ModalOcorrencias                                                                    |          2 |         92 |          1 |         12 |        105 |
+| routes                                                                                               |          3 |         65 |          0 |         11 |         76 |
+| schemas                                                                                              |          5 |         69 |          0 |          5 |         74 |
+| screens                                                                                              |         16 |      2,373 |          9 |        238 |      2,620 |
+| screens\CompanyScreen                                                                                |          2 |        287 |          0 |         24 |        311 |
+| screens\ItemList                                                                                     |          2 |        375 |          0 |         43 |        418 |
+| screens\JourneyCurrent                                                                               |          2 |        495 |          0 |         37 |        532 |
+| screens\JourneyList                                                                                  |          2 |        243 |          0 |         19 |        262 |
+| screens\LoginScreen                                                                                  |          2 |        330 |          4 |         28 |        362 |
+| screens\NotificationScreen                                                                           |          2 |        279 |          3 |         18 |        300 |
+| screens\ProfileScreen                                                                                |          2 |        266 |          1 |         39 |        306 |
+| screens\SettingsScreen                                                                               |          2 |         98 |          1 |         30 |        129 |
+| services                                                                                             |          2 |         32 |          1 |          7 |         40 |
+| store                                                                                                |          6 |        373 |          2 |         49 |        424 |
+| store\reducers                                                                                       |          5 |        358 |          2 |         44 |        404 |
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                             | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\chris\Apps\WiseTransport1\src\commonStyles.js                                               | JavaScript |         16 |          0 |          2 |         18 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Companys.js                                        | JavaScript |         22 |          0 |          2 |         24 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\ComponentNoticia\ItemNoticia.js                    | JavaScript |         88 |          0 |         11 |         99 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\ComponentNoticia\styles.js                         | JavaScript |         58 |          0 |          3 |         61 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\CreateOccurrence.js                                | JavaScript |        150 |          0 |         13 |        163 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\DrawerContent.js                                   | JavaScript |        248 |         58 |         21 |        327 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Geolocation.js                                     | JavaScript |         40 |          0 |          5 |         45 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\InfosJourney.js                                    | JavaScript |         96 |          0 |         15 |        111 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\InfosVeicule.js                                    | JavaScript |         70 |          0 |          6 |         76 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Inventory.js                                       | JavaScript |        347 |          1 |         40 |        388 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\InventoryItem.js                                   | JavaScript |        175 |          0 |         14 |        189 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Loader.js                                          | JavaScript |         21 |          0 |          3 |         24 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Map.js                                             | JavaScript |         77 |          0 |          8 |         85 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\AddJourney.js                                | JavaScript |        316 |          0 |         21 |        337 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\EditAPI.js                                   | JavaScript |        153 |          0 |         10 |        163 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\EditInventory.js                             | JavaScript |        134 |          0 |         11 |        145 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\EditItem.js                                  | JavaScript |        132 |          0 |         13 |        145 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\EllipsisItem.js                              | JavaScript |        123 |          0 |         16 |        139 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\FilterInventory.js                           | JavaScript |         86 |          0 |          8 |         94 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\KmFinalModal.js                              | JavaScript |        178 |          0 |         14 |        192 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\ModalEmpresas\ModalEmpresas.js               | JavaScript |         68 |          1 |         13 |         82 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\ModalEmpresas\styles.js                      | JavaScript |         17 |          0 |          4 |         21 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\ModalNoticiaCompleta\CompleteNotification.js | JavaScript |         65 |          1 |          7 |         73 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\ModalNoticiaCompleta\styles.js               | JavaScript |         68 |          0 |          6 |         74 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\ModalOcorrencias\PickerOcorrencias.js        | JavaScript |         76 |          1 |          8 |         85 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\ModalOcorrencias\styles.js                   | JavaScript |         16 |          0 |          4 |         20 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\Modal\StepModal.js                                 | JavaScript |        316 |          3 |         14 |        333 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\StorageFunctions.js                                | JavaScript |         44 |          0 |         13 |         57 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\SwipeableOccurence.js                              | JavaScript |        230 |          1 |         24 |        255 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\ValidationConnectivity.js                          | JavaScript |         32 |          1 |          6 |         39 |
+| c:\Users\chris\Apps\WiseTransport1\src\components\aa.js                                              | JavaScript |        407 |         18 |         48 |        473 |
+| c:\Users\chris\Apps\WiseTransport1\src\routes\Drawer.js                                              | JavaScript |         23 |          0 |          6 |         29 |
+| c:\Users\chris\Apps\WiseTransport1\src\routes\Stack.js                                               | JavaScript |         29 |          0 |          4 |         33 |
+| c:\Users\chris\Apps\WiseTransport1\src\routes\index.js                                               | JavaScript |         13 |          0 |          1 |         14 |
+| c:\Users\chris\Apps\WiseTransport1\src\schemas\JourneySchema.js                                      | JavaScript |         23 |          0 |          1 |         24 |
+| c:\Users\chris\Apps\WiseTransport1\src\schemas\OccurrenceListSchema.js                               | JavaScript |         14 |          0 |          1 |         15 |
+| c:\Users\chris\Apps\WiseTransport1\src\schemas\OccurrenceSchema.js                                   | JavaScript |          9 |          0 |          1 |         10 |
+| c:\Users\chris\Apps\WiseTransport1\src\schemas\UserSchema.js                                         | JavaScript |         14 |          0 |          1 |         15 |
+| c:\Users\chris\Apps\WiseTransport1\src\schemas\VeiculesSchema.js                                     | JavaScript |          9 |          0 |          1 |         10 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\CompanyScreen\Company.js                              | JavaScript |        197 |          0 |         20 |        217 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\CompanyScreen\styles.js                               | JavaScript |         90 |          0 |          4 |         94 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\ItemList\InventoryItemList.js                         | JavaScript |        289 |          0 |         41 |        330 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\ItemList\styles.js                                    | JavaScript |         86 |          0 |          2 |         88 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\JourneyCurrent\JourneyCurrent.js                      | JavaScript |        374 |          0 |         31 |        405 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\JourneyCurrent\styles.js                              | JavaScript |        121 |          0 |          6 |        127 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\JourneyList\JourneyList.js                            | JavaScript |        121 |          0 |         12 |        133 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\JourneyList\styles.js                                 | JavaScript |        122 |          0 |          7 |        129 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\LoginScreen\Login.js                                  | JavaScript |        272 |          4 |         26 |        302 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\LoginScreen\styles.js                                 | JavaScript |         58 |          0 |          2 |         60 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\NotificationScreen\NotificationScreen.js              | JavaScript |        253 |          3 |         16 |        272 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\NotificationScreen\styles.js                          | JavaScript |         26 |          0 |          2 |         28 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\ProfileScreen\Profile.js                              | JavaScript |        165 |          1 |         32 |        198 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\ProfileScreen\styles.js                               | JavaScript |        101 |          0 |          7 |        108 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\SettingsScreen\index.js                               | JavaScript |         56 |          1 |         23 |         80 |
+| c:\Users\chris\Apps\WiseTransport1\src\screens\SettingsScreen\style.js                               | JavaScript |         42 |          0 |          7 |         49 |
+| c:\Users\chris\Apps\WiseTransport1\src\services\api.js                                               | JavaScript |         18 |          1 |          6 |         25 |
+| c:\Users\chris\Apps\WiseTransport1\src\services\realm.js                                             | JavaScript |         14 |          0 |          1 |         15 |
+| c:\Users\chris\Apps\WiseTransport1\src\store\reducers\barcodes.js                                    | JavaScript |         59 |          0 |          8 |         67 |
+| c:\Users\chris\Apps\WiseTransport1\src\store\reducers\inventorys.js                                  | JavaScript |         89 |          0 |         17 |        106 |
+| c:\Users\chris\Apps\WiseTransport1\src\store\reducers\noticiasRedux.js                               | JavaScript |         29 |          0 |          9 |         38 |
+| c:\Users\chris\Apps\WiseTransport1\src\store\reducers\showModal.js                                   | JavaScript |        152 |          2 |          7 |        161 |
+| c:\Users\chris\Apps\WiseTransport1\src\store\reducers\user.js                                        | JavaScript |         29 |          0 |          3 |         32 |
+| c:\Users\chris\Apps\WiseTransport1\src\store\storeConfig.js                                          | JavaScript |         15 |          0 |          5 |         20 |
+| Total                                                                                                |            |      6,781 |         97 |        693 |      7,571 |
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
