@@ -105,7 +105,7 @@ export function CurrentOccurrence({callback, loaderVisible}) {
         const journey = realm.objectForPrimaryKey('Journey', x.id);
 
         realm.write(() => {
-          journey.occurrences.push({
+          journey.occurrences.unshift({
             id: Math.random() * 1000,
             occurrence_id: ocurrence.idOccurrence,
             occurrence: ocurrence.nameOccurrence,
@@ -116,6 +116,10 @@ export function CurrentOccurrence({callback, loaderVisible}) {
             longitude: String(longitude),
           });
         });
+
+        const journey2 = realm.objectForPrimaryKey('Journey', x.id);
+
+        console.log('Push occurence'+ journey2.occurrences)
 
       }
     });

@@ -48,15 +48,23 @@ export function JourneyCurrent({navigation}) {
   async function loadJourney() {
     const realm = await getRealm();
 
-    const data = realm.objects('Journey').filter(x=>{if(!x.dateFinish){setJourney(x), setOccurrences(x.occurrences);}});
-    console.log(Journey)
+    const jornada = realm.objects('Journey').filter(x => {
+      if (!x.dateFinish) {
+        return x;
+      }
+    });
+    if (jornada.length != 0) {
+      setJourney(jornada[0]);
+      setOccurrences(jornada[0].occurrences);
+    } else {
+      setJourney();
+      setOccurrences([]);
+    }
   }
 
   const getData = async () => {
     try {
       const occurrenceAux = await AsyncStorage.getItem('@CurrentOccurrence');
-
-      console.log('AA' + occurrenceAux);
       if (occurrenceAux?.length > 2) {
         setCreateFinish(true);
       } else {
@@ -79,8 +87,14 @@ export function JourneyCurrent({navigation}) {
   const route = useRoute();
   useFocusEffect(
     useCallback(() => {
+      if (route.name === 'JourneyCurrent') {
+        loadJourney();
+      }
+
       const onBackPress = () => {
         if (route.name === 'JourneyCurrent') {
+          loadJourney();
+
           return true;
         } else {
           return false;
@@ -125,13 +139,15 @@ export function JourneyCurrent({navigation}) {
 
   async function PostJourney() {
     try {
-     console.log(Journey.operator_id)
+      console.log(Journey.operator_id);
 
       const {data} = await api.post('/jornada', {
         funcionario_id: Journey.operator_id,
         carro_id: Journey.veicule_id,
-        datainiciojornada:moment(Journey.dateStart).format("YYYY-MM-DD hh:mm:ss"),
-        datafimjornada:moment(Journey.dateFinal).format("YYYY-MM-DD hh:mm:ss"),
+        datainiciojornada: moment(Journey.dateStart).format(
+          'YYYY-MM-DD hh:mm:ss',
+        ),
+        datafimjornada: moment(Journey.dateFinal).format('YYYY-MM-DD hh:mm:ss'),
         kminicial: Journey.kmInicial,
         kmfinal: Journey.kmFinal,
         kmrodado: parseInt(Journey.kmFinal) - parseInt(Journey.kmInicial),
@@ -142,41 +158,43 @@ export function JourneyCurrent({navigation}) {
         system_unit_id: Journey.systemUnitId,
         system_user_id: Journey.systemUserId,
       });
-  
-     const idJornada = data.data.id
-     console.log(data)
-     PostOccurrences(idJornada)
-  
-    } catch (error) {
 
-     Alert.alert('Erro', 'Erro ao finalizar a jornada, quando tiver conexão a internet procure reenviar essa jornada na lista de jornadas.')
-     loadJourney();
-     callbackCloseModalKMFinal()
+      const idJornada = data.data.id;
+      console.log(data);
+      PostOccurrences(idJornada);
+    } catch (error) {
+      Alert.alert(
+        'Erro',
+        'Erro ao finalizar a jornada, quando tiver conexão a internet procure reenviar essa jornada na lista de jornadas.',
+      );
+      loadJourney();
+      callbackCloseModalKMFinal();
     }
   }
 
-  
   const forEachCustom = async (idJornada, element) => {
     try {
-      const response = await api.post('/jornadaocorrencia', { 
+      const response = await api.post('/jornadaocorrencia', {
         jornada_id: idJornada,
         ocorrencia_id: element.occurrence_id,
         system_unit_id: Journey.systemUnitId,
         system_user_id: Journey.systemUserId,
-        datahorainicio: moment(element.dataInicio).format("YYYY-MM-DD hh:mm:ss"),
-        datahorafim: moment(element.dataFim).format("YYYY-MM-DD hh:mm:ss"),
+        datahorainicio: moment(element.dataInicio).format(
+          'YYYY-MM-DD hh:mm:ss',
+        ),
+        datahorafim: moment(element.dataFim).format('YYYY-MM-DD hh:mm:ss'),
         latitude: element.latitade,
-        longitude: element.longitude
+        longitude: element.longitude,
       });
-      console.log(response.data.data)
+      console.log(response.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   async function PostOccurrences(idJornada) {
     for (let i = 0; i < Journey.occurrences.length; i++) {
       const element = Journey.occurrences[i];
-      await forEachCustom(idJornada, element)
+      await forEachCustom(idJornada, element);
     }
 
     const realm = await getRealm();
@@ -186,14 +204,13 @@ export function JourneyCurrent({navigation}) {
         'Journey',
         {
           id: Journey.id,
-          check:true
+          check: true,
         },
         'modified',
       );
     });
 
-    loadJourney();
-     callbackCloseModalKMFinal()
+    callbackCloseModalKMFinal();
   }
 
   const api = axios.create({
@@ -212,7 +229,7 @@ export function JourneyCurrent({navigation}) {
     outputRange: [2, 2.5],
   });
   const animatedStyle = {
-    backgroundColor:'white',
+    backgroundColor: 'white',
     borderColor: boxInterpolation,
     borderWidth: boxInterpolation2,
   };
@@ -220,9 +237,7 @@ export function JourneyCurrent({navigation}) {
   const formatteddate = data =>
     moment(data).locale('pt-br').format('DD/MM/YYYY');
   const callbackLoaderVisible = status => setLoaderVisible(status);
-  const callbackCloseModalKMFinal = () => (
-     setModalKmFinalVisible(false)
-  );
+  const callbackCloseModalKMFinal = () => setModalKmFinalVisible(false);
 
   const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
 
@@ -272,7 +287,7 @@ export function JourneyCurrent({navigation}) {
           </View>
         </TouchableOpacity>
       </View>
-      {(!Journey) && (
+      {Journey == undefined && (
         <View style={{flex: 8, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             style={styles.addButtonCenter}
@@ -282,7 +297,7 @@ export function JourneyCurrent({navigation}) {
           </TouchableOpacity>
         </View>
       )}
-      {(!Journey?.dateFinish&&Journey) && (
+      {Journey && (
         <View
           style={[
             styles.container2,
@@ -311,7 +326,10 @@ export function JourneyCurrent({navigation}) {
             <Animated.View
               style={[
                 styles.group,
-                {marginVertical: 10, backgroundColor: commonStyles.color.InventoryPrincipal},
+                {
+                  marginVertical: 10,
+                  backgroundColor: commonStyles.color.InventoryPrincipal,
+                },
                 createBegin && {...animatedStyle},
               ]}>
               <CreateOccurrence

@@ -24,16 +24,7 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, 
     setStatusModal(visible);
   }, [visible]);
 
-  function edtInventory() {
-    if (!kmfinal || !kmfinal.trim()) {
-      Alert.alert('Dados Invalidos', 'Descrição não Informada!');
-      return;
-    } else {
-      UpdateInventory();
-
-      setKmfinal('');
-    }
-  }
+ 
    function getLocation() {
     loaderVisible(true);
      Geolocation.getCurrentPosition(
@@ -49,7 +40,7 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, 
         }
       },
       error => Alert.alert(error.message),
-      {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
+      {enableHighAccuracy: false, timeout: 20000},
     );
   }
 
@@ -118,7 +109,8 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, 
                     {
                       text: 'Prosseguir',
                       onPress: () => {
-                        if(kmfinal>= kmInicial){
+                        console.warn(kmInicial)
+                        if(parseFloat(kmfinal)>= kmInicial){
                           getLocation()
                         }else{
                           Alert.alert('Erro!','Km final menor que km Inicial, por favor verificar')

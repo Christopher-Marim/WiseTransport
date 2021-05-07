@@ -124,5 +124,15 @@ export default StyleSheet.create({
   },
   TextButtonFinish:{
     fontSize:15
+  },
+  buttonPost:{
+    position:'absolute',
+    bottom:0,
+    right:-5,
+    borderWidth:1.3,
+    padding:5,
+    paddingHorizontal:10,
+    borderRadius:5,
+    borderColor:'#b50000'
   }
 });
