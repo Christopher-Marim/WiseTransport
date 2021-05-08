@@ -12,6 +12,10 @@ target 'WiseTransport' do
     :hermes_enabled => false
   )
 
+  pod 'RealmJS', :path => '../node_modules/realm'
+
+  pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
+
   target 'WiseTransportTests' do
     inherit! :complete
     # Pods for testing

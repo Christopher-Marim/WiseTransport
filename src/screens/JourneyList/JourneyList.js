@@ -160,23 +160,7 @@ export function JourneyList({navigation}) {
         </TouchableOpacity>
         <Text style={styles.Text}>Lista de Jornadas</Text>
 
-        <TouchableOpacity
-          style={styles.buttonFilter}
-          onPress={() => {
-            setModalKmFinalVisible(true);
-          }}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                color: commonStyles.color.headers,
-                marginHorizontal: 5,
-                fontSize: 16,
-              }}>
-              Finalizar
-            </Text>
-          </View>
-        </TouchableOpacity>
+       
       </View>
       <View style={{flex: 1}}>
         <FlatList
