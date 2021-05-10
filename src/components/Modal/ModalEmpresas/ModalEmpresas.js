@@ -3,10 +3,6 @@ import {
   View,
   Modal,
   TouchableWithoutFeedback,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
   FlatList,
 } from 'react-native';
 
@@ -39,8 +35,6 @@ export default function PickerCompany(props) {
     setEmpresas(result.data.data)
     setloadingActive(false)
   }
-
-  
 
   return (
     <Modal

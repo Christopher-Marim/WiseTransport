@@ -136,7 +136,7 @@ android {
     defaultConfig {
         missingDimensionStrategy 'react-native-camera', 'general'
         applicationId "com.wisetransport"
-        minSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
@@ -207,6 +207,8 @@ dependencies {
     implementation 'com.android.support:multidex:2.0.1' //enter the latest version
     implementation project(':lottie-react-native')
 
+    compile project(':realm')
+    implementation project(':@react-native-async-storage')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

@@ -13,14 +13,18 @@ import styles from './styles'
 
 export default function Profile(props) {
 
-  useEffect(()=>{
-    async function getUsuarioRealm(){
-  const realm = await getRealm();
-  const store = realm.objects("User");
-  setNome(store[0].nome)
-  setEmail(store[0].email)
-  setSenha(store[0].senha)
+  async function getUsuarioRealm(){
+    try {
+      const useraux = await AsyncStorage.getItem('@User')
+      const store = JSON.parse(useraux)
+      setNome(store.nome)
+      setEmail(store.email)
+      setSenha(store.senha)
+    } catch(e) {
+      console.error(e)
     }
+  }
+  useEffect(()=>{
     getUsuarioRealm()
     CheckConnectivity()
     getEmpresa()
@@ -40,21 +44,39 @@ export default function Profile(props) {
 
   async function EditarUsuario(){
     try{
-      const realm = await getRealm();
-      const store = realm.objects("User");
-  
-      realm.write(()=>{
-        realm.create("User",{id:store[0].id, nome:nome, email:email, senha:senha}, 'modified')
-      })
-  
-      const res = await api.put(`/Acessoappcoleta/${store[0].id}`,{
+     
+
+      try {
+        const useraux = await AsyncStorage.getItem('@User')
+        const store = JSON.parse(useraux)
+
+        const edtUser = {
+          id:store.id,
           nome:nome,
           email:email,
-          senha:senha
-      })
-      console.log(res.status)
+          senha:senha,
+          token: store.chave,
+          logado: store.logado,
+          system_user_id: store.system_user_id,
+          system_unit_id: store.system_unit_id,
+        }
+         const result = await AsyncStorage.setItem('@User', JSON.stringify(edtUser))
+
+         const res = await api.put(`/Acessoappcoleta/${store.id}`,{
+             nome:nome,
+             email:email,
+             senha:senha
+            })
+            console.log(res.status)
+      } catch(e) {
+        console.error(e)
+      }
+  
+    
+  
       setButtonSalvar(false)
       Alert.alert("Alteração Feita", "Recomenda-se fechar e abrir a aplicação para as mudanças serem efetivadas.")
+      getUsuarioRealm()
     }
     catch(error){
       console.log(error)

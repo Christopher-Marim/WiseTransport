@@ -11,16 +11,19 @@ import {
   Platform,
   Keyboard,
   Linking,
+  PermissionsAndroid
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Loader from '../../components/Loader';
 import getRealm from '../../services/realm';
 import NetInfo from '@react-native-community/netinfo';
 import styles from './styles';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import {api} from '../../services/api';
+
+import axios from 'axios'
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
@@ -33,7 +36,13 @@ export default function Login({navigation}) {
   const [PasswordVisible, setPasswordVisible] = useState(true);
 
   const [imageHeight] = useState(new Animated.Value(1))
-  const [activated, setActivated] = useState(false)
+
+  const api = axios.create({
+    baseURL: 'http://transportadora.etm.ltda',
+    headers: {
+      Authorization: 'Basic ac0fb7c1dedf6eb4cb16e4dab5fac37a63bf447f74a8c47366f9e7f5d72d',
+    },
+  });
 
   const keyboardWillHide = (event) => {
       Animated.timing(imageHeight, {
@@ -103,55 +112,72 @@ export default function Login({navigation}) {
     getUsuario();
   }
   async function clearStore() {
-    const realm = await getRealm();
-    const store = realm.objects('User');
-
-    let object = realm.objectForPrimaryKey('User', store[0].id);
-    console.log(object);
-    realm.write(() => {
-      realm.delete(object);
-    });
+    try {
+      await AsyncStorage.setItem('@User', JSON.stringify({}));
+     
+    } catch(e) {
+      console.error(e)
+    }
   }
   async function getUsuario() {
     console.log('LoginScreen Internet: ' + internet);
     try {
       if (internet == true) {
         const response = await api.get('/acessoappcoleta');
+
         const data = response.data.data;
-
-        const realm = await getRealm();
-        const store = realm.objects('User');
-        console.log('1 Store' + store[0]);
-
-        if (store[0] != undefined) {
-          //Logado
-          if (store[0].logado == true) {
-            setVisible(true);
-            const index = data.findIndex(
-              (x) =>
-                x.email == store[0].email &&
-                x.senha == store[0].senha &&
-                x.chave == store[0].token,
-            );
-            console.log('FILTER 1 : ' + data[index]);
-
-            if (data[index]) {
-              navigation.replace('NotificationScreen');
-              setVisible(false);
-            } else {
-              clearStore();
+        
+        try {
+          const user = await AsyncStorage.getItem('@User')
+          const store = JSON.parse(user)
+          console.log('1 Store' + store);
+  
+          if (store != undefined) {
+            //Logado
+            if (store.logado == true) {
+              setVisible(true);
+              const index = data.findIndex(
+                (x) =>
+                  x.email == store.email &&
+                  x.senha == store.senha &&
+                  x.chave == store.token,
+              );
+              console.log('FILTER 1 : ' + data[index]);
+  
+              if (data[index]) {
+                navigation.replace('NotificationScreen');
+                setVisible(false);
+              } else {
+                clearStore();
+              }
+            } //Deslogado
+            else {
+              try {
+                const index = data.findIndex(
+                  (x) => x.email == email && x.senha == senha,
+                );
+                console.log('FILTER 2 : ' + data[index]);
+  
+                clearStore();
+                setUser(data[index]);
+                setVisible(false);
+              } catch (error) {
+                setVisible(false);
+                Alert.alert(
+                  'Email e Senha incorretos',
+                  'Verifique o email e senha digitados',
+                );
+              }
             }
-          } //Deslogado
+          } //Sem Storage
           else {
             try {
               const index = data.findIndex(
                 (x) => x.email == email && x.senha == senha,
               );
-              console.log('FILTER 2 : ' + data[index]);
-
-              clearStore();
+              console.log('FILTER INTERNET DESLOGADO : ' + data[index].email);
+  
               setUser(data[index]);
-              setVisible(false);
             } catch (error) {
               setVisible(false);
               Alert.alert(
@@ -160,36 +186,26 @@ export default function Login({navigation}) {
               );
             }
           }
-        } //Sem Storage
-        else {
-          try {
-            const index = data.findIndex(
-              (x) => x.email == email && x.senha == senha,
-            );
-            console.log('FILTER INTERNET DESLOGADO : ' + data[index].email);
-
-            setUser(data[index]);
-          } catch (error) {
-            setVisible(false);
-            Alert.alert(
-              'Email e Senha incorretos',
-              'Verifique o email e senha digitados',
-            );
-          }
+        } catch(e) {
+        alert(e)
+          console.error(e)
         }
       } else {
-        const realm = await getRealm();
-        const store = realm.objects('User');
-        if (store[0].logado == true) {
-          navigation.replace('JourneyCurrent');
-        } else {
-          Alert.alert(
-            'Sem Internet',
-            'Por favor conecte-se a internet para fazer o login de um novo usuário',
-          );
+        try {
+          const userAux = await AsyncStorage.getItem('@User')
+          const store = JSON.parse(userAux)
+          if (store?.logado == true) {
+            navigation.replace('JourneyCurrent');
+          } 
+        } catch(e) {
+        alert(e)
+
+          console.error(e)
         }
+
       }
     } catch (error) {
+      alert(error)
       console.log(error);
     }
   }
@@ -197,7 +213,7 @@ export default function Login({navigation}) {
   async function setUser(usuario) {
     console.log('USUARIO' + usuario.nome);
     if (usuario.length != 0) {
-      const realm = await getRealm();
+      {/*const realm = await getRealm();
 
       realm.write(() => {
         realm.create('User', {
@@ -211,6 +227,25 @@ export default function Login({navigation}) {
           system_unit_id: parseInt(usuario.system_unit_id, 10),
         });
       });
+    */}
+      try {
+        const  user = {
+          id:parseInt(usuario.id),
+          nome: usuario.nome,
+          email: usuario.email,
+          senha: usuario.senha,
+          token: usuario.chave,
+          logado: true,
+          system_user_id: parseInt(usuario.system_user_id, 10),
+          system_unit_id: parseInt(usuario.system_unit_id, 10),
+        } 
+        await AsyncStorage.setItem('@User', JSON.stringify(user));
+        
+      } catch (e) {
+        alert('error 3'+e)
+        console.error(e);
+      }      
+    
       dispatch({
         type: 'USER_LOGGED_IN',
         payload: [
@@ -229,7 +264,6 @@ export default function Login({navigation}) {
 
   return (
     <KeyboardAvoidingView style={styles.background}>
-      <Loader visible={LoaderVisible} />
       <View style={styles.containerLogo}>
         <Animated.Image
           style={{

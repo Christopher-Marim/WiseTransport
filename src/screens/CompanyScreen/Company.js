@@ -49,17 +49,25 @@ export default function Company(props) {
   }
 
   async function changeEmpresa(IdEmpresa) {
-    const realm = await getRealm();
-    realm.write(() => {
-      realm.create(
-        'User',
-        {
-          id: UserId,
-          system_unit_id: parseInt(IdEmpresa),
-        },
-        'modified',
-      );
-    });
+    
+    try {
+      const userString = await AsyncStorage.getItem('@User')
+      const store = JSON.parse(userString)
+
+      const userAux={
+        id:store.id,
+        nome: store.nome,
+        email: store.email,
+        senha: store.senha,
+        token: store.chave,
+        logado: true,
+        system_user_id: store.system_user_id,
+        system_unit_id: parseInt(IdEmpresa, 10),
+      }
+    } catch(e) {
+      console.error(e)
+    }
+
     loadVeicules();
     loadOccurences();
   }
@@ -84,7 +92,7 @@ export default function Company(props) {
 
     const store = realm.objects('Veicules');
 
-    console.log(store);
+    console.log('Veiculosss'+store);
   }
   async function loadOccurences() {
     const {data} = await api.get('/ocorrencia');
@@ -127,11 +135,17 @@ export default function Company(props) {
   }, []);
 
   async function getUser() {
-    const realm = await getRealm();
-    const userAux = realm.objects('User');
-    setUserId(userAux[0].id);
-    setUserName(userAux[0].nome);
-    setUserSystemUserId(userAux[0].system_user_id);
+    try {
+      const useraux = await AsyncStorage.getItem('@User')
+      const store = JSON.parse(useraux)
+
+      setUserId(store.id);
+      setUserName(store.nome);
+      setUserSystemUserId(store.system_user_id);
+     
+    } catch(e) {
+      console.error(e)
+    }
   }
 
   function ActionButtonProsseguir() {

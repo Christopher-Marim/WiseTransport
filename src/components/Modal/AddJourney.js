@@ -14,8 +14,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../commonStyles';
 import StepModal from './StepModal';
 import getRealm from '../../services/realm';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Geolocation from '@react-native-community/geolocation';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Map} from '../Map';
 import {InfosJourney} from '../InfosJourney';
 import {InfosVeicules} from '../InfosVeicule';
@@ -49,9 +49,13 @@ export default function AddJourney({callback}) {
   }
 
   async function loadUser() {
-    const realm = await getRealm();
-    const store = realm.objects('User');
-    setUser(store[0]);
+    try {
+      const useraux = await AsyncStorage.getItem('@User')
+      const store = JSON.parse(useraux)
+      setUser(store);
+    } catch(e) {
+      console.error(e)
+    }
     console.log(user)
   }
 

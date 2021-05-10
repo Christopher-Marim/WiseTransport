@@ -19,12 +19,15 @@ export function InfosJourney({backgroundColor}) {
   const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
 
   async function getUsuarioRealm() {
-    const realm = await getRealm();
-    const store = realm.objects('User');
-    const user = store[0]
-    setnome(user.nome);
-    setUnitIdEmpresa(user.system_unit_id);
-    getNomeEmpresa();
+    try {
+      const useraux = await AsyncStorage.getItem('@User')
+      const store = JSON.parse(useraux)
+      setnome(store.nome);
+      setUnitIdEmpresa(store.system_unit_id);
+      getNomeEmpresa();
+    } catch(e) {
+      console.error(e)
+    }
   }
   useEffect(() => {
 

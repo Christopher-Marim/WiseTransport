@@ -12,34 +12,36 @@ import { useDispatch } from 'react-redux'
 
 
 export default (props) => {
+  
+  const [nome, setnome] = useState('Usuário');
+  const [nomeEmpresa, setnomeEmpresa] = useState();
+  const [email, setemail] = useState();
+  const [UnitIdEmpresa, setUnitIdEmpresa] = useState();
+  
   useEffect(() => {
     async function getUsuarioRealm() {
-      const realm = await getRealm();
-      const store = realm.objects('User');
-      setnome(store[0].nome);
-      setemail(store[0].email);
-      setUnitIdEmpresa(store[0].system_unit_id)
+      try {
+        const useraux = await AsyncStorage.getItem('@User')
+        const store = JSON.parse(useraux)
+        setnome(store.nome);
+        setemail(store.email);
+        setUnitIdEmpresa(store.system_unit_id)
+      } catch(e) {
+        console.error(e)
+      }
       getNomeEmpresa()
 
     }
     getUsuarioRealm();
   }, []);
-
-  const [nome, setnome] = useState('Usuário');
-  const [nomeEmpresa, setnomeEmpresa] = useState();
-  const [email, setemail] = useState();
-  const [UnitIdEmpresa, setUnitIdEmpresa] = useState();
-
-  const dispatch = useDispatch()
-
   async function Deslogar() {
-    const realm = await getRealm();
-    const store = realm.objects('User');
-
-    realm.write(() => {
-      realm.delete(store[0]);
-    });
-    props.navigation.replace('Login');
+    try {
+      await AsyncStorage.setItem('@User', JSON.stringify({}));
+      props.navigation.replace('Login');
+     
+    } catch(e) {
+      console.error(e)
+    }
   }
 
   const getNomeEmpresa = async () => {
@@ -278,7 +280,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    width:'60%',
+    width:'100%',
     fontWeight: commonStyles.fontWeight,
     marginTop: 3,
     fontWeight: 'bold',

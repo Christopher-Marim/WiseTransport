@@ -53,10 +53,13 @@ export default function NotificationScreen({navigation}) {
   };
 
   async function getSystemUserId() {
-    const realm = await getRealm();
-    const store = realm.objects('User');
-    console.log('store: ' + store[0].system_user_id);
-    setSystemUserId(store[0].system_user_id);
+    try {
+      const useraux = await AsyncStorage.getItem('@User')
+      const store = JSON.parse(useraux)
+      setSystemUserId(store.system_user_id);
+    } catch(e) {
+      console.error(e)
+    }
   }
 
   // recebe uma callback da modal para fechar ela
