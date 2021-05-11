@@ -12,7 +12,6 @@ import Carousel from 'react-native-snap-carousel';
 
 import PageControl from 'react-native-page-control';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import styles from '../../screens/LoginScreen/styles';
 import commonStyles from '../../commonStyles';
 
 const {width, height} = Dimensions.get('window');

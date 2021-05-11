@@ -43,9 +43,14 @@ export default function AddJourney({callback}) {
   }, [statusModal]);
 
   async function loadVeicules() {
-    const realm = await getRealm();
-    const store = realm.objects('Veicules');
-    setArrayVeicules(store);
+    try {
+      const realm = await getRealm();
+      const store = realm.objects('Veicules');
+      setArrayVeicules(store);
+      
+    } catch (error) {
+      alert('Erro ao carregar os Veiculos: ' + error)
+    }
   }
 
   async function loadUser() {
@@ -54,108 +59,130 @@ export default function AddJourney({callback}) {
       const store = JSON.parse(useraux)
       setUser(store);
     } catch(e) {
+      alert( 'Erro ao carregar o usuario ' + e)
       console.error(e)
     }
     console.log(user)
   }
 
   async function addJourney() {
-    const realm = await getRealm();
-    
-    realm.write(() => {
-      realm.create('Journey', {
-        id: Math.random() * 10000,
-        operator_id:user.id,
-        operator: user.nome,
-        dateStart: new Date(),
-        veicule_name:veiculoSelecionado[0].tipoVeiculo,
-        veicule_id: veiculoSelecionado[0].id,
-        kmInicial: KmInicial,
-        latitudeInicial: String(latitude),
-        longitudeInicial: String(longitude),
-        systemUnitId: user.system_unit_id,
-        systemUserId: user.system_user_id,
-        occurrences: [],
+
+    try {
+      const realm = await getRealm();
+      
+      realm.write(() => {
+        realm.create('Journey', {
+          id: Math.random() * 10000,
+          operator_id:user.id,
+          operator: user.nome,
+          dateStart: new Date(),
+          veicule_name:veiculoSelecionado[0].tipoVeiculo,
+          veicule_id: veiculoSelecionado[0].id,
+          kmInicial: KmInicial,
+          latitudeInicial: String(latitude),
+          longitudeInicial: String(longitude),
+          systemUnitId: user.system_unit_id,
+          systemUserId: user.system_user_id,
+          occurrences: [],
+        });
+        
       });
       setplaque();
-      dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
-      setInterval(() => {
-        dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
-      }, 1000);
-    });
-
-    const journey = realm.objects('Journey')
-    console.log(journey)
-    callback()
-    closeModal();
+      callback()
+      closeModal();
+      
+    } catch (error) {
+      alert('Erro ao adicionar Jornada' +error)
+    }
 
   }
 
   function getVeicule(placa) {
-    const veiculoSelecionadoAux = arrayVeicules.filter(veiculoElement => {
-      return veiculoElement.placa == placa;
-    });
-    console.warn(veiculoSelecionadoAux);
-
-    if (veiculoSelecionadoAux.length > 0) {
-      setVeiculoSelecionado(veiculoSelecionadoAux);
-      setColor('#00bd2f');
-    } else {
-      setColor('#b80003');
+    try {
+      const veiculoSelecionadoAux = arrayVeicules.filter(veiculoElement => {
+        return veiculoElement.placa == placa;
+      });
+      console.warn(veiculoSelecionadoAux);
+  
+      if (veiculoSelecionadoAux.length > 0) {
+        setVeiculoSelecionado(veiculoSelecionadoAux);
+        setColor('#00bd2f');
+      } else {
+        setColor('#b80003');
+      }
+      
+    } catch (error) {
+      alert('Error: ' + error)
     }
   }
 
   function closeModal() {
     dispatch({type: 'SHOW_MODAL_ADDINVENTORY_OFF'});
+    setplaque('')
+    setKmInicial('')
+    setColor('black')
+    setKmComplete(false)
+    setVeiculoSelecionado([])
   }
 
   const callLocation = () => {
-    if (Platform.OS === 'ios') {
-      getLocation();
-    } else {
-      const requestLocationPermission = async () => {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Permissão de Acesso à Localização',
-            message: 'Este aplicativo precisa acessar sua localização.',
-            buttonNeutral: 'Pergunte-me depois',
-            buttonNegative: 'Cancelar',
-            buttonPositive: 'OK',
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getLocation();
-        } else {
-          Alert.alert(
-            'Permissão de Localização negada',
-            'Permissão de Localização negada',
+    try {
+      
+      if (Platform.OS === 'ios') {
+        getLocation();
+      } else {
+        const requestLocationPermission = async () => {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+              title: 'Permissão de Acesso à Localização',
+              message: 'Este aplicativo precisa acessar sua localização.',
+              buttonNeutral: 'Pergunte-me depois',
+              buttonNegative: 'Cancelar',
+              buttonPositive: 'OK',
+            },
           );
-        }
-      };
-      requestLocationPermission();
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            getLocation();
+          } else {
+            Alert.alert(
+              'Permissão de Localização negada',
+              'Permissão de Localização negada',
+            );
+          }
+        };
+        requestLocationPermission();
+      }
+    } catch (error) {
+      alert('Permision Error' + error)
     }
   };
 
   async function getLocation() {
-    await Geolocation.getCurrentPosition(
-      position => {
-        const currentLatitude = parseFloat(
-          JSON.stringify(position.coords.latitude),
-        );
-        const currentLongitude = parseFloat(
-          JSON.stringify(position.coords.longitude),
-        );
-        if (currentLatitude != undefined) {
-          setLatitude(currentLatitude);
-          setLongitude(currentLongitude);
-
-          console.warn(latitude, longitude);
-        }
-      },
-      error => Alert.alert(error.message),
-      {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
-    );
+    try {
+      await Geolocation.getCurrentPosition(
+        position => {
+          const currentLatitude = parseFloat(
+            JSON.stringify(position.coords.latitude),
+          );
+          const currentLongitude = parseFloat(
+            JSON.stringify(position.coords.longitude),
+          );
+          if (currentLatitude != undefined) {
+            setLatitude(currentLatitude);
+            setLongitude(currentLongitude);
+  
+            console.warn(latitude, longitude);
+  
+          }
+        },
+        error => Alert.alert(error.message),
+        {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
+      );
+      
+    } catch (error) {
+      alert('Error ao pegar Geolocalização: ' + error)
+    }
   }
 
   let Component2 = (longitude&&veiculoSelecionado[0]) ? (

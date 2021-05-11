@@ -8,6 +8,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import styles from './styles';
 import moment from 'moment';
 
+import 'moment/locale/pt-br';
+
 export default function ItemNoticia({
   titulo,
   subText,

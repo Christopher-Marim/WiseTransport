@@ -4,6 +4,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import getRealm from '../services/realm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import 'moment/locale/pt-br';
+
 
 export function InfosJourney({backgroundColor}) {
   const [nome, setnome] = useState('Usuário');
@@ -26,6 +28,7 @@ export function InfosJourney({backgroundColor}) {
       setUnitIdEmpresa(store.system_unit_id);
       getNomeEmpresa();
     } catch(e) {
+      alert('Erro ao pegar o usuario Infos '+e)
       console.error(e)
     }
   }
@@ -48,6 +51,7 @@ export function InfosJourney({backgroundColor}) {
         setHoras(formattedHours(Journey.dateStart));
       }
     } catch (error) {
+      alert('Error LoadJourney InfosJourney:' + error)
       console.error(error)
     }
     
@@ -64,6 +68,8 @@ export function InfosJourney({backgroundColor}) {
       const EmpresaNome = await AsyncStorage.getItem('@Empresa');
       setnomeEmpresa(EmpresaNome);
     } catch (e) {
+      alert('Error getNomeEmpresa InfosJourney:' + e)
+
       console.error(e);
     }
   };

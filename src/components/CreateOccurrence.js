@@ -4,6 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import PickerOcorrencias from './Modal/ModalOcorrencias/PickerOcorrencias';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import 'moment/locale/pt-br';
 
 export function CreateOccurrence({responseCallback, getData}) {
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -25,7 +26,7 @@ export function CreateOccurrence({responseCallback, getData}) {
   const formatteddate = data =>
     moment(data).locale('pt-br').format('DD/MM/YYYY');
 
-  const formattedHours = horas => moment(horas).locale('pt').format('LT');
+  const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
 
   function handlePressBeginning() {
     responseCallback(true);

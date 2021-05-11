@@ -1,12 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
-  Linking,
-  Text,
   View,
   StyleSheet,
-  Dimensions,
-  Image,
 } from 'react-native';
 import MapView, {
   Marker,

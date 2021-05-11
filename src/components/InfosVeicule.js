@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import getRealm from '../services/realm';
 
 export function InfosVeicules({veiculeType, plaque, backgroundColor}) {
@@ -25,6 +24,8 @@ export function InfosVeicules({veiculeType, plaque, backgroundColor}) {
       });     
       setKmInicial(Journey?.kmInicial);
     } catch (error) {
+      alert('Error LoadJourney InfosVeicule:' + error)
+
       console.error(error);
     }
   }

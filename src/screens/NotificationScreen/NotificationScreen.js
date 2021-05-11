@@ -7,16 +7,17 @@ import {
   FlatList,
   RefreshControl,
   Switch,
+  Alert,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CompleteNotification from '../../components/Modal/ModalNoticiaCompleta/CompleteNotification';
 import ItemNoticia from '../../components/ComponentNoticia/ItemNoticia';
+import {setJSExceptionHandler, getJSExceptionHandler} from 'react-native-exception-handler';
 import styles from './styles';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import getRealm from '../../services/realm';
 import Loader from '../../components/Loader';
 
 import {getParmsAPI} from '../../services/api'
@@ -43,6 +44,17 @@ export default function NotificationScreen({navigation}) {
     const corBotão = commonStyles.color.headers
   const dispatch = useDispatch();
 
+
+  const errorHandler = (error, isFatal) => {
+    Alert.alert(`Error:${error.name} / ${error.message}`)
+  }
+  //Second argument is a boolean with a default value of false if unspecified.
+  //If set to true the handler to be called in place of RED screen
+  //in development mode also.
+  setJSExceptionHandler((error,isFatal)=>{
+    errorHandler(error, isFatal)
+  }, true);
+
   useEffect(() => {
     getNoticias();
     
@@ -58,6 +70,7 @@ export default function NotificationScreen({navigation}) {
       const store = JSON.parse(useraux)
       setSystemUserId(store.system_user_id);
     } catch(e) {
+      errorHandler(e, false)
       console.error(e)
     }
   }
@@ -85,16 +98,16 @@ export default function NotificationScreen({navigation}) {
   }
 
   const api = axios.create({
-    baseURL: `${BaseURL}`,
+    baseURL: `https://transportadora.etm.ltda`,
     headers: {
-      Authorization: BASIC_AUTHORIZATION,
+      Authorization: 'Basic ac0fb7c1dedf6eb4cb16e4dab5fac37a63bf447f74a8c47366f9e7f5d72d',
     },
   });
 
   async function getNoticias() {
-    getSystemUserId();
-    getParmsAPI().then(res=>{setBaseURL(res)})
     try {
+      getSystemUserId();
+     await getParmsAPI().then(res=>{setBaseURL(res)})
       setVisibleLoader(true);
       await api
         .get(`/noticias?method=loadAll&systemuserid=${SystemUserId}`)
@@ -124,6 +137,7 @@ export default function NotificationScreen({navigation}) {
       dispatch({type: 'REFRESH', payload: [false]});
     } catch (error) {
       console.log(error);
+      errorHandler(e, false)
       dispatch({type: 'REFRESH', payload: [false]});
       setVisibleLoader(false);
     }

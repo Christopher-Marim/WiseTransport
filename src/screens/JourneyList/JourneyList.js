@@ -11,6 +11,7 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment';
+import 'moment/locale/pt-br';
 import axios from 'axios';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
 import commonStyles from '../../commonStyles';

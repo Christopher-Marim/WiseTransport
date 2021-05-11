@@ -16,6 +16,7 @@ import {useRoute, useFocusEffect} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import moment from 'moment';
+import 'moment/locale/pt-br';
 
 import Modal from '../../components/Modal/AddJourney';
 import commonStyles from '../../commonStyles';
@@ -211,6 +212,8 @@ export function JourneyCurrent({navigation}) {
     });
 
     callbackCloseModalKMFinal();
+    setJourney();
+    setOccurrences([]);
   }
 
   const api = axios.create({
