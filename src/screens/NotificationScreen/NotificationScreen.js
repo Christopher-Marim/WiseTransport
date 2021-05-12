@@ -13,22 +13,27 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CompleteNotification from '../../components/Modal/ModalNoticiaCompleta/CompleteNotification';
 import ItemNoticia from '../../components/ComponentNoticia/ItemNoticia';
-import {setJSExceptionHandler, getJSExceptionHandler} from 'react-native-exception-handler';
+import {
+  setJSExceptionHandler,
+  getJSExceptionHandler,
+} from 'react-native-exception-handler';
 import styles from './styles';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Loader from '../../components/Loader';
 
-import {getParmsAPI} from '../../services/api'
+import {getParmsAPI} from '../../services/api';
 import commonStyles from '../../commonStyles';
+import {useFocusEffect, useRoute} from '@react-navigation/core';
+import {useCallback} from 'react';
 
 export default function NotificationScreen({navigation}) {
   const [ModalNotificationVisible, setModalNotificationVisible] = useState(
     false,
   );
-  const refresh = useSelector((state) => state.inventorys.refresh);
-  const noticias = useSelector((state) => state.noticias.noticias);
+  const refresh = useSelector(state => state.inventorys.refresh);
+  const noticias = useSelector(state => state.noticias.noticias);
   const [TituloCallback, setTituloCallback] = useState('');
   const [subTextCalback, setSubTextCallback] = useState('');
   const [DataCallback, setDataCallback] = useState('');
@@ -41,23 +46,25 @@ export default function NotificationScreen({navigation}) {
   const BASIC_AUTHORIZATION =
     'Basic ac0fb7c1dedf6eb4cb16e4dab5fac37a63bf447f74a8c47366f9e7f5d72d';
 
-    const corBotão = commonStyles.color.headers
+  const corBotão = commonStyles.color.headers;
   const dispatch = useDispatch();
 
-
   const errorHandler = (error, isFatal) => {
-    Alert.alert(`Error:${error.name} / ${error.message}`)
-  }
+    Alert.alert(`Error:${error.name} / ${error.message}`);
+  };
   //Second argument is a boolean with a default value of false if unspecified.
   //If set to true the handler to be called in place of RED screen
   //in development mode also.
-  setJSExceptionHandler((error,isFatal)=>{
-    errorHandler(error, isFatal)
+  setJSExceptionHandler((error, isFatal) => {
+    errorHandler(error, isFatal);
   }, true);
 
   useEffect(() => {
+    getSystemUserId();
+    getParmsAPI().then(res => {
+      setBaseURL(res);
+    });
     getNoticias();
-    
   }, []);
 
   const tougleEye = () => {
@@ -66,12 +73,12 @@ export default function NotificationScreen({navigation}) {
 
   async function getSystemUserId() {
     try {
-      const useraux = await AsyncStorage.getItem('@User')
-      const store = JSON.parse(useraux)
+      const useraux = await AsyncStorage.getItem('@User');
+      const store = JSON.parse(useraux);
       setSystemUserId(store.system_user_id);
-    } catch(e) {
-      errorHandler(e, false)
-      console.error(e)
+    } catch (e) {
+      errorHandler(e, false);
+      console.error(e);
     }
   }
 
@@ -98,23 +105,35 @@ export default function NotificationScreen({navigation}) {
   }
 
   const api = axios.create({
-    baseURL: `https://transportadora.etm.ltda`,
+    baseURL: `${BaseURL}`,
     headers: {
-      Authorization: 'Basic ac0fb7c1dedf6eb4cb16e4dab5fac37a63bf447f74a8c47366f9e7f5d72d',
+      Authorization:
+        'Basic ac0fb7c1dedf6eb4cb16e4dab5fac37a63bf447f74a8c47366f9e7f5d72d',
     },
   });
 
+  const route = useRoute();
+  useFocusEffect(
+    useCallback(() => {
+      if (route.name === 'NotificationScreen') {
+        getSystemUserId();
+        getParmsAPI().then(res => {
+          setBaseURL(res);
+        });
+        getNoticias();
+      }
+    }, [route]),
+  );
+
   async function getNoticias() {
     try {
-      getSystemUserId();
-     await getParmsAPI().then(res=>{setBaseURL(res)})
       setVisibleLoader(true);
       await api
         .get(`/noticias?method=loadAll&systemuserid=${SystemUserId}`)
-        .then((result) => {
+        .then(result => {
           dispatch({type: 'CLEAN_NOTICIAS'});
           console.log(result.data.data);
-          result.data.data.forEach((element) => {
+          result.data.data.forEach(element => {
             if (element.checked == 'Y') {
               element.checked = true;
             } else {
@@ -137,7 +156,7 @@ export default function NotificationScreen({navigation}) {
       dispatch({type: 'REFRESH', payload: [false]});
     } catch (error) {
       console.log(error);
-      errorHandler(e, false)
+      errorHandler(e, false);
       dispatch({type: 'REFRESH', payload: [false]});
       setVisibleLoader(false);
     }
@@ -152,14 +171,14 @@ export default function NotificationScreen({navigation}) {
     setModalNotificationVisible(false);
 
     console.log('ID' + id);
-    await api.put(`/noticias/${id}?checked=Y`).then((result) => {
+    await api.put(`/noticias/${id}?checked=Y`).then(result => {
       console.log(result.data.data);
     });
     getNoticias();
   }
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor:commonStyles.color.page}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: commonStyles.color.page}}>
       <Loader visible={visibleLoader} />
       <CompleteNotification
         visible={ModalNotificationVisible}
@@ -187,16 +206,23 @@ export default function NotificationScreen({navigation}) {
             flexDirection: 'row',
             width: 115,
             justifyContent: 'space-between',
-            position:'absolute',
-            padding:10,
-            right:10
+            position: 'absolute',
+            padding: 10,
+            right: 10,
           }}>
           <TouchableOpacity
             style={{width: 30, height: 30, alignItems: 'center'}}
             onPress={() => {
+              getSystemUserId();
+              getParmsAPI().then(res => {
+                setBaseURL(res);
+              });
               getNoticias();
             }}>
-            <FontAwesome name="refresh" size={25} color={corBotão}></FontAwesome>
+            <FontAwesome
+              name="refresh"
+              size={25}
+              color={corBotão}></FontAwesome>
           </TouchableOpacity>
           <TouchableOpacity onPress={tougleEye}>
             {isVisibleCheck == true && (
@@ -217,7 +243,7 @@ export default function NotificationScreen({navigation}) {
           <View style={styles.collectList}>
             <FlatList
               data={noticias ? noticias : []}
-              keyExtractor={(noticia) => `${noticia.id}`}
+              keyExtractor={noticia => `${noticia.id}`}
               renderItem={({item}) => (
                 console.log('ITEM  ' + item.lido),
                 (
@@ -246,7 +272,7 @@ export default function NotificationScreen({navigation}) {
             />
           </View>
         )}
-        {noticias.filter((element) => {
+        {noticias.filter(element => {
           if (element.lido == isVisibleCheck) {
             return true;
           } else {
@@ -269,12 +295,20 @@ export default function NotificationScreen({navigation}) {
             />
             <View style={{padding: 10, alignItems: 'center'}}>
               <Text
-                style={{fontSize: 20, color: commonStyles.color.texts, fontWeight: 'bold'}}
+                style={{
+                  fontSize: 20,
+                  color: commonStyles.color.texts,
+                  fontWeight: 'bold',
+                }}
                 adjustsFontSizeToFit={true}>
                 Nada aqui!!!
               </Text>
               <Text
-                style={{fontSize: 18, color: commonStyles.color.texts, textAlign: 'center'}}
+                style={{
+                  fontSize: 18,
+                  color: commonStyles.color.texts,
+                  textAlign: 'center',
+                }}
                 adjustsFontSizeToFit={true}>
                 Clique no botão de atualizar para checar se há novas
                 notificações.

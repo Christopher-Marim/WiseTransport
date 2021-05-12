@@ -168,6 +168,8 @@ export function JourneyCurrent({navigation}) {
         'Erro',
         'Erro ao finalizar a jornada, quando tiver conexão a internet procure reenviar essa jornada na lista de jornadas.',
       );
+      setJourney();
+      setOccurrences([]);
       loadJourney();
       callbackCloseModalKMFinal();
     }
@@ -271,24 +273,30 @@ export function JourneyCurrent({navigation}) {
           </View>
         </TouchableOpacity>
         <Text style={styles.Text}>Minha jornada</Text>
-
-        <TouchableOpacity
-          style={styles.buttonFilter}
-          onPress={() => {
-            setModalKmFinalVisible(true);
-          }}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                color: commonStyles.color.headers,
-                marginHorizontal: 5,
-                fontSize: 16,
-              }}>
-              Finalizar
-            </Text>
-          </View>
-        </TouchableOpacity>
+        {Journey && (
+          <TouchableOpacity
+            style={styles.buttonFilter}
+            onPress={() => {
+              if(!createFinish){
+                setModalKmFinalVisible(true);
+              }else{
+                Alert.alert('Erro ao finalizar', 'Procure finalizar a ocorrência em andamento')
+              }
+            }}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+              <Text
+                style={[{
+                  fontWeight: 'bold',
+                  color: commonStyles.color.headers,
+                  marginHorizontal: 5,
+                  fontSize: 16,
+                }, createFinish&&{color:'grey'}]}>
+                Finalizar
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
       {Journey == undefined && (
         <View style={{flex: 8, alignItems: 'center', justifyContent: 'center'}}>

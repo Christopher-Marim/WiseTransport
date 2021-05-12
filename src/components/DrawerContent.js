@@ -95,25 +95,42 @@ export default (props) => {
 
                 }}
               />
-              <List.Item
-                left={() => (
-                  <List.Icon
-                    icon={({ color, size }) => (
-                      <MaterialCommunityIcons
-                        name="truck-outline"
-                        color={color}
-                        size={size}
-                      />
-                    )}
+              <List.Accordion
+              title="Jornada"
+              titleStyle={{ fontSize: 15 }}
+              id="5"
+              left={() => (<List.Icon
+                icon={({ color, size }) => (
+                  <MaterialCommunityIcons
+                    name="truck-outline"
+                    color={color}
+                    size={size}
                   />
                 )}
-                title="Jornada"
+              />
+              )}>
+
+              <List.Item
+                style={{backgroundColor:'#f2f2f2', borderBottomWidth:1, borderBottomColor:'white'}}
+
+                title="Jornada com veiculo"
+                titleStyle={{ fontSize: 15 }}
+                onPress={() => {
+                  props.navigation.navigate('JourneyCurrent');
+
+                }}
+                
+              />
+              <List.Item
+                style={{backgroundColor:'#f2f2f2'}}
+                title="Jornada sem veiculo"
                 titleStyle={{ fontSize: 15 }}
                 onPress={() => {
                   props.navigation.navigate('JourneyCurrent');
 
                 }}
               />
+              </List.Accordion>
               <List.Item
                 left={() => (
                   <List.Icon
@@ -212,6 +229,8 @@ export default (props) => {
                   />
                 )}>
                 <List.Item
+                style={{backgroundColor:'#f2f2f2', borderBottomWidth:1, borderBottomColor:'white'}}
+
                   title="Perfil"
                   titleStyle={{ fontSize: 14 }}
                   onPress={() => {
@@ -219,6 +238,8 @@ export default (props) => {
                   }}
                 />
                 <List.Item
+                style={{backgroundColor:'#f2f2f2'}}
+
                   title="API"
                   titleStyle={{ fontSize: 14 }}
                   onPress={() => {
@@ -277,6 +298,7 @@ const styles = StyleSheet.create({
     backgroundColor: commonStyles.color.principal,
     paddingVertical: 20,
     justifyContent: 'center',
+    width:'100%',
   },
   title: {
     fontSize: 16,
