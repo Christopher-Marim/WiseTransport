@@ -8,11 +8,11 @@ import {
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-export function SelectItens({array}) {
+export function SelectItens({array, callback,placehoulder}) {
   const [openSelect, setOpenSelect] = useState(false);
   const [itemSelected, setItemSelected] = useState({
     id: 0,
-    type: 'Selecione a jornada',
+    type: `${placehoulder}`,
   });
     function handlewClickSelectTypeJourney() {
         setOpenSelect(!openSelect);
@@ -23,7 +23,7 @@ export function SelectItens({array}) {
                       <TouchableOpacity
                         style={styles.selectTypeJourney}
                         onPress={handlewClickSelectTypeJourney}>
-                        <Text style={{color: 'grey'}, itemSelected.id!=0&&{color:'black'}}>{itemSelected.type}</Text>
+                        <Text style={[{color: 'grey'}, itemSelected.type!=placehoulder&&{color:'black'}]}>{itemSelected.type}</Text>
                         {!openSelect && (
                           <MaterialCommunityIcons
                             name="chevron-down"
@@ -42,12 +42,16 @@ export function SelectItens({array}) {
                           }}
                           renderItem={({item}) => (
                             <TouchableOpacity
-                              style={styles.itenSelect2}
+                              style={[styles.itenSelect2, (itemSelected.id==item.id)&&{backgroundColor:'#f0f0f0'}]}
                               onPress={() => {
                                 handlewClickSelectTypeJourney(),
                                 setItemSelected({
                                   id:item.id,
                                   type:item.type
+                                })
+                                callback({
+                                    id:item.id,
+                                    type:item.type
                                 })
                               }}>
                               <Text>{item.type}</Text>
