@@ -34,7 +34,7 @@ export function CurrentOccurrence({callback, loaderVisible}) {
     const getData = async () => {
       try {
         const occurrenceAux = await AsyncStorage.getItem('@CurrentOccurrence');
-
+console.log('OCORRENCIA'+ occurrenceAux)
         if (occurrenceAux !== null) {
           setOccurrence(JSON.parse(occurrenceAux));
         }

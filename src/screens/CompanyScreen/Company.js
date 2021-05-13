@@ -73,7 +73,7 @@ export default function Company(props) {
   }
 
   async function loadVeicules() {
-    const {data} = await api.get('/veiculo');
+    const {data} = await api.get(`/veiculo?method=loadUnit&systemunitid=${EmpresaId}`);
     const veicules = data.data;
     const realm = await getRealm();
     veicules.forEach(veiculo => {
@@ -97,6 +97,7 @@ export default function Company(props) {
   async function loadOccurences() {
     const {data} = await api.get('/ocorrencia');
     const ocorrencia = data.data;
+    console.log(ocorrencia);
     const realm = await getRealm();
     ocorrencia.forEach(ocorrencia => {
       realm.write(() => {
@@ -105,7 +106,9 @@ export default function Company(props) {
           {
             id: parseInt(ocorrencia.id),
             occurrence: ocorrencia.ocorrencia,
-            peso: parseInt(ocorrencia.peso)
+            peso: parseInt(ocorrencia.peso),
+            comveiculo:parseInt(ocorrencia.comveiculo)==1?true:false,
+            semveiculo:parseInt(ocorrencia.semveiculo)==1?true:false
           },
           'modified',
         );
@@ -114,7 +117,6 @@ export default function Company(props) {
 
     const store = realm.objects('Occurrence');
 
-    console.log(store);
   }
 
   useEffect(() => {

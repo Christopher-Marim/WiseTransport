@@ -138,7 +138,7 @@ export default function Login({navigation}) {
               setVisible(true);
               const index = data.findIndex(
                 (x) =>
-                  x.email == store.email &&
+                  x.login == store.email &&
                   x.senha == store.senha &&
                   x.chave == store.token,
               );
@@ -154,7 +154,7 @@ export default function Login({navigation}) {
             else {
               try {
                 const index = data.findIndex(
-                  (x) => x.email == email && x.senha == senha,
+                  (x) => x.login == email && x.senha == senha,
                 );
                 console.log('FILTER 2 : ' + data[index]);
   
@@ -173,7 +173,7 @@ export default function Login({navigation}) {
           else {
             try {
               const index = data.findIndex(
-                (x) => x.email == email && x.senha == senha,
+                (x) => x.login == email && x.senha == senha,
               );
               console.log('FILTER INTERNET DESLOGADO : ' + data[index].email);
   
@@ -232,7 +232,7 @@ export default function Login({navigation}) {
         const  user = {
           id:parseInt(usuario.id),
           nome: usuario.nome,
-          email: usuario.email,
+          email: usuario.login,
           senha: usuario.senha,
           token: usuario.chave,
           logado: true,
@@ -250,7 +250,7 @@ export default function Login({navigation}) {
         type: 'USER_LOGGED_IN',
         payload: [
           usuario.nome,
-          usuario.email,
+          usuario.login,
           usuario.senha,
           usuario.chave,
         ],
@@ -287,7 +287,7 @@ export default function Login({navigation}) {
         ]}>
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Login"
           placeholderTextColor='grey'
           value={email}
           autoCorrect={false}

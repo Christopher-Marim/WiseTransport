@@ -24,7 +24,7 @@ export default function PickerOcorrencias(props) {
 
   async function getOccurrences() {
     const realm = await getRealm();
-    const store = realm.objects('Occurrence')
+    const store = realm.objects('Occurrence').filtered('comveiculo==true')
     setOcurrences(store);
     setloadingActive(false);
   }

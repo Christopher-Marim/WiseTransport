@@ -4,6 +4,8 @@ export default OccurrenceSchema = {
     properties: {
       id: { type: "int", indexed: true },
       occurrence: "string",
+      comveiculo:'bool?',
+      semveiculo:'bool?',
       peso: "int?"
     },
   };

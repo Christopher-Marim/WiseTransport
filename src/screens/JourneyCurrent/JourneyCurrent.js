@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Geolocation from '@react-native-community/geolocation';
 import {useDispatch} from 'react-redux';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -175,6 +176,87 @@ export function JourneyCurrent({navigation}) {
     }
   }
 
+  function getLocation() {
+    setLoaderVisible(true);
+    Geolocation.getCurrentPosition(
+      position => {
+        const currentLatitude = parseFloat(
+          JSON.stringify(position.coords.latitude),
+        );
+        const currentLongitude = parseFloat(
+          JSON.stringify(position.coords.longitude),
+        );
+        if (currentLatitude != undefined) {
+          ChangeJourneyWithoutVehicleStorage(currentLatitude, currentLongitude);
+        }
+      },
+      error => Alert.alert(error.message),
+      {enableHighAccuracy: false, timeout: 20000},
+    );
+  }
+
+  async function ChangeJourneyWithoutVehicleStorage(Latitude, Longitude) {
+    const realm = await getRealm();
+
+    realm.write(()=>{
+      realm.create('Journey',
+      {
+        id: Journey.id,
+        dateFinish: new Date(),
+        latitudeFinal: String(Latitude),
+        longitudeFinal: String(Longitude),
+      },
+      'modified',
+      )
+    }
+      );
+      realm.write(()=>{
+        realm.create('OccurrenceList',
+          {
+            id: Occurrences[0].id,
+            dateFinal: new Date(),
+          },
+          'modified'
+        )
+      }
+      );
+
+    PostJourneyWithoutVehicle()
+  }
+
+  async function PostJourneyWithoutVehicle() {
+    try {
+      const {data} = await api.post('/jornada', {
+        funcionario_id: Journey.operator_id,
+        datainiciojornada: moment(Journey.dateStart).format(
+          'YYYY-MM-DD hh:mm:ss',
+        ),
+        datafimjornada: moment(Journey.dateFinal).format('YYYY-MM-DD hh:mm:ss'),
+        latitudeinicial: Journey.latitudeInicial,
+        latitudefinal: Journey.latitudeFinal,
+        longitudeinicial: Journey.longitudeInicial,
+        longitudefinal: Journey.longitudeFinal,
+        system_unit_id: Journey.systemUnitId,
+        system_user_id: Journey.systemUserId,
+      });
+
+      const idJornada = data.data.id;
+      console.log(data);
+      PostOccurrences(idJornada);
+    } catch (error) {
+      Alert.alert(
+        'Erro',
+        'Erro ao finalizar a jornada, quando tiver conexão a internet procure reenviar essa jornada na lista de jornadas.',
+      );
+      setJourney();
+      setOccurrences([]);
+      loadJourney();
+      callbackCloseModalKMFinal();
+      setLoaderVisible(false)
+
+    }
+  }
+
   const forEachCustom = async (idJornada, element) => {
     try {
       const response = await api.post('/jornadaocorrencia', {
@@ -212,9 +294,10 @@ export function JourneyCurrent({navigation}) {
         'modified',
       );
     });
-
+    alert('Finalizado com sucesso!')
     callbackCloseModalKMFinal();
     setJourney();
+    setLoaderVisible(false)
     setOccurrences([]);
   }
 
@@ -277,21 +360,47 @@ export function JourneyCurrent({navigation}) {
           <TouchableOpacity
             style={styles.buttonFilter}
             onPress={() => {
-              if(!createFinish){
-                setModalKmFinalVisible(true);
-              }else{
-                Alert.alert('Erro ao finalizar', 'Procure finalizar a ocorrência em andamento')
+              if (!createFinish) {
+                if (Journey?.veicule_id) {
+                  setModalKmFinalVisible(true);
+                } else {
+                  Alert.alert(
+                    'Finalizar Jornada',
+                    'Deseja mesmo finalizar a jornada?',
+                    [
+                      {
+                        text: 'Cancelar',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Prosseguir',
+                        onPress: () => {
+                          getLocation();
+                        },
+                      },
+                    ],
+                  );
+                }
+              } else {
+                Alert.alert(
+                  'Erro ao finalizar',
+                  'Procure finalizar a ocorrência em andamento',
+                );
               }
             }}>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-around'}}>
               <Text
-                style={[{
-                  fontWeight: 'bold',
-                  color: commonStyles.color.headers,
-                  marginHorizontal: 5,
-                  fontSize: 16,
-                }, createFinish&&{color:'grey'}]}>
+                style={[
+                  {
+                    fontWeight: 'bold',
+                    color: commonStyles.color.headers,
+                    marginHorizontal: 5,
+                    fontSize: 16,
+                  },
+                  createFinish && {color: 'grey'},
+                ]}>
                 Finalizar
               </Text>
             </View>
@@ -308,7 +417,47 @@ export function JourneyCurrent({navigation}) {
           </TouchableOpacity>
         </View>
       )}
-      {Journey && (
+      {!Journey?.veicule_id && Journey && (
+        <View
+          style={[
+            styles.container2,
+            !Journey && {backgroundColor: commonStyles.color.page},
+          ]}>
+          <View style={styles.group}>
+            <TouchableOpacity
+              style={styles.buttonInfos}
+              onPress={handleClickInfos}>
+              <Text style={styles.subTitle}>Informações</Text>
+              {infosVisible && (
+                <MaterialCommunityIcons name={'chevron-up'} size={32} />
+              )}
+              {!infosVisible && (
+                <MaterialCommunityIcons name={'chevron-down'} size={32} />
+              )}
+            </TouchableOpacity>
+            {infosVisible && (
+              <View style={styles.wrapper}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginHorizontal: 20,
+                    alignItems: 'center',
+                  }}>
+                  <Text style={{fontWeight: 'bold', fontSize: 16}}>
+                    Tipo de jornada:{' '}
+                  </Text>
+                  <Text>{Journey.veicule_name}</Text>
+                </View>
+                <InfosJourney backgroundColor={'white'} />
+                {Journey.veicule_id && (
+                  <InfosVeicules backgroundColor={'white'} />
+                )}
+              </View>
+            )}
+          </View>
+        </View>
+      )}
+      {Journey?.veicule_id && (
         <View
           style={[
             styles.container2,

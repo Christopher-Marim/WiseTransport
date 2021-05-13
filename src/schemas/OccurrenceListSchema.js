@@ -6,7 +6,7 @@ export default OccurrenceListSchema = {
       occurrence_id:'int',
       occurrence: "string",
       dataInicio:'date',
-      dataFim:'date',
+      dataFim:'date?',
       latitude:'string',
       longitude:'string',
       peso: "int?"

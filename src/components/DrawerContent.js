@@ -60,13 +60,13 @@ export default (props) => {
         <View style={styles.drawerContent}>
           <TouchableOpacity onPress={() => { props.navigation.navigate('Profile'); }}>
             <View style={styles.userInfoSection}>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row', alignItems:'center' }}>
                 <Avatar.Image
                   source={require('../../assets/icon.png')}
                   size={50}
                 />
                 <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                  <Title style={styles.title}>{nome}</Title>
+                  <Title numberOfLines={1} style={styles.title}>{nome}</Title>
                   <Caption style={styles.email}>{email}</Caption>
                   <Caption style={styles.email}>{nomeEmpresa}</Caption>
                 </View>
@@ -95,42 +95,25 @@ export default (props) => {
 
                 }}
               />
-              <List.Accordion
-              title="Jornada"
-              titleStyle={{ fontSize: 15 }}
-              id="5"
-              left={() => (<List.Icon
-                icon={({ color, size }) => (
-                  <MaterialCommunityIcons
-                    name="truck-outline"
-                    color={color}
-                    size={size}
+              <List.Item
+                left={() => (
+                  <List.Icon
+                    icon={({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="truck-outline"
+                        color={color}
+                        size={size}
+                      />
+                    )}
                   />
                 )}
-              />
-              )}>
-
-              <List.Item
-                style={{backgroundColor:'#f2f2f2', borderBottomWidth:1, borderBottomColor:'white'}}
-
-                title="Jornada com veiculo"
-                titleStyle={{ fontSize: 15 }}
-                onPress={() => {
-                  props.navigation.navigate('JourneyCurrent');
-
-                }}
-                
-              />
-              <List.Item
-                style={{backgroundColor:'#f2f2f2'}}
-                title="Jornada sem veiculo"
+                title="Jornada"
                 titleStyle={{ fontSize: 15 }}
                 onPress={() => {
                   props.navigation.navigate('JourneyCurrent');
 
                 }}
               />
-              </List.Accordion>
               <List.Item
                 left={() => (
                   <List.Icon
@@ -229,8 +212,6 @@ export default (props) => {
                   />
                 )}>
                 <List.Item
-                style={{backgroundColor:'#f2f2f2', borderBottomWidth:1, borderBottomColor:'white'}}
-
                   title="Perfil"
                   titleStyle={{ fontSize: 14 }}
                   onPress={() => {
@@ -238,8 +219,6 @@ export default (props) => {
                   }}
                 />
                 <List.Item
-                style={{backgroundColor:'#f2f2f2'}}
-
                   title="API"
                   titleStyle={{ fontSize: 14 }}
                   onPress={() => {
