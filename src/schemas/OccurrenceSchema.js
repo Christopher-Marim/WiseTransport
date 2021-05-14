@@ -6,6 +6,7 @@ export default OccurrenceSchema = {
       occurrence: "string",
       comveiculo:'bool?',
       semveiculo:'bool?',
+      systemUnitId:'int',
       peso: "int?"
     },
   };

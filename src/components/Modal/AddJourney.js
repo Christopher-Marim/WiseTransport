@@ -45,9 +45,9 @@ export default function AddJourney({callback}) {
     state => state.showModal.showModalADDINVENTORY,
   );
 
-  async function getOccurrences() {
+  async function getOccurrences(system_unit_id) {
     const realm = await getRealm();
-    const store = realm.objects('Occurrence').filtered('semveiculo == true')
+    const store = realm.objects('Occurrence').filtered(`semveiculo == true && systemUnitId == ${system_unit_id}`)
     setOcurrences(store);
   }
 
@@ -55,10 +55,9 @@ export default function AddJourney({callback}) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getOccurrences()
+    loadUser();
     callLocation();
     loadVeicules();
-    loadUser();
   }, [statusModal]);
 
   async function loadVeicules() {
@@ -76,6 +75,7 @@ export default function AddJourney({callback}) {
       const useraux = await AsyncStorage.getItem('@User');
       const store = JSON.parse(useraux);
       setUser(store);
+      getOccurrences(store.system_unit_id)
     } catch (e) {
       alert('Erro ao carregar o usuario ' + e);
       console.error(e);

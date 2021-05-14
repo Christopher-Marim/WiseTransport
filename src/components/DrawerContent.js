@@ -9,7 +9,8 @@ import getRealm from '../services/realm';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux'
-
+import axios from 'axios';
+import commonsVariables from '../../commonsVariables';
 
 export default (props) => {
   
@@ -17,6 +18,67 @@ export default (props) => {
   const [nomeEmpresa, setnomeEmpresa] = useState();
   const [email, setemail] = useState();
   const [UnitIdEmpresa, setUnitIdEmpresa] = useState();
+
+  const api = axios.create({
+    baseURL: commonsVariables.api.baseUrl,
+    headers: {
+      Authorization: commonsVariables.api.Authorization,
+    },
+  });
+
+  
+  function GetdataVeiculesAndOccurrences(){
+    loadVeicules()
+    loadOccurences()
+  }
+
+  async function loadVeicules() {
+    const {data} = await api.get(`/veiculo?method=loadUnit&systemunitid=${UnitIdEmpresa}`);
+    const veicules = data.data;
+    const realm = await getRealm();
+    veicules.forEach(veiculo => {
+      realm.write(() => {
+        realm.create(
+          'Veicules',
+          {
+            id: parseInt(veiculo.id),
+            tipoVeiculo: veiculo.tipoveiculo,
+            placa: veiculo.placa,
+          },
+          'modified',
+        );
+      });
+    });
+
+    const store = realm.objects('Veicules');
+
+    console.log('Veiculosss'+store);
+  }
+  async function loadOccurences() {
+    const {data} = await api.get('/ocorrencia');
+    const ocorrencia = data.data;
+    console.log(ocorrencia);
+    const realm = await getRealm();
+    ocorrencia.forEach(ocorrencia => {
+      realm.write(() => {
+        realm.create(
+          'Occurrence',
+          {
+            id: parseInt(ocorrencia.id),
+            occurrence: ocorrencia.ocorrencia,
+            peso: parseInt(ocorrencia.peso),
+            comveiculo:parseInt(ocorrencia.comveiculo)==1?true:false,
+            semveiculo:parseInt(ocorrencia.semveiculo)==1?true:false,
+            systemUnitId:parseInt(ocorrencia.system_unit_id)
+          },
+          'modified',
+        );
+      });
+    });
+
+    const store = realm.objects('Occurrence');
+
+  }
   
   useEffect(() => {
     async function getUsuarioRealm() {
@@ -226,6 +288,22 @@ export default (props) => {
                   }}
                 />
               </List.Accordion>
+              <List.Item
+                left={() => (
+                  <List.Icon
+                    icon={({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="database-sync"
+                        color={color}
+                        size={size}
+                      />
+                    )}
+                  />
+                )}
+                title="Sincronizar dados"
+                titleStyle={{ fontSize: 15 }}
+                onPress={() => { GetdataVeiculesAndOccurrences()}}
+              />
               <List.Item
                 left={() => (
                   <List.Icon

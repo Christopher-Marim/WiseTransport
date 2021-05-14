@@ -49,13 +49,11 @@ export default function Company(props) {
   }
 
   async function changeEmpresa(IdEmpresa) {
-    
     try {
-      const userString = await AsyncStorage.getItem('@User')
-      const store = JSON.parse(userString)
-
-      const userAux={
-        id:store.id,
+      const userString = await AsyncStorage.getItem('@User');
+     const store = JSON.parse(userString)
+      const userAux = {
+        id: store.id,
         nome: store.nome,
         email: store.email,
         senha: store.senha,
@@ -63,9 +61,13 @@ export default function Company(props) {
         logado: true,
         system_user_id: store.system_user_id,
         system_unit_id: parseInt(IdEmpresa, 10),
-      }
-    } catch(e) {
-      console.error(e)
+      };
+
+      await AsyncStorage.setItem('@User', JSON.stringify(userAux));
+      const userString2 = await AsyncStorage.getItem('@User');
+      console.log('USUARIO' + JSON.parse(userString2));
+    } catch (e) {
+      console.error(e);
     }
 
     loadVeicules();
@@ -73,7 +75,9 @@ export default function Company(props) {
   }
 
   async function loadVeicules() {
-    const {data} = await api.get(`/veiculo?method=loadUnit&systemunitid=${EmpresaId}`);
+    const {data} = await api.get(
+      `/veiculo?method=loadUnit&systemunitid=${EmpresaId}`,
+    );
     const veicules = data.data;
     const realm = await getRealm();
     veicules.forEach(veiculo => {
@@ -92,7 +96,7 @@ export default function Company(props) {
 
     const store = realm.objects('Veicules');
 
-    console.log('Veiculosss'+store);
+    console.log('Veiculosss' + store);
   }
   async function loadOccurences() {
     const {data} = await api.get('/ocorrencia');
@@ -107,8 +111,9 @@ export default function Company(props) {
             id: parseInt(ocorrencia.id),
             occurrence: ocorrencia.ocorrencia,
             peso: parseInt(ocorrencia.peso),
-            comveiculo:parseInt(ocorrencia.comveiculo)==1?true:false,
-            semveiculo:parseInt(ocorrencia.semveiculo)==1?true:false
+            comveiculo: parseInt(ocorrencia.comveiculo) == 1 ? true : false,
+            semveiculo: parseInt(ocorrencia.semveiculo) == 1 ? true : false,
+            systemUnitId: parseInt(ocorrencia.system_unit_id),
           },
           'modified',
         );
@@ -116,7 +121,6 @@ export default function Company(props) {
     });
 
     const store = realm.objects('Occurrence');
-
   }
 
   useEffect(() => {
@@ -138,15 +142,14 @@ export default function Company(props) {
 
   async function getUser() {
     try {
-      const useraux = await AsyncStorage.getItem('@User')
-      const store = JSON.parse(useraux)
+      const useraux = await AsyncStorage.getItem('@User');
+      const store = JSON.parse(useraux);
 
       setUserId(store.id);
       setUserName(store.nome);
       setUserSystemUserId(store.system_user_id);
-     
-    } catch(e) {
-      console.error(e)
+    } catch (e) {
+      console.error(e);
     }
   }
 
