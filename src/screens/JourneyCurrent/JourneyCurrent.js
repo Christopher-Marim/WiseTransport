@@ -214,7 +214,7 @@ export function JourneyCurrent({navigation}) {
         realm.create('OccurrenceList',
           {
             id: Occurrences[0].id,
-            dateFinal: new Date(),
+            dataFim: new Date(),
           },
           'modified'
         )
@@ -231,7 +231,7 @@ export function JourneyCurrent({navigation}) {
         datainiciojornada: moment(Journey.dateStart).format(
           'YYYY-MM-DD hh:mm:ss',
         ),
-        datafimjornada: moment(Journey.dateFinal).format('YYYY-MM-DD hh:mm:ss'),
+        datafimjornada: moment(Journey.dateFinish).format('YYYY-MM-DD hh:mm:ss'),
         latitudeinicial: Journey.latitudeInicial,
         latitudefinal: Journey.latitudeFinal,
         longitudeinicial: Journey.longitudeInicial,
@@ -268,7 +268,7 @@ export function JourneyCurrent({navigation}) {
           'YYYY-MM-DD hh:mm:ss',
         ),
         datahorafim: moment(element.dataFim).format('YYYY-MM-DD hh:mm:ss'),
-        latitude: element.latitade,
+        latitude: element.latitude,
         longitude: element.longitude,
       });
       console.log(response.data.data);
