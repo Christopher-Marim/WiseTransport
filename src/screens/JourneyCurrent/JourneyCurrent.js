@@ -31,6 +31,7 @@ import {CurrentOccurrence} from '../../components/SwipeableOccurence';
 import {getParmsAPI} from '../../services/api';
 import commonsVariables from '../../../commonsVariables';
 import {KmFinalModal} from '../../components/Modal/KmFinalModal';
+import { User } from 'realm';
 
 export function JourneyCurrent({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
@@ -210,16 +211,21 @@ export function JourneyCurrent({navigation}) {
       )
     }
       );
-      realm.write(()=>{
-        realm.create('OccurrenceList',
-          {
-            id: Occurrences[0].id,
-            dataFim: new Date(),
-          },
-          'modified'
-        )
-      }
-      );
+
+      Journey.occurrences.forEach(x=>{if(!x.dataFim){
+        
+        realm.write(()=>{
+          realm.create('OccurrenceList',
+            {
+              id: x.id,
+              dataFim: new Date(),
+            },
+            'modified'
+          )
+        }
+  
+        );
+      }})
 
     PostJourneyWithoutVehicle()
   }
@@ -417,12 +423,16 @@ export function JourneyCurrent({navigation}) {
           </TouchableOpacity>
         </View>
       )}
-      {!Journey?.veicule_id && Journey && (
+
+      {
+        Journey&&
         <View
           style={[
             styles.container2,
             !Journey && {backgroundColor: commonStyles.color.page},
           ]}>
+      
+      {!Journey?.veicule_id && (
           <View style={styles.group}>
             <TouchableOpacity
               style={styles.buttonInfos}
@@ -455,14 +465,10 @@ export function JourneyCurrent({navigation}) {
               </View>
             )}
           </View>
-        </View>
+        
       )}
       {Journey?.veicule_id && (
-        <View
-          style={[
-            styles.container2,
-            !Journey && {backgroundColor: commonStyles.color.page},
-          ]}>
+        
           <View style={styles.group}>
             <TouchableOpacity
               style={styles.buttonInfos}
@@ -482,7 +488,10 @@ export function JourneyCurrent({navigation}) {
               </View>
             )}
           </View>
-          {!createFinish && (
+          
+      )}
+
+{!createFinish && (
             <Animated.View
               style={[
                 styles.group,
@@ -493,6 +502,8 @@ export function JourneyCurrent({navigation}) {
                 createBegin && {...animatedStyle},
               ]}>
               <CreateOccurrence
+                system_unit_id={Journey?.systemUnitId}
+                WithoutVehicle={Journey?.veicule_id?true:false}
                 responseCallback={handleCreateBegin}
                 getData={getData}
               />
@@ -554,10 +565,10 @@ export function JourneyCurrent({navigation}) {
                           <Text> {formattedHours(item.dataInicio)}</Text>
                         </View>
                         <View style={{flexDirection: 'row'}}>
-                          <Text>Fim: {formatteddate(item.dataFim)}</Text>
+                          <Text>Fim: {item.dataFim?formatteddate(item.dataFim):'Ainda não finalizada'}</Text>
                           <Text>
                             {'    '}
-                            {formattedHours(item.dataFim)}
+                            {item.dataFim?formattedHours(item.dataFim):''}
                           </Text>
                         </View>
                       </View>
@@ -586,8 +597,8 @@ export function JourneyCurrent({navigation}) {
               </View>
             )}
           </View>
-        </View>
-      )}
+          </View>
+      }
     </SafeAreaView>
   );
 }

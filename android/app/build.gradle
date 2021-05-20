@@ -138,8 +138,8 @@ android {
         applicationId "com.wisetransport"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "3.0.1"
+        versionCode 6
+        versionName "6"
     }
     splits {
         abi {

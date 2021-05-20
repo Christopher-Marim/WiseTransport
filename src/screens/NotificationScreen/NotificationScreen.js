@@ -156,7 +156,7 @@ export default function NotificationScreen({navigation}) {
       dispatch({type: 'REFRESH', payload: [false]});
     } catch (error) {
       console.log(error);
-      errorHandler(e, false);
+      Alert.alert("Sem conexão", "Verifique sua conexão a internet!")
       dispatch({type: 'REFRESH', payload: [false]});
       setVisibleLoader(false);
     }

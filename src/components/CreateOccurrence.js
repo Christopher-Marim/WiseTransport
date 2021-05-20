@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 
-export function CreateOccurrence({responseCallback, getData}) {
+export function CreateOccurrence({responseCallback, getData, WithoutVehicle, system_unit_id}) {
   const [pickerVisible, setPickerVisible] = useState(false);
   const [ocorrenciaNome, setOcorrenciaNome] = useState( 'Escolha uma ocorrência');
   const [ocorrenciaPeso, setOcorrenciaPeso] = useState();
@@ -91,7 +91,7 @@ export function CreateOccurrence({responseCallback, getData}) {
             }}>
             <Text style={styles.textOccurrence}>{ocorrenciaNome}</Text>
           </TouchableOpacity>
-          <PickerOcorrencias visible={pickerVisible} callback={callback} />
+          <PickerOcorrencias visible={pickerVisible} callback={callback} withoutVehicle={WithoutVehicle} system_unit_id={system_unit_id} />
           <Text style={styles.textHours}>Hora Inicio: {hours}</Text>
           <View style={styles.groupButtons}>
             <TouchableOpacity

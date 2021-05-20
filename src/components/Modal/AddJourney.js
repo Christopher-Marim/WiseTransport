@@ -217,7 +217,7 @@ export default function AddJourney({callback}) {
           }
         },
         error => Alert.alert(error.message),
-        {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
+        {enableHighAccuracy: false, timeout: 20000, maximumAge: 100},
       );
     } catch (error) {
       alert('Error ao pegar Geolocalização: ' + error);

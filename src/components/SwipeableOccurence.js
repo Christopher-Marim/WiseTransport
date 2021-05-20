@@ -24,8 +24,6 @@ export function CurrentOccurrence({callback, loaderVisible}) {
   const [borderRadiusCONST, setborderRadius] = useState(10);
   const [Journey, setJourney] = useState();
   const [ocurrence, setOccurrence] = useState([]);
-  const [latitude, setLatitude] = useState();
-  const [longitude, setLongitude] = useState();
   const [Heartbeat] = useState(new Animated.Value(0));
 
   const dispatch = useDispatch();
@@ -86,18 +84,16 @@ console.log('OCORRENCIA'+ occurrenceAux)
           JSON.stringify(position.coords.longitude),
         );
         if (currentLatitude != undefined) {
-          setLatitude(currentLatitude);
-          setLongitude(currentLongitude);
 
-          setChangesStorage();
+          setChangesStorage(currentLatitude,currentLongitude);
         }
       },
-      error => Alert.alert(error.message),
-      {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
+      error => {Alert.alert(error.message), setChangesStorage('não definida','não definida');},
+      {enableHighAccuracy: false, timeout: 20000, maximumAge: 100},
     );
   }
 
-  async function setChangesStorage() {
+  async function setChangesStorage(latitudeAux,longitudeAux) {
     const realm = await getRealm();
     const data = realm.objects('Journey').filter(x => {
       if (!x.dateFinish) {
@@ -112,8 +108,8 @@ console.log('OCORRENCIA'+ occurrenceAux)
             dataInicio: ocurrence.dateOccurence,
             dataFim: new Date(),
             peso: ocurrence.pesoOccurrence,
-            latitude: String(latitude),
-            longitude: String(longitude),
+            latitude: String(latitudeAux),
+            longitude: String(longitudeAux),
           });
         });
 
@@ -124,8 +120,6 @@ console.log('OCORRENCIA'+ occurrenceAux)
       }
     });
     
-
-
     loaderVisible(false);
     cleanCurrentoccurence();
   }
