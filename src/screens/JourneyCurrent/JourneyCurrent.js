@@ -31,7 +31,6 @@ import {CurrentOccurrence} from '../../components/SwipeableOccurence';
 import {getParmsAPI} from '../../services/api';
 import commonsVariables from '../../../commonsVariables';
 import {KmFinalModal} from '../../components/Modal/KmFinalModal';
-import { User } from 'realm';
 
 export function JourneyCurrent({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
@@ -147,10 +146,8 @@ export function JourneyCurrent({navigation}) {
       const {data} = await api.post('/jornada', {
         funcionario_id: Journey.operator_id,
         carro_id: Journey.veicule_id,
-        datainiciojornada: moment(Journey.dateStart).format(
-          'YYYY-MM-DD hh:mm:ss',
-        ),
-        datafimjornada: moment(Journey.dateFinal).format('YYYY-MM-DD hh:mm:ss'),
+        datainiciojornada: `${moment(Journey.dateStart).format('YYYY-MM-DD')} ${moment(Journey.dateStart).format('LTS')} `,
+        datafimjornada: `${moment(Journey.dateFinish).format('YYYY-MM-DD')} ${moment(Journey.dateFinish).format('LTS')} `,
         kminicial: Journey.kmInicial,
         kmfinal: Journey.kmFinal,
         kmrodado: parseInt(Journey.kmFinal) - parseInt(Journey.kmInicial),
@@ -234,10 +231,8 @@ export function JourneyCurrent({navigation}) {
     try {
       const {data} = await api.post('/jornada', {
         funcionario_id: Journey.operator_id,
-        datainiciojornada: moment(Journey.dateStart).format(
-          'YYYY-MM-DD hh:mm:ss',
-        ),
-        datafimjornada: moment(Journey.dateFinish).format('YYYY-MM-DD hh:mm:ss'),
+        datainiciojornada: `${moment(Journey.dateStart).format('YYYY-MM-DD')} ${moment(Journey.dateStart).format('LTS')} `,
+        datafimjornada: `${moment(Journey.dateFinish).format('YYYY-MM-DD')} ${moment(Journey.dateFinish).format('LTS')} `,
         latitudeinicial: Journey.latitudeInicial,
         latitudefinal: Journey.latitudeFinal,
         longitudeinicial: Journey.longitudeInicial,
@@ -270,10 +265,8 @@ export function JourneyCurrent({navigation}) {
         ocorrencia_id: element.occurrence_id,
         system_unit_id: Journey.systemUnitId,
         system_user_id: Journey.systemUserId,
-        datahorainicio: moment(element.dataInicio).format(
-          'YYYY-MM-DD hh:mm:ss',
-        ),
-        datahorafim: moment(element.dataFim).format('YYYY-MM-DD hh:mm:ss'),
+        datahorainicio: `${moment(element.dataInicio).format('YYYY-MM-DD')} ${moment(element.dataInicio).format('LTS')} ` ,
+        datahorafim: `${moment(element.dataFim).format('YYYY-MM-DD')} ${moment(element.dataFim).format('LTS')} ` ,
         latitude: element.latitude,
         longitude: element.longitude,
       });

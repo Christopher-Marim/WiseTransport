@@ -90,6 +90,8 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, 
             onChangeText={text => setKmfinal(text)}
             value={kmfinal}
           />
+          <Text style={styles.InfokmInicial}>Km inicial: {kmInicial}</Text>
+
 
           <View style={styles.buttons}>
             <TouchableOpacity onPress={close}>
@@ -180,4 +182,8 @@ const styles = StyleSheet.create({
     color:'black',
     backgroundColor: '#f1f2f4',
   },
+  InfokmInicial:{
+    marginHorizontal:20,
+   marginTop:-5
+  }
 });
