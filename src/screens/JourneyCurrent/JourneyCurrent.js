@@ -31,7 +31,7 @@ import {CurrentOccurrence} from '../../components/SwipeableOccurence';
 import {getParmsAPI} from '../../services/api';
 import commonsVariables from '../../../commonsVariables';
 import {KmFinalModal} from '../../components/Modal/KmFinalModal';
-import { SnackBar } from '../../components/SnackBar';
+import { EnableLocation, SnackBar } from '../../components/SnackBar';
 
 export function JourneyCurrent({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
@@ -190,7 +190,7 @@ export function JourneyCurrent({navigation}) {
           ChangeJourneyWithoutVehicleStorage(currentLatitude, currentLongitude);
         }
       },
-      error => (Alert.alert(error.message), ChangeJourneyWithoutVehicleStorage('Não definida', 'Não definida' )),
+      error => (EnableLocation(), Alert.alert(error.message), ChangeJourneyWithoutVehicleStorage('Não definida', 'Não definida' )),
       {enableHighAccuracy: false, timeout: 20000, maximumAge: 100},
     );
   }
@@ -211,20 +211,6 @@ export function JourneyCurrent({navigation}) {
     }
       );
 
-      Journey.occurrences.forEach(x=>{if(!x.dataFim){
-        
-        realm.write(()=>{
-          realm.create('OccurrenceList',
-            {
-              id: x.id,
-              dataFim: new Date(),
-            },
-            'modified'
-          )
-        }
-  
-        );
-      }})
 
     PostJourneyWithoutVehicle()
   }
@@ -327,12 +313,13 @@ export function JourneyCurrent({navigation}) {
     moment(data).locale('pt-br').format('DD/MM/YYYY');
   const callbackLoaderVisible = status => setLoaderVisible(status);
   const callbackCloseModalKMFinal = () => setModalKmFinalVisible(false);
+  const callbackAddourney = (status) => (setCreateFinish(status), loadJourney());
 
   const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
 
   return (
     <SafeAreaView style={styles.container}>
-      <Modal callback={loadJourney}   />
+      <Modal callback={callbackAddourney}   />
       <KmFinalModal
         kmInicial={Journey?.kmInicial}
         JourneyId={Journey?.id}

@@ -100,6 +100,7 @@ export default function AddJourney({callback}) {
             occurrences: [],
           });
         });
+        callback(false);
         setplaque();
       }else{
         realm.write(() => {
@@ -113,21 +114,13 @@ export default function AddJourney({callback}) {
             longitudeInicial: String(longitude),
             systemUnitId: user.system_unit_id,
             systemUserId: user.system_user_id,
-            occurrences: [{
-            id: Math.random() * 1000,
-            occurrence_id: typeJourney.id,
-            occurrence: typeJourney.occurrence,
-            dataInicio: new Date(),
-            peso: 1,
-            latitude: String(latitude),
-            longitude: String(longitude),
-            }],
+            occurrences: [],
           });
         });
         setplaque();
-
+        SetOccurenceAsyncStorage()
+        callback(true);
       }
-      callback();
       closeModal();
     } catch (error) {
       alert('Erro ao adicionar Jornada' + error);
@@ -222,6 +215,21 @@ export default function AddJourney({callback}) {
 
   function itemSelected(item) {
     setTypeJourney({id: item.id, occurrence: item.occurrence});
+  }
+
+  async function SetOccurenceAsyncStorage() {
+
+    let obj = {
+      idOccurrence: typeJourney.id,
+      pesoOccurrence: 1,
+      nameOccurrence: typeJourney.occurrence,
+      dateOccurence: new Date(),
+    }
+    try {
+      await AsyncStorage.setItem('@CurrentOccurrence', JSON.stringify(obj) );
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   let Component2 =

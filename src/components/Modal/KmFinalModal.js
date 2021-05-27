@@ -39,7 +39,7 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, 
           UpdateJourney(currentLatitude, currentLongitude);
         }
       },
-      error => Alert.alert(error.message),
+      error => (Alert.alert(error.message), UpdateJourney('Não foi possivel pegar posição final', 'Não foi possivel pegar posição final')),
       {enableHighAccuracy: false, timeout: 20000},
     );
   }

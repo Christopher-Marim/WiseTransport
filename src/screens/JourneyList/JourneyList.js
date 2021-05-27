@@ -86,7 +86,6 @@ export function JourneyList({navigation}) {
       console.log(data);
       PostOccurrences(idJornada, Jornada);
     } catch (error) {
-      console.error(error)
       Alert.alert(
         'Erro',
         'Erro ao finalizar a jornada, quando tiver conexão a internet procure reenviar essa jornada na lista de jornadas.',
