@@ -9,12 +9,9 @@ import {
   TextInput,
   Platform,
   Alert,
-  TouchableOpacity,
-  FlatList,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../commonStyles';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import StepModal from './StepModal';
 import getRealm from '../../services/realm';
 import Geolocation from '@react-native-community/geolocation';
@@ -24,8 +21,7 @@ import {InfosJourney} from '../InfosJourney';
 import {InfosVeicules} from '../InfosVeicule';
 import {RadioButton} from 'react-native-paper';
 import {SelectItens} from '../SelectItem';
-import { getParmsAPI } from '../../services/api';
-import axios from 'axios';
+import { EnableLocation } from '../SnackBar';
 
 export default function AddJourney({callback}) {
   const [arrayVeicules, setArrayVeicules] = useState();
@@ -198,7 +194,7 @@ export default function AddJourney({callback}) {
       alert('Permision Error' + error);
     }
   };
-
+  
   async function getLocation() {
     try {
       await Geolocation.getCurrentPosition(
@@ -216,7 +212,7 @@ export default function AddJourney({callback}) {
             console.warn(latitude, longitude);
           }
         },
-        error => Alert.alert(error.message),
+        error => ( EnableLocation() ),
         {enableHighAccuracy: false, timeout: 20000, maximumAge: 100},
       );
     } catch (error) {

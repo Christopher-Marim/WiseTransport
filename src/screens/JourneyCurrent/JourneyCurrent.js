@@ -31,9 +31,11 @@ import {CurrentOccurrence} from '../../components/SwipeableOccurence';
 import {getParmsAPI} from '../../services/api';
 import commonsVariables from '../../../commonsVariables';
 import {KmFinalModal} from '../../components/Modal/KmFinalModal';
+import { SnackBar } from '../../components/SnackBar';
 
 export function JourneyCurrent({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
+  const [visibleSnackBar, setVisibleSnackBar] = useState(true);
   const [modalKmFinalVisible, setModalKmFinalVisible] = useState(false);
   const [infosVisible, setInfosVisible] = useState(false);
   const [listVisible, setListVisible] = useState(false);
@@ -330,7 +332,7 @@ export function JourneyCurrent({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Modal callback={loadJourney} />
+      <Modal callback={loadJourney}   />
       <KmFinalModal
         kmInicial={Journey?.kmInicial}
         JourneyId={Journey?.id}
@@ -592,6 +594,7 @@ export function JourneyCurrent({navigation}) {
           </View>
           </View>
       }
+      <SnackBar message={'Sem permissão de GPS'} visibleAux={visibleSnackBar}/>
     </SafeAreaView>
   );
 }
