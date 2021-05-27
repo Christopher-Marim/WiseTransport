@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PickerOcorrencias from './Modal/ModalOcorrencias/PickerOcorrencias';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,11 +42,16 @@ export function CreateOccurrence({responseCallback, getData, WithoutVehicle, sys
   }
 
   function handlePressFinish() {
-    responseCallback(false);
-    SetOccurenceAsyncStorage()
-    getData()
-    setAddOccurrenceBeginning(false);
-    resetState()
+    if(ocorrenciaNome!='Escolha uma ocorrência'){
+      responseCallback(false);
+      SetOccurenceAsyncStorage()
+      getData()
+      setAddOccurrenceBeginning(false);
+      resetState()
+    }
+    else{
+      Alert.alert('Ocorrência invalida', 'Selecione uma ocorrência')
+    }
   }
 
   function resetState() {

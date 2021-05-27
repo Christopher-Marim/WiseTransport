@@ -188,8 +188,8 @@ export function JourneyCurrent({navigation}) {
           ChangeJourneyWithoutVehicleStorage(currentLatitude, currentLongitude);
         }
       },
-      error => Alert.alert(error.message),
-      {enableHighAccuracy: false, timeout: 20000},
+      error => (Alert.alert(error.message), ChangeJourneyWithoutVehicleStorage('Não definida', 'Não definida' )),
+      {enableHighAccuracy: false, timeout: 20000, maximumAge: 100},
     );
   }
 
