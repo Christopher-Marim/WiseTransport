@@ -160,29 +160,11 @@ export default function AddJourney({callback}) {
     try {
       if (Platform.OS === 'ios') {
         getLocation();
-      } else {
-        const requestLocationPermission = async () => {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            {
-              title: 'Permissão de Acesso à Localização',
-              message: 'Este aplicativo precisa acessar sua localização.',
-              buttonNeutral: 'Pergunte-me depois',
-              buttonNegative: 'Cancelar',
-              buttonPositive: 'OK',
-            },
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            getLocation();
-          } else {
-            Alert.alert(
-              'Permissão de Localização negada',
-              'Permissão de Localização negada',
-            );
-          }
-        };
-        requestLocationPermission();
+
+      }  if (PermissionsAndroid.RESULTS.GRANTED) {
+        getLocation();
       }
+      
     } catch (error) {
       alert('Permision Error' + error);
     }
@@ -206,7 +188,7 @@ export default function AddJourney({callback}) {
           }
         },
         error => ( EnableLocation() ),
-        {enableHighAccuracy: false, timeout: 20000, maximumAge: 100},
+        {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
       );
     } catch (error) {
       alert('Error ao pegar Geolocalização: ' + error);

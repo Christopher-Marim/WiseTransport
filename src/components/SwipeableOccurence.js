@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import getRealm from '../services/realm';
+import { EnableLocation } from './SnackBar';
 
 export function CurrentOccurrence({callback, loaderVisible}) {
   const [borderRadiusCONST, setborderRadius] = useState(10);
@@ -88,8 +89,8 @@ console.log('OCORRENCIA'+ occurrenceAux)
           setChangesStorage(currentLatitude,currentLongitude);
         }
       },
-      error => {Alert.alert(error.message), setChangesStorage('não definida','não definida');},
-      {enableHighAccuracy: false, timeout: 20000, maximumAge: 100},
+      error => {Alert.alert(error.message),EnableLocation(), setChangesStorage('não definida','não definida');},
+      {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000},
     );
   }
 

@@ -11,11 +11,13 @@ import {
   Platform,
   Keyboard,
   Linking,
-  PermissionsAndroid
+  Dimensions,
+
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import VersionCheck from 'react-native-version-check';
 import Loader from '../../components/Loader';
-import getRealm from '../../services/realm';
+import DeviceInfo from 'react-native-device-info'
 import NetInfo from '@react-native-community/netinfo';
 import styles from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -24,6 +26,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {api} from '../../services/api';
 
 import axios from 'axios'
+import { UpdateModal } from '../../components/Modal/UpdateModal';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
@@ -33,6 +36,7 @@ export default function Login({navigation}) {
   const [offset] = useState(new Animated.ValueXY({x: 0, y: 80}));
   const [opacity] = useState(new Animated.Value(0));
   const [LoaderVisible, setVisible] = useState(false);
+  const [ModalVisible, setModalVisible] = useState(false);
   const [PasswordVisible, setPasswordVisible] = useState(true);
 
   const [imageHeight] = useState(new Animated.Value(1))
@@ -262,14 +266,28 @@ export default function Login({navigation}) {
     navigation.replace('Company');
   }
 
+  
+  
+  VersionCheck.getLatestVersion({
+    provider: 'playStore'  // for Android
+  })
+  .then(latestVersion => {
+    if(latestVersion>DeviceInfo.getVersion()){
+        setModalVisible(true)
+    }
+  });
+
+  const callbackUpdateModal = () => (setModalVisible(false));
+
   return (
     <KeyboardAvoidingView style={styles.background}>
+      <UpdateModal visible={ModalVisible} callback={callbackUpdateModal}/>
       <View style={styles.containerLogo}>
         <Animated.Image
           style={{
-            width:200,
+            width:Dimensions.get('window').width/2,
             transform: [{ scale: imageHeight  }],
-            height: 200,
+            height: Dimensions.get('window').width/2,
             borderRadius: 10,
             borderWidth:2,
             borderColor:'white'

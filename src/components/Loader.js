@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {Dimensions, StyleSheet, Text} from 'react-native';
 import AnimatedLoader from 'react-native-animated-loader';
 
 export default function Loader(props) {
@@ -17,7 +17,7 @@ export default function Loader(props) {
 
 const styles = StyleSheet.create({
   lottie: {
-    width: 250,
-    height: 250,
+    width: Dimensions.get('window').width/1.7,
+    height:Dimensions.get('window').width/1.7
   },
 });
