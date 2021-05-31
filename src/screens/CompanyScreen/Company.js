@@ -7,6 +7,10 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import getRealm from '../../services/realm';
 import commonStyles from '../../commonStyles';
@@ -187,40 +191,44 @@ export default function Company(props) {
         <Animated.View
           style={[
             styles.decorationTop,
+            {width:wp('50%'),
+             height:hp('12%') },
             {transform: [{translateX: LeftPositionAnimation}]},
           ]}></Animated.View>
 
         <View style={styles.container1Texts}>
-          <Text style={styles.textETM}>{UserName}</Text>
-          <Text style={styles.subtextETM}>
+          <Text style={[styles.textETM,{fontSize:hp('3.6%')}]}>{UserName}</Text>
+          <Text style={[styles.subtextETM, {fontSize:hp('2.15%')}]}>
             Informe a baixo a empresa ou departamento para dar prosseguimento
           </Text>
         </View>
         <Animated.View
           style={[
             styles.decorationBotton,
+            {width:wp('50%'),
+             height:hp('12%') },
             {transform: [{translateX: RightPositionAnimation}]},
           ]}></Animated.View>
       </View>
       <View style={styles.container2}>
         <View style={{paddingHorizontal: 40, alignItems: 'center'}}>
-          <Text style={styles.subtext}>Qual sua empresa?</Text>
+          <Text style={[styles.subtext, {fontSize:hp('2.65%')}]}>Qual sua empresa?</Text>
           <TouchableOpacity
-            style={[styles.picker, {borderColor: borderColor}]}
+            style={[styles.picker, {width: wp('80%'), height: hp('6%'), borderColor: borderColor},]}
             onPress={() => {
               setPickerVisible(true);
             }}>
             <Text style={styles.textEmpresa}>{Empresa}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.button}
+            style={[styles.button, {width: wp('40%'), height: hp('6%')}]}
             onPress={() => {
               ActionButtonProsseguir();
             }}>
             <Text
               style={{
                 color: 'white',
-                fontSize: 18,
+                fontSize: hp('2.0%'),
                 marginHorizontal: 30,
                 justifyContent: 'center',
                 fontWeight: 'bold',
