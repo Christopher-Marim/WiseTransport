@@ -19,19 +19,15 @@ export default StyleSheet.create({
     paddingBottom: 50,
   },
   input: {
+    justifyContent:'center',
     backgroundColor: '#FFF',
-    width: '90%',
-    height:45,
     marginBottom: 15,
     color: '#222',
-    fontSize: 17,
     borderRadius: 7,
     padding: 10,
   },
   btnSubmit: {
     backgroundColor: '#055c82',
-    width: '90%',
-    height:45,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 7,
@@ -53,7 +49,6 @@ export default StyleSheet.create({
   },
   buttonEye:{
     position:'absolute',
-    right:10,
-    top:10
+    right:7,
   }
 });
