@@ -9,6 +9,10 @@ import {
   Switch,
   Alert,
 } from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CompleteNotification from '../../components/Modal/ModalNoticiaCompleta/CompleteNotification';
@@ -197,21 +201,21 @@ export default function NotificationScreen({navigation}) {
             navigation.openDrawer();
           }}>
           <View>
-            <FontAwesome name="bars" size={25} color={corBotão}></FontAwesome>
+            <FontAwesome name="bars" size={hp('3%')} color={corBotão}></FontAwesome>
           </View>
         </TouchableOpacity>
-        <Text style={styles.Text}>Notificações</Text>
+        <Text style={[styles.Text,{fontSize:hp('3.0%')}]}>Notificações</Text>
         <View
           style={{
             flexDirection: 'row',
-            width: 115,
+            width: wp('30%'),
             justifyContent: 'space-between',
             position: 'absolute',
             padding: 10,
             right: 10,
           }}>
           <TouchableOpacity
-            style={{width: 30, height: 30, alignItems: 'center'}}
+            style={{width: wp('10%'), height: hp('5%') ,justifyContent: 'center', alignItems:'center'}}
             onPress={() => {
               getSystemUserId();
               getParmsAPI().then(res => {
@@ -221,20 +225,23 @@ export default function NotificationScreen({navigation}) {
             }}>
             <FontAwesome
               name="refresh"
-              size={25}
+              size={hp('3%')}
               color={corBotão}></FontAwesome>
           </TouchableOpacity>
-          <TouchableOpacity onPress={tougleEye}>
-            {isVisibleCheck == true && (
-              <MaterialCommunityIcons name={'eye'} size={30} color={corBotão} />
-            )}
-            {isVisibleCheck == false && (
-              <MaterialCommunityIcons
+          <TouchableOpacity 
+          style={{width: wp('10%'), height: hp('5%'), justifyContent: 'center', alignItems:'center'}}
+          onPress={tougleEye}
+          >
+            {isVisibleCheck? (
+              <MaterialCommunityIcons name={'eye'} size={hp('4%')} color={corBotão} />
+            ):
+              (<MaterialCommunityIcons
                 name={'eye-off-outline'}
-                size={30}
+                size={hp('4%')}
                 color={corBotão}
-              />
-            )}
+              />)
+            }
+            
           </TouchableOpacity>
         </View>
       </View>
@@ -290,13 +297,13 @@ export default function NotificationScreen({navigation}) {
             }}>
             <MaterialCommunityIcons
               name="bell-off-outline"
-              size={150}
+              size={hp('18%')}
               color={corBotão}
             />
             <View style={{padding: 10, alignItems: 'center'}}>
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: hp('2.5%'),
                   color: commonStyles.color.texts,
                   fontWeight: 'bold',
                 }}
@@ -305,7 +312,7 @@ export default function NotificationScreen({navigation}) {
               </Text>
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: hp('2.1%'),
                   color: commonStyles.color.texts,
                   textAlign: 'center',
                 }}

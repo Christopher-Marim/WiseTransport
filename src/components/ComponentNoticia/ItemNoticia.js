@@ -4,6 +4,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../../commonStyles';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import styles from './styles';
 import moment from 'moment';
@@ -39,7 +43,7 @@ export default function ItemNoticia({
         <View style={styles.left1}>
           <MaterialCommunityIcons
             name="check-outline"
-            size={30}
+            size={hp('4.5%')}
             color="white"
           />
         </View>
@@ -70,26 +74,26 @@ export default function ItemNoticia({
         <View style={styles.containerLogo}>
           <FontAwesome
             name={'newspaper-o'}
-            size={30}
+            size={hp('3.8%')}
             color={commonStyles.color.contrastante}
           />
           <View style={styles.containerTexts}>
-            <Text style={styles.titulo} numberOfLines={1}>
+            <Text style={[styles.titulo, {width:wp('60%'), fontSize:hp('1.8%')}]} numberOfLines={1}>
               {titulo}
             </Text>
-            <Text style={styles.timeText}>
+            <Text style={[styles.timeText,{fontSize:hp('1.8%')}]}>
               {dataAux} {horaAux}
             </Text>
           </View>
         </View>
-        <Text style={styles.subText} numberOfLines={1}>
+        <Text style={[styles.subText, {width:wp('80%'), fontSize:hp('1.8%')}]} numberOfLines={1}>
           {subText}
         </Text>
 
         {check == true && (
           <MaterialCommunityIcons
             name={'check-outline'}
-            size={30}
+            size={hp('3.8%')}
             color={commonStyles.color.contrastante}
             style={{position: 'absolute', right: 20, top: 10}}
           />

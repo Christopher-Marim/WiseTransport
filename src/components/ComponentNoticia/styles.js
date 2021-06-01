@@ -14,12 +14,10 @@ export default StyleSheet.create({
     titulo:{
         fontSize:15,
         fontWeight:"bold",
-        width:300
     },
     subText:{
         padding:10,
         color:'grey',
-        width:300,
         fontSize:15
     },
     containerLogo:{
