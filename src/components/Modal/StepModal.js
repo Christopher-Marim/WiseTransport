@@ -9,6 +9,11 @@ import {
 import React, {Component} from 'react';
 import Modal from 'react-native-modal';
 import Carousel from 'react-native-snap-carousel';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+
 
 import PageControl from 'react-native-page-control';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -37,7 +42,7 @@ export default class StepModal extends Component {
             this.carousel.snapToItem(nextIndex);
             this.props.callback();
           }}>
-          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
+          <Text style={{color: 'white', fontWeight: 'bold', fontSize: hp('1.9%')}}>
             {' '}
             Próximo{' '}
           </Text>
@@ -58,7 +63,7 @@ export default class StepModal extends Component {
             this.setState({currentPage: nextIndex});
             this.carousel.snapToItem(nextIndex);
           }}>
-          <Text style={{color: 'grey', fontWeight: 'bold', fontSize: 16}}>
+          <Text style={{color: 'grey', fontWeight: 'bold', fontSize: hp('1.9%')}}>
             {' '}
             Voltar{' '}
           </Text>
@@ -79,7 +84,7 @@ export default class StepModal extends Component {
           onPress={() => {
             this.props.callbackFinish()
           }}>
-          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
+          <Text style={{color: 'white', fontWeight: 'bold', fontSize: hp('1.9%')}}>
             {' '}
             Iniciar Jornada{' '}
           </Text>
@@ -98,7 +103,7 @@ export default class StepModal extends Component {
           onPress={() => {
             this.props.closemodal();
           }}>
-          <Text style={{color: 'grey', fontWeight: 'bold', fontSize: 14}}>
+          <Text style={{color: 'grey', fontWeight: 'bold', fontSize: hp('1.65%')}}>
             {' '}
             Skip{' '}
           </Text>
@@ -138,7 +143,7 @@ export default class StepModal extends Component {
                 onPress={() => {
                   this.props.closemodal();
                 }}>
-                <MaterialCommunityIcons name="close-box-outline" size={30} />
+                <MaterialCommunityIcons name="close-box-outline" size={hp('3.84%')} />
               </TouchableOpacity>
               <Text style={customStyles.title}>Nova Jornada</Text>
               <Carousel
@@ -158,7 +163,7 @@ export default class StepModal extends Component {
                 currentPageIndicatorTintColor="#001e42"
                 indicatorStyle={{borderRadius: 7}}
                 currentIndicatorStyle={{borderRadius: 5}}
-                indicatorSize={{width: 13, height: 13}}
+                indicatorSize={{width: wp('3.06%'), height: hp('1.56%')}}
                 onPageIndicatorPress={this.onItemTap}
               />
             </View>
@@ -188,8 +193,8 @@ const customStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   card: {
-    width: 145,
-    height: 138,
+    width: wp('34.18%'),
+    height: hp('16.56%'),
     marginTop: 30,
     marginBottom: 30,
     // paddingBottom:30,
@@ -208,11 +213,6 @@ const customStyles = StyleSheet.create({
   },
   blueColorText: {
     color: '#435270',
-  },
-  circularImage: {
-    height: 36,
-    width: 36,
-    borderRadius: 18,
   },
   button: {
     marginTop: 15,
@@ -309,8 +309,8 @@ const customStyles = StyleSheet.create({
     width: '100%',
   },
   buttonClose: {
-    height: 35,
-    width: 35,
+    height: hp('4.20%'),
+    width: hp('8.25%'),
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
@@ -319,7 +319,7 @@ const customStyles = StyleSheet.create({
     right: 0,
   },
   title: {
-    fontSize: 20,
+    fontSize: hp('2.36%'),
     fontWeight: 'bold',
     color: commonStyles.color.headers,
   },

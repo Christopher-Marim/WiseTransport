@@ -1,4 +1,8 @@
 import commonStyles from '../../commonStyles';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import { StyleSheet, Dimensions } from 'react-native';
 
@@ -25,41 +29,21 @@ export default StyleSheet.create({
   Text: {
     fontFamily: commonStyles.fontFamily,
     fontWeight: commonStyles.fontWeight,
-    fontSize: 25,
+    fontSize: hp('3%'),
     color: commonStyles.color.headers,
     paddingLeft:10
   },
   TextButtonCenter: {
     fontFamily: commonStyles.fontFamily,
     fontWeight: commonStyles.fontWeight,
-    fontSize: 25,
+    fontSize: hp('3%'),
     color: commonStyles.color.headers,
     paddingLeft:10
   },
-  addButton: {
-    position: 'absolute',
-    right: 30,
-    bottom: 30,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: commonStyles.color.headers,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-
-    elevation: 4,
-  },
   addButtonCenter: {
     position: 'absolute',
-    width: Dimensions.get('window').width / 1.5,
-    height: 50,
+    width: wp('70%'),
+    height: hp('6%'),
     borderRadius: 3,
     justifyContent: 'center',
     alignItems: 'center',
@@ -92,12 +76,12 @@ export default StyleSheet.create({
     right:10,
   },
   subTitle:{
-    fontSize:20,
+    fontSize:hp('2.4%'),
     fontWeight:'bold'
   },
   group:{
-    padding:10,
-    paddingHorizontal:15,
+    padding:hp('1%'),
+    paddingHorizontal:hp('1.5%'),
     borderRadius:10,
     backgroundColor:'#FFF',
     borderWidth:2
@@ -115,12 +99,12 @@ export default StyleSheet.create({
   TextOccurrence:{
     borderBottomWidth:1,
     borderBottomColor:'grey',
-    fontSize:15,
+    fontSize:hp('1.8%'),
     fontWeight:'bold',
     color:commonStyles.color.principal,
     fontFamily:commonStyles.fontFamily
   },
   TextButtonFinish:{
-    fontSize:15
+    fontSize:hp('1.8%')
   }
 });

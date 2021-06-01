@@ -1,5 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+
 import getRealm from '../services/realm';
 
 export function InfosVeicules({veiculeType, plaque, backgroundColor}) {
@@ -70,10 +75,11 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'black',
+    fontSize: hp('1.65%'),
   },
   subtitule: {
     marginLeft: 15,
-    fontSize: 16,
+    fontSize: hp('1.9%'),
     fontWeight: 'bold',
     paddingHorizontal: 5,
   },

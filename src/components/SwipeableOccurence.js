@@ -5,21 +5,25 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  Vibration,
   Animated,
 } from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {useDispatch} from 'react-redux';
 import moment from 'moment';
 import 'moment/locale/pt-br';
-import {useDispatch} from 'react-redux';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import commonStyles from '../commonStyles';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getRealm from '../services/realm';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import { EnableLocation } from './SnackBar';
+import commonStyles from '../commonStyles';
+import getRealm from '../services/realm';
 
 export function CurrentOccurrence({callback, loaderVisible}) {
   const [borderRadiusCONST, setborderRadius] = useState(10);
@@ -140,13 +144,13 @@ console.log('OCORRENCIA'+ occurrenceAux)
           style={styles.left1}
           activeOpacity={0.5}
           onPress={getLocation}>
-          <MaterialCommunityIcons name="check-bold" size={25} color="white" />
+          <MaterialCommunityIcons name="check-bold" size={hp('3%')} color="white" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={cleanCurrentoccurence}
           style={styles.left2}
           activeOpacity={0.5}>
-          <Icon name="trash" size={20} color="white" />
+          <Icon name="trash" size={hp('2.4%')} color="white" />
         </TouchableOpacity>
       </View>
     );
@@ -182,11 +186,11 @@ console.log('OCORRENCIA'+ occurrenceAux)
                 <Text style={styles.nomeCollect}>
                   {ocurrence.nameOccurrence}
                 </Text>
-                <Text style={{fontWeight: commonStyles.fontWeight}}>
+                <Text style={{fontWeight: commonStyles.fontWeight , fontSize: hp('1.8%')}}>
                   Data: {formatteddate(ocurrence.dateOccurence)}
                 </Text>
 
-                <Text style={{fontWeight: commonStyles.fontWeight}}>
+                <Text style={{fontWeight: commonStyles.fontWeight, fontSize: hp('1.8%')}}>
                   Iniciado {moment(ocurrence.dateOccurence).fromNow()}
                 </Text>
               </View>
@@ -194,7 +198,7 @@ console.log('OCORRENCIA'+ occurrenceAux)
                 <TouchableOpacity
                   style={styles.buttonChevron}
                   onPress={() => {}}>
-                  <MaterialCommunityIcons name={'chevron-right'} size={35} />
+                  <MaterialCommunityIcons name={'chevron-right'} size={hp('4.2%')} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -210,9 +214,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    paddingVertical: 10,
+    paddingVertical: hp('1%'),
     borderWidth: 2,
-    width: '100%',
     borderRadius: 10,
     borderLeftColor: commonStyles.color.InventoryPrincipal,
     backgroundColor: 'white',
@@ -225,7 +228,7 @@ const styles = StyleSheet.create({
   },
   nomeCollect: {
     fontWeight: commonStyles.fontWeight,
-    fontSize: 20,
+    fontSize: hp('2.36%'),
     marginBottom: 10,
   },
   button: {
@@ -252,8 +255,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   buttonChevron: {
-    width: 50,
-    height: 50,
+    width: wp('11.79%'),
+    height: hp('6%'),
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',

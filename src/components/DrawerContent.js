@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Linking } from 'react-native';
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { Avatar, Title, Caption, Drawer, List } from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Linking} from 'react-native';
+import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
+import {Avatar, Title, Caption, Drawer, List} from 'react-native-paper';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import commonsVariables from '../../commonsVariables';
 import commonStyles from '../commonStyles';
 import getRealm from '../services/realm';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux'
-import axios from 'axios';
-import commonsVariables from '../../commonsVariables';
 
-export default (props) => {
-  
+export default props => {
   const [nome, setnome] = useState('Usuário');
   const [nomeEmpresa, setnomeEmpresa] = useState();
   const [email, setemail] = useState();
@@ -26,14 +29,15 @@ export default (props) => {
     },
   });
 
-  
-  function GetdataVeiculesAndOccurrences(){
-    loadVeicules()
-    loadOccurences()
+  function GetdataVeiculesAndOccurrences() {
+    loadVeicules();
+    loadOccurences();
   }
 
   async function loadVeicules() {
-    const {data} = await api.get(`/veiculo?method=loadUnit&systemunitid=${UnitIdEmpresa}`);
+    const {data} = await api.get(
+      `/veiculo?method=loadUnit&systemunitid=${UnitIdEmpresa}`,
+    );
     const veicules = data.data;
     const realm = await getRealm();
     veicules.forEach(veiculo => {
@@ -52,7 +56,7 @@ export default (props) => {
 
     const store = realm.objects('Veicules');
 
-    console.log('Veiculosss'+store);
+    console.log('Veiculosss' + store);
   }
   async function loadOccurences() {
     const {data} = await api.get('/ocorrencia');
@@ -67,9 +71,9 @@ export default (props) => {
             id: parseInt(ocorrencia.id),
             occurrence: ocorrencia.ocorrencia,
             peso: parseInt(ocorrencia.peso),
-            comveiculo:parseInt(ocorrencia.comveiculo)==1?true:false,
-            semveiculo:parseInt(ocorrencia.semveiculo)==1?true:false,
-            systemUnitId:parseInt(ocorrencia.system_unit_id)
+            comveiculo: parseInt(ocorrencia.comveiculo) == 1 ? true : false,
+            semveiculo: parseInt(ocorrencia.semveiculo) == 1 ? true : false,
+            systemUnitId: parseInt(ocorrencia.system_unit_id),
           },
           'modified',
         );
@@ -77,22 +81,20 @@ export default (props) => {
     });
 
     const store = realm.objects('Occurrence');
-
   }
-  
+
   useEffect(() => {
     async function getUsuarioRealm() {
       try {
-        const useraux = await AsyncStorage.getItem('@User')
-        const store = JSON.parse(useraux)
+        const useraux = await AsyncStorage.getItem('@User');
+        const store = JSON.parse(useraux);
         setnome(store.nome);
         setemail(store.email);
-        setUnitIdEmpresa(store.system_unit_id)
-      } catch(e) {
-        console.error(e)
+        setUnitIdEmpresa(store.system_unit_id);
+      } catch (e) {
+        console.error(e);
       }
-      getNomeEmpresa()
-
+      getNomeEmpresa();
     }
     getUsuarioRealm();
   }, []);
@@ -100,35 +102,38 @@ export default (props) => {
     try {
       await AsyncStorage.setItem('@User', JSON.stringify({}));
       props.navigation.replace('Login');
-     
-    } catch(e) {
-      console.error(e)
+    } catch (e) {
+      console.error(e);
     }
   }
 
   const getNomeEmpresa = async () => {
     try {
-      const EmpresaNome = await AsyncStorage.getItem('@Empresa')
-      setnomeEmpresa(EmpresaNome)
-
+      const EmpresaNome = await AsyncStorage.getItem('@Empresa');
+      setnomeEmpresa(EmpresaNome);
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerContent}>
-          <TouchableOpacity onPress={() => { props.navigation.navigate('Profile'); }}>
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.navigate('Profile');
+            }}>
             <View style={styles.userInfoSection}>
-              <View style={{ flexDirection: 'row', alignItems:'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Avatar.Image
                   source={require('../../assets/icon.png')}
-                  size={50}
+                  size={hp('6%')}
                 />
-                <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                  <Title numberOfLines={1} style={styles.title}>{nome}</Title>
+                <View style={{marginLeft: 15, flexDirection: 'column'}}>
+                  <Title numberOfLines={1} style={styles.title}>
+                    {nome}
+                  </Title>
                   <Caption style={styles.email}>{email}</Caption>
                   <Caption style={styles.email}>{nomeEmpresa}</Caption>
                 </View>
@@ -141,7 +146,7 @@ export default (props) => {
               <List.Item
                 left={() => (
                   <List.Icon
-                    icon={({ color, size }) => (
+                    icon={({color, size}) => (
                       <MaterialCommunityIcons
                         name="newspaper-variant-outline"
                         color={color}
@@ -151,16 +156,15 @@ export default (props) => {
                   />
                 )}
                 title="Notificações"
-                titleStyle={{ fontSize: 15 }}
+                titleStyle={{fontSize: hp('1.8%')}}
                 onPress={() => {
                   props.navigation.navigate('NotificationScreen');
-
                 }}
               />
               <List.Item
                 left={() => (
                   <List.Icon
-                    icon={({ color, size }) => (
+                    icon={({color, size}) => (
                       <MaterialCommunityIcons
                         name="truck-outline"
                         color={color}
@@ -170,16 +174,15 @@ export default (props) => {
                   />
                 )}
                 title="Jornada"
-                titleStyle={{ fontSize: 15 }}
+                titleStyle={{fontSize: hp('1.8%')}}
                 onPress={() => {
                   props.navigation.navigate('JourneyCurrent');
-
                 }}
               />
               <List.Item
                 left={() => (
                   <List.Icon
-                    icon={({ color, size }) => (
+                    icon={({color, size}) => (
                       <MaterialCommunityIcons
                         name="format-list-text"
                         color={color}
@@ -189,100 +192,39 @@ export default (props) => {
                   />
                 )}
                 title="Lista de Jornadas"
-                titleStyle={{ fontSize: 15 }}
+                titleStyle={{fontSize: hp('1.8%')}}
                 onPress={() => {
                   props.navigation.navigate('JourneyList');
-
                 }}
               />
-              
+
               {UnitIdEmpresa != 3 && (
                 <View>
-                  {/*
-                  <List.Accordion
-                    title="Pessoal"
-                    titleStyle={{ fontSize: 15 }}
-                    id="2"
-                    left={() => (
-                      <List.Icon
-                        icon={({ color, size }) => (
-                          <MaterialCommunityIcons
-                            name="account-details-outline"
-                            color={color}
-                            size={size}
-                          />
-                        )}
-                      />
-                    )}>
-                    <List.Item
-                      title="Agenda"
-                      titleStyle={{ fontSize: 14 }}
-                      onPress={() => { }}
-                    />
-                    <List.Item
-                      title="Solicitação de HE"
-                      titleStyle={{ fontSize: 14 }}
-                      onPress={() => { }}
-                    />
-                  </List.Accordion>
-
-                  <List.Accordion
-                    title="Logistica"
-                    titleStyle={{ fontSize: 15 }}
-                    id="3"
-                    left={() => (
-                      <List.Icon
-                        icon={({ color, size }) => (
-                          <MaterialCommunityIcons
-                            name="hard-hat"
-                            color={color}
-                            size={size}
-                          />
-                        )}
-                      />
-                    )}>
-                    <List.Item
-                      title="Embarques"
-                      titleStyle={{ fontSize: 14 }}
-                      onPress={() => { }}
-                    />
-                    <List.Item
-                      title="Requisição de EPI"
-                      titleStyle={{ fontSize: 14 }}
-                      onPress={() => { }}
-                    />
-                    <List.Item
-                      title="Treinamento Obrigatórios"
-                      titleStyle={{ fontSize: 14 }}
-                      onPress={() => { }}
-                    />
-                  </List.Accordion>
-              */}
+                 
                 </View>
               )}
 
-
               <List.Accordion
                 title="Configurações"
-                titleStyle={{ fontSize: 15 }}
+                titleStyle={{fontSize: hp('1.8%')}}
                 id="4"
                 left={() => (
                   <List.Icon
-                    icon={({ color, size }) => (
+                    icon={({color, size}) => (
                       <FontAwesome name="cog" color={color} size={size} />
                     )}
                   />
                 )}>
                 <List.Item
                   title="Perfil"
-                  titleStyle={{ fontSize: 14 }}
+                  titleStyle={{fontSize: hp('1.8%')}}
                   onPress={() => {
                     props.navigation.navigate('Profile');
                   }}
                 />
                 <List.Item
                   title="API"
-                  titleStyle={{ fontSize: 14 }}
+                  titleStyle={{fontSize: hp('1.8%')}}
                   onPress={() => {
                     props.navigation.navigate('Configs');
                   }}
@@ -291,7 +233,7 @@ export default (props) => {
               <List.Item
                 left={() => (
                   <List.Icon
-                    icon={({ color, size }) => (
+                    icon={({color, size}) => (
                       <MaterialCommunityIcons
                         name="database-sync"
                         color={color}
@@ -301,13 +243,15 @@ export default (props) => {
                   />
                 )}
                 title="Sincronizar dados"
-                titleStyle={{ fontSize: 15 }}
-                onPress={() => { GetdataVeiculesAndOccurrences()}}
+                titleStyle={{fontSize: hp('1.8%')}}
+                onPress={() => {
+                  GetdataVeiculesAndOccurrences();
+                }}
               />
               <List.Item
                 left={() => (
                   <List.Icon
-                    icon={({ color, size }) => (
+                    icon={({color, size}) => (
                       <MaterialCommunityIcons
                         name="account-check-outline"
                         color={color}
@@ -317,18 +261,18 @@ export default (props) => {
                   />
                 )}
                 title="Suporte ETM"
-                titleStyle={{ fontSize: 15 }}
-                onPress={() => { Linking.openURL('https://www.etm.srv.br'); }}
+                titleStyle={{fontSize: hp('1.8%')}}
+                onPress={() => {
+                  Linking.openURL('https://www.etm.srv.br');
+                }}
               />
             </List.AccordionGroup>
-
-
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
         <DrawerItem
-          icon={({ color, size }) => (
+          icon={({color, size}) => (
             <MaterialCommunityIcons
               name="exit-to-app"
               color={color}
@@ -348,25 +292,25 @@ export default (props) => {
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
-    marginTop:-5
+    marginTop: -5,
   },
   userInfoSection: {
     paddingLeft: 20,
     backgroundColor: commonStyles.color.principal,
     paddingVertical: 20,
     justifyContent: 'center',
-    width:'100%',
+    width: '100%',
   },
   title: {
-    fontSize: 16,
-    width:'100%',
+    fontSize: hp('1.9%'),
+    width: '100%',
     fontWeight: commonStyles.fontWeight,
     marginTop: 3,
     fontWeight: 'bold',
     color: 'white',
   },
   caption: {
-    fontSize: 14,
+    fontSize: hp('1.8%'),
     fontWeight: commonStyles.fontWeight,
     lineHeight: 14,
   },
@@ -399,7 +343,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   email: {
-    fontSize: 10,
+    fontSize: hp('1.2%'),
     fontWeight: commonStyles.fontWeight,
     lineHeight: 14,
     color: 'white',

@@ -8,6 +8,11 @@ import {
   Dimensions,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+
 
 export function SelectItens({array, callback, placehoulder}) {
   const [openSelect, setOpenSelect] = useState(false);
@@ -24,10 +29,10 @@ export function SelectItens({array, callback, placehoulder}) {
       style={[
         styles.containerSelect,
         {
-          height: 85 * array.length,
+          height: hp('8.3%') * array.length,
         },
         !openSelect&&{
-            height:43
+            height:hp('5.1%')
         }
       ]}>
       <TouchableOpacity
@@ -35,15 +40,15 @@ export function SelectItens({array, callback, placehoulder}) {
         onPress={handlewClickSelectTypeJourney}>
         <Text
           style={[
-            {color: 'grey'},
+            {color: 'grey', fontSize: hp('1.8%'),},
             itemSelected.occurrence != placehoulder && {color: 'black'},
           ]}>
           {itemSelected.occurrence}
         </Text>
         {!openSelect && (
-          <MaterialCommunityIcons name="chevron-down" size={30} />
+          <MaterialCommunityIcons name="chevron-down" size={hp('3.5%')} />
         )}
-        {openSelect && <MaterialCommunityIcons name="chevron-up" size={30} />}
+        {openSelect && <MaterialCommunityIcons name="chevron-up" size={hp('3.5%')} />}
       </TouchableOpacity>
       {openSelect && (
         <FlatList
@@ -68,7 +73,7 @@ export function SelectItens({array, callback, placehoulder}) {
                   occurrence: item.occurrence,
                 });
               }}>
-              <Text>{item.occurrence}</Text>
+              <Text style={{fontSize: hp('1.8%'),}}>{item.occurrence}</Text>
             </TouchableOpacity>
           )}
         />
@@ -85,8 +90,8 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   containerSelect: {
-    minHeight:43,
-    maxHeight: Dimensions.get('window').width / 1.2,
+    minHeight:hp('5.1%'),
+    maxHeight: hp('20.1%'),
     marginTop: 10,
     marginHorizontal: 18,
     borderWidth: 1,

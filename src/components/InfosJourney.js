@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import getRealm from '../services/realm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
+import getRealm from '../services/realm';
 
 export function InfosJourney({backgroundColor}) {
   const [nome, setnome] = useState('Usuário');
@@ -108,12 +111,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
+    fontSize: hp('1.65%'),
     color: 'black',
-    width: '70%',
+    width: wp('60%'),
   },
   subtitule: {
     marginLeft: 15,
-    fontSize: 16,
+    fontSize: hp('1.9%'),
     fontWeight: 'bold',
     paddingHorizontal: 5,
   },

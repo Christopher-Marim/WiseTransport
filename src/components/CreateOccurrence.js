@@ -1,10 +1,15 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import PickerOcorrencias from './Modal/ModalOcorrencias/PickerOcorrencias';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+
+import PickerOcorrencias from './Modal/ModalOcorrencias/PickerOcorrencias';
 
 export function CreateOccurrence({responseCallback, getData, WithoutVehicle, system_unit_id}) {
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -83,7 +88,7 @@ export function CreateOccurrence({responseCallback, getData, WithoutVehicle, sys
             style={styles.buttonOccurrence}
             onPress={handlePressBeginning}>
             <Text style={styles.subTitle}>Ocorrência</Text>
-            <MaterialCommunityIcons name={'plus'} size={30} color='white' />
+            <MaterialCommunityIcons name={'plus'} size={hp('3.8%')} color='white' />
           </TouchableOpacity>
         </View>
       )}
@@ -116,13 +121,15 @@ export function CreateOccurrence({responseCallback, getData, WithoutVehicle, sys
   );
 }
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    
+  },
   buttonPicker: {
-    padding: 10,
+    padding: hp('0.5%'),
   },
   textOccurrence: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: hp('2.4%'),
   },
   buttonOccurrence: {
     flexDirection: 'row',
@@ -130,37 +137,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subTitle: {
-    fontSize: 20,
+    fontSize: hp('2.4%'),
     fontWeight: 'bold',
     color:'white'
   },
   textHours: {
     color: 'grey',
-    marginLeft: 10,
+    fontSize: hp('1.65%'),
+    marginLeft: hp('0.5%'),
   },
   textCancel: {
     color: 'white',
+    fontSize: hp('1.65%'),
   },
   textBegin: {
     color: 'white',
+    fontSize: hp('1.65%'),
   },
   groupButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingTop:hp('2%'),
+    padding: hp('0.5%'),
   },
   buttonCancel: {
     backgroundColor: 'grey',
-    width: 70,
-    height: 28,
+    width: wp('15%'),
+    height: hp('3.2%'),
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonBegin: {
     backgroundColor: '#001e42',
-    width: 70,
-    height: 28,
+    width: wp('16.5%'),
+    height: hp('3.2%'),
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',

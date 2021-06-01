@@ -8,6 +8,7 @@ import {
   BackHandler,
   Animated,
   Alert,
+  ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -18,6 +19,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import Modal from '../../components/Modal/AddJourney';
 import commonStyles from '../../commonStyles';
@@ -339,7 +344,7 @@ export function JourneyCurrent({navigation}) {
           <View>
             <FontAwesome
               name="bars"
-              size={25}
+              size={hp('3%')}
               color={colorButton}></FontAwesome>
           </View>
         </TouchableOpacity>
@@ -385,7 +390,7 @@ export function JourneyCurrent({navigation}) {
                     fontWeight: 'bold',
                     color: commonStyles.color.headers,
                     marginHorizontal: 5,
-                    fontSize: 16,
+                    fontSize: hp('1.9%'),
                   },
                   createFinish && {color: 'grey'},
                 ]}>
@@ -395,6 +400,8 @@ export function JourneyCurrent({navigation}) {
           </TouchableOpacity>
         )}
       </View>
+    
+
       {Journey == undefined && (
         <View style={{flex: 8, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
@@ -421,10 +428,10 @@ export function JourneyCurrent({navigation}) {
               onPress={handleClickInfos}>
               <Text style={styles.subTitle}>Informações</Text>
               {infosVisible && (
-                <MaterialCommunityIcons name={'chevron-up'} size={32} />
+                <MaterialCommunityIcons name={'chevron-up'} size={hp('4%')} />
               )}
               {!infosVisible && (
-                <MaterialCommunityIcons name={'chevron-down'} size={32} />
+                <MaterialCommunityIcons name={'chevron-down'} size={hp('4%')} />
               )}
             </TouchableOpacity>
             {infosVisible && (
@@ -435,7 +442,7 @@ export function JourneyCurrent({navigation}) {
                     marginHorizontal: 20,
                     alignItems: 'center',
                   }}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>
+                  <Text style={{fontWeight: 'bold', fontSize: hp('1.9%')}}>
                     Tipo de jornada:{' '}
                   </Text>
                   <Text>{Journey.veicule_name}</Text>
@@ -457,10 +464,10 @@ export function JourneyCurrent({navigation}) {
               onPress={handleClickInfos}>
               <Text style={styles.subTitle}>Informações</Text>
               {infosVisible && (
-                <MaterialCommunityIcons name={'chevron-up'} size={32} />
+                <MaterialCommunityIcons name={'chevron-up'} size={hp('4%')} />
               )}
               {!infosVisible && (
-                <MaterialCommunityIcons name={'chevron-down'} size={32} />
+                <MaterialCommunityIcons name={'chevron-down'} size={hp('4%')} />
               )}
             </TouchableOpacity>
             {infosVisible && (
@@ -512,14 +519,14 @@ export function JourneyCurrent({navigation}) {
               {listVisible && (
                 <MaterialCommunityIcons
                   name={'chevron-up'}
-                  size={32}
+                  size={hp('4%')}
                   style={{marginBottom: 10}}
                 />
               )}
               {!listVisible && (
                 <MaterialCommunityIcons
                   name={'chevron-down'}
-                  size={32}
+                  size={hp('4%')}
                   style={listVisible && {marginBottom: 10}}
                 />
               )}
@@ -527,13 +534,13 @@ export function JourneyCurrent({navigation}) {
             {listVisible && Occurrences.length > 0 && (
               <FlatList
                 data={Occurrences}
-                contentContainerStyle={{paddingHorizontal: 10}}
+                contentContainerStyle={{paddingHorizontal: hp('1%')}}
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
                   <View style={{flex: 1}}>
                     <View
                       style={{
-                        padding: 10,
+                        padding: hp('1%'),
                         marginVertical: 5,
                         borderRadius: 5,
                         borderWidth: 2,
@@ -543,12 +550,12 @@ export function JourneyCurrent({navigation}) {
                       </Text>
                       <View style={{justifyContent: 'center'}}>
                         <View style={{flexDirection: 'row'}}>
-                          <Text>Inicio: {formatteddate(item.dataInicio)}</Text>
-                          <Text> {formattedHours(item.dataInicio)}</Text>
+                          <Text style={{fontSize: hp('1.8%')}}>Inicio: {formatteddate(item.dataInicio)}</Text>
+                          <Text style={{fontSize: hp('1.8%')}}> {formattedHours(item.dataInicio)}</Text>
                         </View>
                         <View style={{flexDirection: 'row'}}>
-                          <Text>Fim: {item.dataFim?formatteddate(item.dataFim):'Ainda não finalizada'}</Text>
-                          <Text>
+                          <Text style={{fontSize: hp('1.8%')}}>Fim: {item.dataFim?formatteddate(item.dataFim):'Ainda não finalizada'}</Text>
+                          <Text style={{fontSize: hp('1.8%')}}>
                             {'    '}
                             {item.dataFim?formattedHours(item.dataFim):''}
                           </Text>
@@ -569,11 +576,11 @@ export function JourneyCurrent({navigation}) {
                 }}>
                 <MaterialCommunityIcons
                   name={'alert-outline'}
-                  size={60}
+                  size={hp('7.5%')}
                   color="grey"
                   style={{marginTop: -20}}
                 />
-                <Text style={{fontSize: 20, fontWeight: 'bold', color: 'grey'}}>
+                <Text style={{fontSize: hp('2.36%'), fontWeight: 'bold', color: 'grey'}}>
                   Nenhuma ocorrência registrada!
                 </Text>
               </View>
@@ -582,6 +589,7 @@ export function JourneyCurrent({navigation}) {
           </View>
       }
       <SnackBar message={'Sem permissão de GPS'} visibleAux={visibleSnackBar}/>
+      
     </SafeAreaView>
   );
 }

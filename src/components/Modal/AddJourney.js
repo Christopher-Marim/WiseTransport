@@ -10,18 +10,25 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import commonStyles from '../../commonStyles';
-import StepModal from './StepModal';
-import getRealm from '../../services/realm';
-import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Map} from '../Map';
-import {InfosJourney} from '../InfosJourney';
-import {InfosVeicules} from '../InfosVeicule';
+import Geolocation from '@react-native-community/geolocation';
+import {useDispatch, useSelector} from 'react-redux';
+
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+
 import {RadioButton} from 'react-native-paper';
-import {SelectItens} from '../SelectItem';
+import commonStyles from '../../commonStyles';
+import {InfosVeicules} from '../InfosVeicule';
 import { EnableLocation } from '../SnackBar';
+import {InfosJourney} from '../InfosJourney';
+import getRealm from '../../services/realm';
+import {SelectItens} from '../SelectItem';
+import StepModal from './StepModal';
+import {Map} from '../Map';
+
 
 export default function AddJourney({callback}) {
   const [arrayVeicules, setArrayVeicules] = useState();
@@ -276,7 +283,8 @@ export default function AddJourney({callback}) {
                         label="Com Veiculo"
                         value="first"
                         color="black"
-                        style={{marginHorizontal: -10, borderRadius: 5}}
+                        labelStyle={{ fontSize: hp('1.8%')}}
+                        style={{marginHorizontal: -10, borderRadius: 5, width: wp('80%'), height:hp('5%')}}
                       />
                     </View>
                     <View>
@@ -284,7 +292,8 @@ export default function AddJourney({callback}) {
                         label="Sem Veiculo"
                         value="second"
                         color="black"
-                        style={{marginHorizontal: -10}}
+                        labelStyle={{ fontSize: hp('1.8%')}}
+                        style={{marginHorizontal: -10, width: wp('80%'), height:hp('5%')}}
                       />
                     </View>
                   </RadioButton.Group>
@@ -338,7 +347,7 @@ export default function AddJourney({callback}) {
                           marginLeft: 20,
                           marginTop: -15,
                           color: '#b80003',
-                          fontSize: 12,
+                          fontSize: hp('1.41%'),
                         }}>
                         Nenhum veículo encontrado com essa placa.
                       </Text>
@@ -421,7 +430,7 @@ const styles = StyleSheet.create({
     fontWeight: commonStyles.fontWeight,
     backgroundColor: commonStyles.color.InventoryPrincipal,
     color: commonStyles.color.secondary,
-    fontSize: 18,
+    fontSize: hp('2.1%'),
     textAlign: 'center',
     padding: 18,
     borderTopLeftRadius: 10,
@@ -436,27 +445,32 @@ const styles = StyleSheet.create({
     margin: 20,
     marginRight: 30,
     color: commonStyles.color.today,
+    fontSize: hp('1.65%'),
   },
   input: {
+    justifyContent:'center',
+    alignItems:'center',
+    fontSize: hp('1.8%'),
     paddingHorizontal: 10,
-    height: 40,
+    paddingVertical:hp('0.8%'),
+    height: hp('4.75%'),
     marginTop: 10,
     margin: 15,
     borderWidth: 1,
     borderColor: '#00bd2f',
     borderRadius: 5,
     color: 'black',
-    width: '90%',
+    width: wp('75%'),
   },
   subtitule: {
     marginTop: 10,
     marginLeft: 15,
-    fontSize: 16,
+    fontSize: hp('1.9%'),
     fontWeight: 'bold',
   },
   infosText: {
     marginLeft: 15,
-    fontSize: 16,
+    fontSize: hp('1.9%'),
     fontWeight: 'bold',
     marginVertical: 10,
   },
