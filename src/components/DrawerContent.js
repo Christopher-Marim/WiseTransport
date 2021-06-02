@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Linking} from 'react-native';
+import {View, StyleSheet, Linking, Alert} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import {Avatar, Title, Caption, Drawer, List} from 'react-native-paper';
+import {Avatar, Title, Caption, Drawer, List, Snackbar} from 'react-native-paper';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -15,9 +15,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonsVariables from '../../commonsVariables';
 import commonStyles from '../commonStyles';
 import getRealm from '../services/realm';
+import Loader from './Loader';
 
 export default props => {
   const [nome, setnome] = useState('Usuário');
+  const [loaderVisiBle, setLoaderVisible] = useState(false);
+  const [snackVisible, setSnackVisible] = useState(false);
   const [nomeEmpresa, setnomeEmpresa] = useState();
   const [email, setemail] = useState();
   const [UnitIdEmpresa, setUnitIdEmpresa] = useState();
@@ -35,52 +38,69 @@ export default props => {
   }
 
   async function loadVeicules() {
-    const {data} = await api.get(
-      `/veiculo?method=loadUnit&systemunitid=${UnitIdEmpresa}`,
-    );
-    const veicules = data.data;
-    const realm = await getRealm();
-    veicules.forEach(veiculo => {
-      realm.write(() => {
-        realm.create(
-          'Veicules',
-          {
-            id: parseInt(veiculo.id),
-            tipoVeiculo: veiculo.tipoveiculo,
-            placa: veiculo.placa,
-          },
-          'modified',
-        );
+    try {
+      const {data} = await api.get(
+        `/veiculo?method=loadUnit&systemunitid=${UnitIdEmpresa}`,
+      );
+      const veicules = data.data;
+      const realm = await getRealm();
+      veicules.forEach(veiculo => {
+        realm.write(() => {
+          realm.create(
+            'Veicules',
+            {
+              id: parseInt(veiculo.id),
+              tipoVeiculo: veiculo.tipoveiculo,
+              placa: veiculo.placa,
+            },
+            'modified',
+          );
+        });
       });
-    });
+  
+      const store = realm.objects('Veicules');
+  
+      console.log('Veiculosss' + store);
 
-    const store = realm.objects('Veicules');
-
-    console.log('Veiculosss' + store);
+      setLoaderVisible(false)
+      
+    } catch (error) {
+      setLoaderVisible(false)
+      
+    }
   }
   async function loadOccurences() {
-    const {data} = await api.get('/ocorrencia');
-    const ocorrencia = data.data;
-    console.log(ocorrencia);
-    const realm = await getRealm();
-    ocorrencia.forEach(ocorrencia => {
-      realm.write(() => {
-        realm.create(
-          'Occurrence',
-          {
-            id: parseInt(ocorrencia.id),
-            occurrence: ocorrencia.ocorrencia,
-            peso: parseInt(ocorrencia.peso),
-            comveiculo: parseInt(ocorrencia.comveiculo) == 1 ? true : false,
-            semveiculo: parseInt(ocorrencia.semveiculo) == 1 ? true : false,
-            systemUnitId: parseInt(ocorrencia.system_unit_id),
-          },
-          'modified',
-        );
+    try {
+      const {data} = await api.get('/ocorrencia');
+      const ocorrencia = data.data;
+      console.log(ocorrencia);
+      const realm = await getRealm();
+      ocorrencia.forEach(ocorrencia => {
+        realm.write(() => {
+          realm.create(
+            'Occurrence',
+            {
+              id: parseInt(ocorrencia.id),
+              occurrence: ocorrencia.ocorrencia,
+              peso: parseInt(ocorrencia.peso),
+              comveiculo: parseInt(ocorrencia.comveiculo) == 1 ? true : false,
+              semveiculo: parseInt(ocorrencia.semveiculo) == 1 ? true : false,
+              systemUnitId: parseInt(ocorrencia.system_unit_id),
+            },
+            'modified',
+          );
+        });
       });
-    });
-
-    const store = realm.objects('Occurrence');
+  
+      const store = realm.objects('Occurrence');
+      Alert.alert('Finalizado','Dados atualizados com sucesso!')
+      setLoaderVisible(false)
+      
+    } catch (error) {
+      alert(error)
+      setLoaderVisible(false)
+      
+    }
   }
 
   useEffect(() => {
@@ -118,7 +138,9 @@ export default props => {
 
   return (
     <View style={{flex: 1}}>
-      <DrawerContentScrollView {...props}>
+      <Loader visible={loaderVisiBle}></Loader>
+      
+      <DrawerContentScrollView {...props} >
         <View style={styles.drawerContent}>
           <TouchableOpacity
             onPress={() => {
@@ -245,6 +267,7 @@ export default props => {
                 title="Sincronizar dados"
                 titleStyle={{fontSize: hp('1.8%')}}
                 onPress={() => {
+                  setLoaderVisible(true)
                   GetdataVeiculesAndOccurrences();
                 }}
               />

@@ -1,27 +1,25 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  Animated,
-  Alert,
-  ScrollView,
-} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, {useState, useEffect, useCallback} from 'react';
+import {View, Text, TouchableOpacity, SafeAreaView, Alert} from 'react-native';
+import {useRoute, useFocusEffect} from '@react-navigation/native';
+import {FlatList} from 'react-native-gesture-handler';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import axios from 'axios';
-import {useRoute, useFocusEffect} from '@react-navigation/native';
+
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import commonsVariables from '../../../commonsVariables';
+import {getParmsAPI} from '../../services/api';
 import commonStyles from '../../commonStyles';
+import Loader from '../../components/Loader';
 import getRealm from '../../services/realm';
 import styles from './styles';
-import Loader from '../../components/Loader';
-import {FlatList} from 'react-native-gesture-handler';
-import {useCallback} from 'react';
-import commonsVariables from '../../../commonsVariables';
-import { getParmsAPI } from '../../services/api';
 
 export function JourneyList({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
@@ -60,7 +58,7 @@ export function JourneyList({navigation}) {
   );
 
   async function PostJourney(Jornada) {
-    setLoaderVisible(true)
+    setLoaderVisible(true);
     try {
       console.log(Jornada.operator_id);
 
@@ -91,13 +89,13 @@ export function JourneyList({navigation}) {
         'Erro ao finalizar a jornada, quando tiver conexão a internet procure reenviar essa jornada na lista de jornadas.',
       );
       loadJourney();
-      setLoaderVisible(false)
+      setLoaderVisible(false);
     }
   }
 
   const forEachCustom = async (idJornada, element, jornada) => {
-    console.log('Jornada Unit Id' + jornada.systemUnitId)
-    console.log('Jornada FOREach' + jornada)
+    console.log('Jornada Unit Id' + jornada.systemUnitId);
+    console.log('Jornada FOREach' + jornada);
     try {
       const response = await api.post('/jornadaocorrencia', {
         jornada_id: idJornada,
@@ -113,8 +111,8 @@ export function JourneyList({navigation}) {
       });
       console.log(response.data.data);
     } catch (error) {
-      console.error(error)
-      Alert.alert('Erro', 'Erro ao enviar a jornada')
+      console.error(error);
+      Alert.alert('Erro', 'Erro ao enviar a jornada');
     }
   };
   async function PostOccurrences(idJornada, Journey) {
@@ -134,7 +132,7 @@ export function JourneyList({navigation}) {
       );
     });
     loadJourney();
-    setLoaderVisible(false)
+    setLoaderVisible(false);
   }
 
   const formatteddate = data =>
@@ -154,13 +152,11 @@ export function JourneyList({navigation}) {
           <View>
             <FontAwesome
               name="bars"
-              size={25}
+              size={hp('3%')}
               color={colorButton}></FontAwesome>
           </View>
         </TouchableOpacity>
         <Text style={styles.Text}>Lista de Jornadas</Text>
-
-       
       </View>
       <View style={{flex: 1}}>
         <FlatList
@@ -171,7 +167,7 @@ export function JourneyList({navigation}) {
             <View style={{flex: 1, paddingHorizontal: 20}}>
               <View
                 style={{
-                  padding: 10,
+                  padding: hp('1%'),
                   marginVertical: 5,
                   borderRadius: 5,
                   borderWidth: 2,
@@ -179,16 +175,16 @@ export function JourneyList({navigation}) {
                 <View
                   style={{
                     flexDirection: 'row',
-                    padding: 5,
+                    padding: hp('0.6%'),
                     justifyContent: 'space-between',
                   }}>
                   <Text style={styles.TextOccurrence}>{item.veicule_name}</Text>
                   {!item.dateFinish && (
                     <MaterialCommunityIcons
                       name={'timer-outline'}
-                      size={35}
+                      size={hp('4.2%')}
                       color="grey"
-                      style={{paddingRight:2}}
+                      style={{paddingRight: 2}}
                       onPress={() => {
                         Alert.alert(
                           'Jornada em andamento',
@@ -200,8 +196,8 @@ export function JourneyList({navigation}) {
                   {item.dateFinish && item.check == null && (
                     <MaterialCommunityIcons
                       name={'alert-circle-outline'}
-                      size={35}
-                      style={{paddingRight:2}}
+                      size={hp('4.2%')}
+                      style={{paddingRight: 2}}
                       color="#b50000"
                       onPress={() => {
                         Alert.alert(
@@ -214,26 +210,32 @@ export function JourneyList({navigation}) {
                   {item.dateFinish && item.check == true && (
                     <MaterialCommunityIcons
                       name={'checkbox-marked-circle-outline'}
-                      size={35}
-                      style={{paddingRight:2}}
+                      size={hp('4.2%')}
+                      style={{paddingRight: 2}}
                       color="green"
                     />
                   )}
                 </View>
                 <View style={{justifyContent: 'center'}}>
                   {item.dateFinish && item.check == null && (
-                    <TouchableOpacity style={styles.buttonPost} onPress={()=>{PostJourney(item)}}>
-                      <Text style={{color: '#b50000', fontWeight:'bold'}}>Enviar</Text>
+                    <TouchableOpacity
+                      style={styles.buttonPost}
+                      onPress={() => {
+                        PostJourney(item);
+                      }}>
+                      <Text style={{color: '#b50000', fontWeight: 'bold'}}>
+                        Enviar
+                      </Text>
                     </TouchableOpacity>
                   )}
                   <View style={{flexDirection: 'row'}}>
-                    <Text>Inicio: {formatteddate(item.dateStart)}</Text>
-                    <Text> {formattedHours(item.dateStart)}</Text>
+                    <Text style={{fontSize: hp('1.8%')}}>Inicio: {formatteddate(item.dateStart)}</Text>
+                    <Text style={{fontSize: hp('1.8%')}}> {formattedHours(item.dateStart)}</Text>
                   </View>
                   {item.dateFinish && (
                     <View style={{flexDirection: 'row'}}>
-                      <Text>Fim: {formatteddate(item.dateFinish)}</Text>
-                      <Text>
+                      <Text style={{fontSize: hp('1.8%')}}>Fim: {formatteddate(item.dateFinish)}</Text>
+                      <Text style={{fontSize: hp('1.8%')}}>
                         {'    '}
                         {formattedHours(item.dateFinish)}
                       </Text>

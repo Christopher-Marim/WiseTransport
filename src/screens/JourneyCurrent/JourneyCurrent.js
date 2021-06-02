@@ -8,35 +8,36 @@ import {
   BackHandler,
   Animated,
   Alert,
-  ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useRoute, useFocusEffect} from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
 import {useDispatch} from 'react-redux';
-import {useRoute, useFocusEffect} from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import axios from 'axios';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import {CurrentOccurrence} from '../../components/SwipeableOccurence';
+import {EnableLocation, SnackBar} from '../../components/SnackBar';
+import {CreateOccurrence} from '../../components/CreateOccurrence';
+import {KmFinalModal} from '../../components/Modal/KmFinalModal';
+import {InfosVeicules} from '../../components/InfosVeicule';
+import {InfosJourney} from '../../components/InfosJourney';
+import commonsVariables from '../../../commonsVariables';
 import Modal from '../../components/Modal/AddJourney';
+import {getParmsAPI} from '../../services/api';
 import commonStyles from '../../commonStyles';
+import Loader from '../../components/Loader';
 import getRealm from '../../services/realm';
 import styles from './styles';
-import Loader from '../../components/Loader';
-import {InfosJourney} from '../../components/InfosJourney';
-import {InfosVeicules} from '../../components/InfosVeicule';
-import {CreateOccurrence} from '../../components/CreateOccurrence';
-import {CurrentOccurrence} from '../../components/SwipeableOccurence';
-import {getParmsAPI} from '../../services/api';
-import commonsVariables from '../../../commonsVariables';
-import {KmFinalModal} from '../../components/Modal/KmFinalModal';
-import { EnableLocation, SnackBar } from '../../components/SnackBar';
 
 export function JourneyCurrent({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
@@ -401,7 +402,6 @@ export function JourneyCurrent({navigation}) {
         )}
       </View>
     
-
       {Journey == undefined && (
         <View style={{flex: 8, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
@@ -532,6 +532,9 @@ export function JourneyCurrent({navigation}) {
               )}
             </TouchableOpacity>
             {listVisible && Occurrences.length > 0 && (
+              <>
+                <Text style={{color: 'grey', marginTop:-10, paddingBottom:10}}>Total: {Occurrences.length}</Text>
+
               <FlatList
                 data={Occurrences}
                 contentContainerStyle={{paddingHorizontal: hp('1%')}}
@@ -565,6 +568,7 @@ export function JourneyCurrent({navigation}) {
                   </View>
                 )}
               />
+              </>
             )}
 
             {listVisible && Occurrences.length == 0 && (
