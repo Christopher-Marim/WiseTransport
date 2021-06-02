@@ -11,25 +11,26 @@ import {
   Platform,
   Keyboard,
   Linking,
-  Dimensions,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useDispatch, useSelector} from 'react-redux';
-import VersionCheck from 'react-native-version-check';
-import Loader from '../../components/Loader';
-import DeviceInfo from 'react-native-device-info';
-import NetInfo from '@react-native-community/netinfo';
-import styles from './styles';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
+import VersionCheck from 'react-native-version-check';
+import {useDispatch, useSelector} from 'react-redux';
+import DeviceInfo from 'react-native-device-info';
+import axios from 'axios';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {api} from '../../services/api';
-
-import axios from 'axios';
 import {UpdateModal} from '../../components/Modal/UpdateModal';
+import Loader from '../../components/Loader';
+import {api} from '../../services/api';
+import styles from './styles';
+
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
