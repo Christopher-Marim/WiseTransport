@@ -12,8 +12,12 @@ import {
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 
-import commonStyles from '../../commonStyles';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
+import commonStyles from '../../commonStyles';
 import getRealm from '../../services/realm';
 
 export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, post, kmInicial}) {
@@ -152,9 +156,9 @@ const styles = StyleSheet.create({
     fontWeight: commonStyles.fontWeight,
     backgroundColor: commonStyles.color.InventoryPrincipal,
     color: commonStyles.color.secondary,
-    fontSize: 18,
+    fontSize:  hp('2.1%'),
     textAlign: 'center',
-    padding: 18,
+    padding: hp('1.2%'),
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
@@ -163,16 +167,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
+    fontSize: hp('1.65%'),
     margin: 20,
     marginRight: 30,
     color: commonStyles.color.today,
     fontWeight: commonStyles.fontWeight,
   },
   input: {
+    paddingTop:hp('0.5%'),
     fontFamily: commonStyles.fontFamily,
     paddingHorizontal: 5,
     fontWeight: commonStyles.fontWeight,
-    height: 40,
+    height: hp('4.8%'),
     marginTop: 10,
     margin: 15,
     backgroundColor: 'white',
@@ -181,8 +187,10 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     color:'black',
     backgroundColor: '#f1f2f4',
+    fontSize: hp('1.65%'),
   },
   InfokmInicial:{
+    fontSize: hp('1.65%'),
     marginHorizontal:20,
    marginTop:-5
   }

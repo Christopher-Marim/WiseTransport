@@ -65,10 +65,8 @@ export function JourneyList({navigation}) {
       const {data} = await api.post('/jornada', {
         funcionario_id: Jornada.operator_id,
         carro_id: Jornada.veicule_id,
-        datainiciojornada: moment(Jornada.dateStart).format(
-          'YYYY-MM-DD hh:mm:ss',
-        ),
-        datafimjornada: moment(Jornada.dateFinal).format('YYYY-MM-DD hh:mm:ss'),
+        datainiciojornada: `${moment(Jornada.dateStart).format('YYYY-MM-DD')} ${moment(Jornada.dateStart).format('LTS')} `,
+        datafimjornada: `${moment(Jornada.dateFinish).format('YYYY-MM-DD')} ${moment(Jornada.dateFinish).format('LTS')} `,
         kminicial: Jornada.kmInicial,
         kmfinal: Jornada.kmFinal,
         kmrodado: parseInt(Jornada.kmFinal) - parseInt(Jornada.kmInicial),
