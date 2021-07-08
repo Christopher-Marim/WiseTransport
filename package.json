@@ -6,7 +6,8 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
+    "release": "npx react-native run-android --variant=release",
+    "start": "npx react-native run-android",
     "test": "jest",
     "lint": "eslint ."
   },

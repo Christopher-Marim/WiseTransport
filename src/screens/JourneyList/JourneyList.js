@@ -14,6 +14,7 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+import {CompleteInfosJourney} from '../../components/Modal/ModalInfosJorney/CompleteInfosJourney'
 import commonsVariables from '../../../commonsVariables';
 import {getParmsAPI} from '../../services/api';
 import commonStyles from '../../commonStyles';
@@ -23,6 +24,8 @@ import styles from './styles';
 
 export function JourneyList({navigation}) {
   const [LoaderVisiBle, setLoaderVisible] = useState(false);
+  const [ModalVisiBle, setModalVisiBle] = useState(false);
+  const [ItemModal, setItemModal] = useState({});
   const [Journey, setJourney] = useState([]);
   const colorButton = commonStyles.color.headers;
   const [BaseURL, setBaseURL] = useState('');
@@ -137,9 +140,11 @@ export function JourneyList({navigation}) {
     moment(data).locale('pt-br').format('DD/MM/YYYY');
 
   const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
+  const CalbackSetModalVisiBle = (status) => setModalVisiBle(status);
 
   return (
     <SafeAreaView style={styles.container}>
+      <CompleteInfosJourney visible={ModalVisiBle} item={ItemModal} callback={CalbackSetModalVisiBle}/>
       <Loader visible={LoaderVisiBle}></Loader>
       <View style={styles.headerView}>
         <TouchableOpacity
@@ -163,13 +168,15 @@ export function JourneyList({navigation}) {
           keyExtractor={item => item.id}
           renderItem={({item}) => (
             <View style={{flex: 1, paddingHorizontal: 20}}>
-              <View
+              <TouchableOpacity
                 style={{
                   padding: hp('1%'),
                   marginVertical: 5,
                   borderRadius: 5,
                   borderWidth: 2,
-                }}>
+                }}
+                onPress={()=>{setModalVisiBle(true), setItemModal(item)}}
+                >
                 <View
                   style={{
                     flexDirection: 'row',
@@ -182,7 +189,7 @@ export function JourneyList({navigation}) {
                       name={'timer-outline'}
                       size={hp('4.2%')}
                       color="grey"
-                      style={{paddingRight: 2}}
+                      style={{paddingRight: 2,position: 'absolute', right:10}}
                       onPress={() => {
                         Alert.alert(
                           'Jornada em andamento',
@@ -195,12 +202,12 @@ export function JourneyList({navigation}) {
                     <MaterialCommunityIcons
                       name={'alert-circle-outline'}
                       size={hp('4.2%')}
-                      style={{paddingRight: 2}}
+                      style={{paddingRight: 2,position: 'absolute', right:10}}
                       color="#b50000"
                       onPress={() => {
                         Alert.alert(
                           'Erro ao Finalizar',
-                          'Tente novamente finalizar a jornada arrastando esse componente para a direita',
+                          'Tente novamente finalizar a jornada clicando em Enviar',
                         );
                       }}
                     />
@@ -209,7 +216,7 @@ export function JourneyList({navigation}) {
                     <MaterialCommunityIcons
                       name={'checkbox-marked-circle-outline'}
                       size={hp('4.2%')}
-                      style={{paddingRight: 2}}
+                      style={{paddingRight: 2,position: 'absolute', right:10}}
                       color="green"
                     />
                   )}
@@ -240,7 +247,7 @@ export function JourneyList({navigation}) {
                     </View>
                   )}
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
           )}
         />
