@@ -14,7 +14,7 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import {CompleteInfosJourney} from '../../components/Modal/ModalInfosJorney/CompleteInfosJourney'
+import {CompleteInfosJourney} from '../../components/Modal/ModalInfosJorney/CompleteInfosJourney';
 import commonsVariables from '../../../commonsVariables';
 import {getParmsAPI} from '../../services/api';
 import commonStyles from '../../commonStyles';
@@ -68,8 +68,12 @@ export function JourneyList({navigation}) {
       const {data} = await api.post('/jornada', {
         funcionario_id: Jornada.operator_id,
         carro_id: Jornada.veicule_id,
-        datainiciojornada: `${moment(Jornada.dateStart).format('YYYY-MM-DD')} ${moment(Jornada.dateStart).format('LTS')} `,
-        datafimjornada: `${moment(Jornada.dateFinish).format('YYYY-MM-DD')} ${moment(Jornada.dateFinish).format('LTS')} `,
+        datainiciojornada: `${moment(Jornada.dateStart).format(
+          'YYYY-MM-DD',
+        )} ${moment(Jornada.dateStart).format('LTS')} `,
+        datafimjornada: `${moment(Jornada.dateFinish).format(
+          'YYYY-MM-DD',
+        )} ${moment(Jornada.dateFinish).format('LTS')} `,
         kminicial: Jornada.kmInicial,
         kmfinal: Jornada.kmFinal,
         kmrodado: parseInt(Jornada.kmFinal) - parseInt(Jornada.kmInicial),
@@ -140,11 +144,15 @@ export function JourneyList({navigation}) {
     moment(data).locale('pt-br').format('DD/MM/YYYY');
 
   const formattedHours = horas => moment(horas).locale('pt-br').format('LT');
-  const CalbackSetModalVisiBle = (status) => setModalVisiBle(status);
+  const CalbackSetModalVisiBle = status => setModalVisiBle(status);
 
   return (
     <SafeAreaView style={styles.container}>
-      <CompleteInfosJourney visible={ModalVisiBle} item={ItemModal} callback={CalbackSetModalVisiBle}/>
+      <CompleteInfosJourney
+        visible={ModalVisiBle}
+        item={ItemModal}
+        callback={CalbackSetModalVisiBle}
+      />
       <Loader visible={LoaderVisiBle}></Loader>
       <View style={styles.headerView}>
         <TouchableOpacity
@@ -162,95 +170,143 @@ export function JourneyList({navigation}) {
         <Text style={styles.Text}>Lista de Jornadas</Text>
       </View>
       <View style={{flex: 1}}>
-        <FlatList
-          showsVerticalScrollIndicator={true}
-          data={Journey}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <View style={{flex: 1, paddingHorizontal: 20}}>
-              <TouchableOpacity
-                style={{
-                  padding: hp('1%'),
-                  marginVertical: 5,
-                  borderRadius: 5,
-                  borderWidth: 2,
-                }}
-                onPress={()=>{setModalVisiBle(true), setItemModal(item)}}
-                >
-                <View
+        {Journey.length > 0 && (
+          <FlatList
+            showsVerticalScrollIndicator={true}
+            data={Journey}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <View style={{flex: 1, paddingHorizontal: 20}}>
+                <TouchableOpacity
                   style={{
-                    flexDirection: 'row',
-                    padding: hp('0.6%'),
-                    justifyContent: 'space-between',
+                    padding: hp('1%'),
+                    marginVertical: 5,
+                    borderRadius: 5,
+                    borderWidth: 2,
+                  }}
+                  onPress={() => {
+                    setModalVisiBle(true), setItemModal(item);
                   }}>
-                  <Text style={styles.TextOccurrence}>{item.veicule_name}</Text>
-                  {!item.dateFinish && (
-                    <MaterialCommunityIcons
-                      name={'timer-outline'}
-                      size={hp('4.2%')}
-                      color="grey"
-                      style={{paddingRight: 2,position: 'absolute', right:10}}
-                      onPress={() => {
-                        Alert.alert(
-                          'Jornada em andamento',
-                          'Jornada ainda não finalizada',
-                        );
-                      }}
-                    />
-                  )}
-                  {item.dateFinish && item.check == null && (
-                    <MaterialCommunityIcons
-                      name={'alert-circle-outline'}
-                      size={hp('4.2%')}
-                      style={{paddingRight: 2,position: 'absolute', right:10}}
-                      color="#b50000"
-                      onPress={() => {
-                        Alert.alert(
-                          'Erro ao Finalizar',
-                          'Tente novamente finalizar a jornada clicando em Enviar',
-                        );
-                      }}
-                    />
-                  )}
-                  {item.dateFinish && item.check == true && (
-                    <MaterialCommunityIcons
-                      name={'checkbox-marked-circle-outline'}
-                      size={hp('4.2%')}
-                      style={{paddingRight: 2,position: 'absolute', right:10}}
-                      color="green"
-                    />
-                  )}
-                </View>
-                <View style={{justifyContent: 'center'}}>
-                  {item.dateFinish && item.check == null && (
-                    <TouchableOpacity
-                      style={styles.buttonPost}
-                      onPress={() => {
-                        PostJourney(item);
-                      }}>
-                      <Text style={{color: '#b50000', fontWeight: 'bold'}}>
-                        Enviar
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={{fontSize: hp('1.8%')}}>Inicio: {formatteddate(item.dateStart)}</Text>
-                    <Text style={{fontSize: hp('1.8%')}}> {formattedHours(item.dateStart)}</Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      padding: hp('0.6%'),
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text style={styles.TextOccurrence}>
+                      {item.veicule_name}
+                    </Text>
+                    {!item.dateFinish && (
+                      <MaterialCommunityIcons
+                        name={'timer-outline'}
+                        size={hp('4.2%')}
+                        color="grey"
+                        style={{
+                          paddingRight: 2,
+                          position: 'absolute',
+                          right: 10,
+                        }}
+                        onPress={() => {
+                          Alert.alert(
+                            'Jornada em andamento',
+                            'Jornada ainda não finalizada',
+                          );
+                        }}
+                      />
+                    )}
+                    {item.dateFinish && item.check == null && (
+                      <MaterialCommunityIcons
+                        name={'alert-circle-outline'}
+                        size={hp('4.2%')}
+                        style={{
+                          paddingRight: 2,
+                          position: 'absolute',
+                          right: 10,
+                        }}
+                        color="#b50000"
+                        onPress={() => {
+                          Alert.alert(
+                            'Erro ao Finalizar',
+                            'Tente novamente finalizar a jornada clicando em Enviar',
+                          );
+                        }}
+                      />
+                    )}
+                    {item.dateFinish && item.check == true && (
+                      <MaterialCommunityIcons
+                        name={'checkbox-marked-circle-outline'}
+                        size={hp('4.2%')}
+                        style={{
+                          paddingRight: 2,
+                          position: 'absolute',
+                          right: 10,
+                        }}
+                        color="green"
+                      />
+                    )}
                   </View>
-                  {item.dateFinish && (
+                  <View style={{justifyContent: 'center'}}>
+                    {item.dateFinish && item.check == null && (
+                      <TouchableOpacity
+                        style={styles.buttonPost}
+                        onPress={() => {
+                          PostJourney(item);
+                        }}>
+                        <Text style={{color: '#b50000', fontWeight: 'bold'}}>
+                          Enviar
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                     <View style={{flexDirection: 'row'}}>
-                      <Text style={{fontSize: hp('1.8%')}}>Fim: {formatteddate(item.dateFinish)}</Text>
                       <Text style={{fontSize: hp('1.8%')}}>
-                        {'    '}
-                        {formattedHours(item.dateFinish)}
+                        Inicio: {formatteddate(item.dateStart)}
+                      </Text>
+                      <Text style={{fontSize: hp('1.8%')}}>
+                        {' '}
+                        {formattedHours(item.dateStart)}
                       </Text>
                     </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
+                    {item.dateFinish && (
+                      <View style={{flexDirection: 'row'}}>
+                        <Text style={{fontSize: hp('1.8%')}}>
+                          Fim: {formatteddate(item.dateFinish)}
+                        </Text>
+                        <Text style={{fontSize: hp('1.8%')}}>
+                          {'    '}
+                          {formattedHours(item.dateFinish)}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        )}
+
+        {Journey.length == 0 && (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+            }}>
+            <MaterialCommunityIcons
+              name={'alert-outline'}
+              size={hp('7.5%')}
+              color="grey"
+              style={{marginTop: -20}}
+            />
+            <Text
+              style={{
+                fontSize: hp('2.36%'),
+                fontWeight: 'bold',
+                color: 'grey',
+              }}>
+              Nenhuma jornada registrada!
+            </Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

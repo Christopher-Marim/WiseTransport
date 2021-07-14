@@ -22,10 +22,12 @@ import getRealm from '../../services/realm';
 
 export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, post, kmInicial}) {
   const [kmfinal, setKmfinal] = useState();
+  const [buttonDisable, setButtonDisable] = useState(false);
   const [statusModal, setStatusModal] = useState(visible);
 
   useEffect(() => {
     setStatusModal(visible);
+    setButtonDisable(false)
   }, [visible]);
 
  
@@ -64,9 +66,10 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, 
         'modified',
       );
     });
-
+    setKmfinal()
     loaderVisible(false)
     post()
+    setButtonDisable(false)
   }
 
   function close() {
@@ -114,9 +117,11 @@ export function KmFinalModal({visible, JourneyId, callbackClose, loaderVisible, 
                     },
                     {
                       text: 'Prosseguir',
+                      
                       onPress: () => {
                         console.warn(kmInicial)
-                        if(parseFloat(kmfinal)>= kmInicial){
+                        if((parseFloat(kmfinal)>= kmInicial)&& !buttonDisable){
+                          setButtonDisable(true)
                           getLocation()
                         }else{
                           Alert.alert('Erro!','Km final menor que km Inicial, por favor verificar')

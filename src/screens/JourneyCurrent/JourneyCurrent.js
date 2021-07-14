@@ -149,6 +149,7 @@ export function JourneyCurrent({navigation}) {
 
   async function PostJourney() {
     try {
+      setLoaderVisible(true);
       console.log(Journey.operator_id);
 
       const {data} = await api.post('/jornada', {
@@ -171,6 +172,7 @@ export function JourneyCurrent({navigation}) {
       console.log(data);
       PostOccurrences(idJornada);
     } catch (error) {
+      setLoaderVisible(false);
       Alert.alert(
         'Erro',
         'Erro ao finalizar a jornada, quando tiver conexão a internet procure reenviar essa jornada na lista de jornadas.',

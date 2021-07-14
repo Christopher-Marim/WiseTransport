@@ -24,7 +24,7 @@ const {width, height} = Dimensions.get('window');
 export default class StepModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {currentPage: 0, isVisible: props.statusModal};
+    this.state = {currentPage: 0, isVisible: props.statusModal, buttonDisable:false};
   }
 
   _renderNextButton() {
@@ -38,7 +38,7 @@ export default class StepModal extends Component {
           disabled={!this.props.next}
           style={[customStyles.nextButton, !this.props.next&&{backgroundColor:'grey'}]}
           onPress={() => {
-            this.setState({currentPage: nextIndex});
+            this.setState({currentPage: nextIndex, buttonDisable:false});
             this.carousel.snapToItem(nextIndex);
             this.props.callback();
           }}>
@@ -81,7 +81,9 @@ export default class StepModal extends Component {
         <TouchableOpacity
           style={{backgroundColor: '#001e42', borderRadius: 6, padding: 5}}
           s
+          disable={this.state.buttonDisable}
           onPress={() => {
+            this.setState({buttonDisable: true})
             this.props.callbackFinish()
           }}>
           <Text style={{color: 'white', fontWeight: 'bold', fontSize: hp('1.9%')}}>
