@@ -494,7 +494,7 @@ export function JourneyCurrent({navigation}) {
               ]}>
               <CreateOccurrence
                 system_unit_id={Journey?.systemUnitId}
-                WithoutVehicle={Journey?.veicule_id?true:false}
+                WithoutVehicle={Journey?.veicule_id?false:true}
                 responseCallback={handleCreateBegin}
                 getData={getData}
               />

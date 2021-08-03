@@ -55,7 +55,7 @@
     "react-native-vector-icons": "^6.7.0",
     "react-native-version-check": "^3.4.2",
     "react-native-web": "~0.13.12",
-    "react-redux": "^7.2.2",
+    "react-redux": "^7.2.4",
     "realm": "^10.4.0",
     "redux": "^4.1.0"
   },

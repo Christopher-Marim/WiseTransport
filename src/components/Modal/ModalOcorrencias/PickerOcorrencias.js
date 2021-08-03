@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {View, Modal, TouchableWithoutFeedback, FlatList, ScrollView ,TouchableOpacity, Text} from 'react-native';
+import {
+  View,
+  Modal,
+  TouchableWithoutFeedback,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import {ActivityIndicator, Colors} from 'react-native-paper';
 
 import styles from './styles';
@@ -24,7 +32,14 @@ export default function PickerOcorrencias(props) {
 
   async function getOccurrences() {
     const realm = await getRealm();
-    const store = realm.objects('Occurrence').filtered(`comveiculo==${props.withoutVehicle} && systemUnitId == ${props.system_unit_id}`)
+    // variavel withoutVehicle é true quando não há veiculo
+    const store = realm
+      .objects('Occurrence')
+      .filtered(
+        `(comveiculo==${true} && semveiculo==${true})||
+        (comveiculo==${!props.withoutVehicle} && semveiculo==${ props.withoutVehicle }) 
+        && systemUnitId == ${props.system_unit_id}`,
+      );
     setOcurrences(store);
     setloadingActive(false);
   }

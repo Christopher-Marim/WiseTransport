@@ -50,7 +50,7 @@ export default function AddJourney({callback}) {
 
   async function getOccurrences(system_unit_id) {
     const realm = await getRealm();
-    const store = realm.objects('Occurrence').filtered(`semveiculo == true && systemUnitId == ${system_unit_id}`)
+    const store = realm.objects('Occurrence').filtered(`(semveiculo == true && comveiculo == true)||(semveiculo == true) && systemUnitId == ${system_unit_id}`)
     setOcurrences(store);
   }
 
